@@ -60,7 +60,7 @@ namespace ECOMAPP.Controllers
             }
 
             public List<AuthenticationDTO.UserProfileEntites> UserProfilesEntity { get; set; }
-            public List<AuthenticationDTO.AuthenticationEntites> AuthenticationsList { get; set; }
+            public List<AuthenticationDTO.AuthenticationEntites> AuthenticationsList { get; geet; }
 
         }
 
