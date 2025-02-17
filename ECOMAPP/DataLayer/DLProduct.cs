@@ -12,6 +12,7 @@ namespace ECOMAPP.DataLayer
             string ProcedureName = "Proc_Post_Product";
             DataSet dsProduct = new DataSet();
 
+
             #region You can pass multiple records at a time in database as a table
             DataTable dtProduct = new DataTable();
             dtProduct.Columns.Add("ProductID", typeof(int));
@@ -30,6 +31,7 @@ namespace ECOMAPP.DataLayer
                     row["Price"] = item.Price ?? 0;
 
                     dtProduct.Rows.Add(row);
+                    
                 }
             }
             #endregion

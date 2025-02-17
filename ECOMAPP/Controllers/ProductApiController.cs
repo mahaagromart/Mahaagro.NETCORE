@@ -15,6 +15,7 @@ namespace ECOMAPP.Controllers
 
         [Route("DBPostProduct")]
         [HttpPost]
+
         public IEnumerable<DBReturnData> DBPostProduct([FromBody] MLCrudProduct _mlCrudProduct)
         {
             objDLProduct = new DLProduct();

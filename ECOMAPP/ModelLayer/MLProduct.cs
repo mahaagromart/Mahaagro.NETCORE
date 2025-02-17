@@ -10,7 +10,7 @@ namespace ECOMAPP.ModelLayer
     }
     public class MLProduct
     {
-        public int ProductID { get; set; } = 0; //Default Value 0
+        public int ProductID { get; set; } = 0; 
         public string? ProductName { get; set; } = string.Empty;
         public string? Category { get; set; } = string.Empty;
         public decimal? Price { get; set; } = decimal.Zero;
