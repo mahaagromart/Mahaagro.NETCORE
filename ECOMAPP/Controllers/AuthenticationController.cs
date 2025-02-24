@@ -219,7 +219,7 @@ namespace ECOMAPP.Controllers
 
 
 
-        #endregion
+        
 
         #region send otp Email {send otp on the registerd users email id for thier verificatoion
 
