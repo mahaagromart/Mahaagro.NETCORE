@@ -40,7 +40,7 @@ namespace ECOMAPP.Controllers
 
         [Route("DBGetProduct")]
         [HttpGet]
-        public IEnumerable<DBReturnData> DBGetProduct([FromBody] MLFilterProduct _mlFilterProduct)
+        public ActionResult<IEnumerable<DBReturnData>> DBGetProduct([FromBody] MLFilterProduct _mlFilterProduct)
         {
             objDLProduct = new DLProduct();
             DBReturnData objReturnData = new DBReturnData();
@@ -56,7 +56,8 @@ namespace ECOMAPP.Controllers
                 objReturnData.Status = DBEnums.Status.FAILURE;
                 objReturnData.Message = DBEnums.Status.FAILURE.ToString() + " due to " + ex.Message;
             }
-            return new[] { objReturnData };
+            return new[] { objReturnData }; 
+        
         }
        
         

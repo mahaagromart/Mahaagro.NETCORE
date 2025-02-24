@@ -1,9 +1,11 @@
 ﻿using System.Data;
-using System.Data.SqlClient;
+using System.Security.Cryptography;
+using System.Text;
+using Microsoft.Data.SqlClient;
 
 namespace ECOMAPP.CommonRepository
 {
-    public class DBAccess:IDisposable
+    public class DBAccess : IDisposable
     {
         #region Public Properties
         public string DBProcedureName { get; set; }
@@ -67,5 +69,88 @@ namespace ECOMAPP.CommonRepository
         }
 
         #endregion
+
     }
+
+
+    public class DALBASE
+    {
+        public void ErrorLog(string MethodName, string ClassName, string Message)
+        {
+            try
+            {
+                using (DBAccess Db = new DBAccess())
+                {
+                    Db.DBProcedureName = "SP_ErrorLog";
+                    Db.DBParameterList = new List<DBParameters>{ 
+                        new DBParameters{
+                        ParameterName = "@MethodName",
+                        ParameterValue = MethodName                        
+                        },
+                        new DBParameters
+                        {
+                            ParameterName = "@ClassName",
+                            ParameterValue = ClassName
+                        },
+                        new DBParameters
+                        {
+                            ParameterName = "@ErrorMsg",
+                            ParameterValue = Message
+                        }
+                    };
+                    //DataSet ds = new DataSet();
+                    Db.DBExecute();
+                    Db.Dispose();
+                    return;
+                }
+            }
+            catch (Exception ex) {
+                return;
+            }
+
+        }
+
+        public void requestresponse(string MethodName, string Request, string Response, string Exception)
+        {
+            try
+            {
+                using(DBAccess Db = new DBAccess())
+                {
+                    Db.DBProcedureName = "SP_REQUESTRESPONSELOG";
+                    Db.AddParameters("@Action", "INSERTINFODETAIL");
+                    Db.AddParameters("@MethodName",MethodName);
+                    Db.AddParameters("@Request",Request);
+                    Db.AddParameters("@Response",Response );
+                    Db.AddParameters("@Exception",Exception);
+                    Db.DBExecute();
+                    Db.Dispose();
+                }
+
+            }
+            catch (Exception ex) 
+            {
+                return;    
+            }
+        }
+
+        public static string ComputeSha256Hash(string rawData)
+        {
+            using (SHA256 sha256Hash = SHA256.Create())
+            {
+                byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(rawData));
+                StringBuilder builder = new StringBuilder();
+                foreach (byte b in bytes)
+                {
+                    builder.Append(b.ToString("x2"));
+                }
+
+                return builder.ToString();
+            }
+        }
+
+
+
+
+    }
+
 }
