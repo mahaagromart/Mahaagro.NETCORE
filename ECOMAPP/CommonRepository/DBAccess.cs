@@ -5,7 +5,7 @@ using Microsoft.Data.SqlClient;
 
 namespace ECOMAPP.CommonRepository
 {
-    public class DBAccess:IDisposable
+    public class DBAccess : IDisposable
     {
         #region Public Properties
         public string DBProcedureName { get; set; }
@@ -150,5 +150,6 @@ namespace ECOMAPP.CommonRepository
 
 
     }
+
 
 }

@@ -1,0 +1,411 @@
+﻿using System.Collections;
+using System.Data;
+using ECOMAPP.CommonRepository;
+using ECOMAPP.DataLayer;
+using ECOMAPP.ModelLayer;
+using Microsoft.AspNetCore.Mvc;
+using static ECOMAPP.MiddleWare.AppEnums;
+using static ECOMAPP.ModelLayer.MLProduct;
+
+namespace ECOMAPP.Controllers
+{
+    [Route("[controller]")]
+    [ApiController]
+    public class ProductController : ControllerBase
+    {
+
+
+
+        [Route("GetAllProducts")]
+        [HttpGet]
+        public ActionResult<IEnumerable<DBReturnData>> GetAllProducts(MlGetProduct _MlGetProduct)
+        {
+            MLProduct _MLProduct = new();
+            DLProduct _DLProduct = new();
+            DBReturnData _DBReturnData = new();
+
+            DataSet _DataSet = new();
+            try
+            {
+                _MLProduct.ProductList = _DLProduct.GetAllProducts(_MlGetProduct);
+                if (_MLProduct.ProductList.Count > 0)
+                {
+                    _DBReturnData.Dataset = _MLProduct.ProductList;
+                    _DBReturnData.Code = 200;
+                    _DBReturnData.Message = "SUCCESS";
+                    _DBReturnData.Retval = "SUCCESS";
+
+                }
+                else
+                {
+                    _DBReturnData.Dataset = null;
+                    _DBReturnData.Retval = "FAILED";
+                    _DBReturnData.Message = "internal server error due to";
+                    _DBReturnData.Code = 500;
+                }
+
+
+
+            }
+            catch(Exception ex)
+            {
+
+                _DBReturnData.Dataset = null;
+                _DBReturnData.Code = 500;
+                _DBReturnData.Message = "Internal Server Error";
+                _DBReturnData.Retval = null;
+            }
+            return new[] { _DBReturnData };
+            
+        }
+
+        [Route("InsertProduct")]
+        [HttpPost]
+        public ActionResult<IEnumerable<DBReturnData>> InsertProduct(MlGetProduct _MlGetProduct)
+        {
+            MLProduct _MLProduct = new();
+            DLProduct _DLProduct = new();
+            DBReturnData _DBReturnData = new();
+
+            DataSet _DataSet = new();
+            try
+            {
+               
+                
+                
+                    _MLProduct = _DLProduct.InsertProduct(_MlGetProduct);
+                    _DBReturnData.Code = 200;
+                    _DBReturnData.Message = "SUCCESS";
+                    _DBReturnData.Retval = "SUCCESS";
+
+                
+               
+
+
+
+            }
+            catch (Exception ex)
+            {
+
+     
+                _DBReturnData.Code = 500;
+                _DBReturnData.Message = "Internal Server Error";
+                _DBReturnData.Retval = null;
+            }
+            return new[] { _DBReturnData };
+
+        }
+        [Route("UpdateProduct")]
+        [HttpPut]
+
+        public ActionResult<IEnumerable<DBReturnData>> UpdateProduct(MlGetProduct _MlGetProduct)
+        {
+            MLProduct _MLProduct = new();
+            DLProduct _DLProduct = new();
+            DBReturnData _DBReturnData = new();
+
+            DataSet _DataSet = new();
+            try
+            {
+
+                
+
+                    _MLProduct = _DLProduct.UpdateProduct(_MlGetProduct);
+                    _DBReturnData.Code = 200;
+                    _DBReturnData.Message = "SUCCESS";
+                    _DBReturnData.Retval = "SUCCESS";
+
+                
+
+
+
+
+            }
+            catch (Exception ex)
+            {
+
+
+                _DBReturnData.Code = 500;
+                _DBReturnData.Message = "Internal Server Error";
+                _DBReturnData.Retval = null;
+            }
+            return new[] { _DBReturnData };
+
+        }
+
+        [Route("DeleteProduct")]
+        [HttpDelete]
+        public ActionResult<IEnumerable<DBReturnData>> DeleteProduct(MLDeleteProduct _MLDeleteProduct)
+        {
+            MLProduct _MLProduct = new();
+            DLProduct _DLProduct = new();
+            DBReturnData _DBReturnData = new();
+
+            DataSet _DataSet = new();
+            try
+            {
+
+                
+
+                    _MLProduct = _DLProduct.DeleteProduct(_MLDeleteProduct);
+                    _DBReturnData.Code = 200;
+                    _DBReturnData.Message = "SUCCESS";
+                    _DBReturnData.Retval = "SUCCESS";
+
+                
+
+
+
+
+            }
+            catch (Exception ex)
+            {
+
+
+                _DBReturnData.Code = 500;
+                _DBReturnData.Message = "Internal Server Error";
+                _DBReturnData.Retval = null;
+            }
+
+
+            return new[] { _DBReturnData };
+
+        }
+
+
+        [Route("ProductToggleCertified")]
+        [HttpPut]
+        public ActionResult<IEnumerable<DBReturnData>> ProductToggleCertified(MLToggleCertified _MLToggleCertified)
+        {
+            MLProduct _MLProduct = new();
+            DLProduct _DLProduct = new();
+            DBReturnData _DBReturnData = new();
+
+            DataSet _DataSet = new();
+            try
+            {
+
+                
+
+                    _MLProduct = _DLProduct.ProductToggleCertified(_MLToggleCertified);
+                    _DBReturnData.Code = 200;
+                    _DBReturnData.Message = "SUCCESS";
+                    _DBReturnData.Retval = "SUCCESS";
+
+                
+
+
+
+
+            }
+            catch (Exception ex)
+            {
+
+
+                _DBReturnData.Code = 500;
+                _DBReturnData.Message = "Internal Server Error";
+                _DBReturnData.Retval = null;
+            }
+
+            return new[] { _DBReturnData };
+
+        }
+
+        [Route("ProductToggleStatus")]
+        [HttpPut]
+        public ActionResult<IEnumerable<DBReturnData>> ProductToggleStatus(MLToggleStatus _MLToggleStatus)
+        {
+            MLProduct _MLProduct = new();
+            DLProduct _DLProduct = new();
+            DBReturnData _DBReturnData = new();
+
+            DataSet _DataSet = new();
+            try
+            {
+
+             
+
+                     _MLProduct = _DLProduct.ProductToggleStatus(_MLToggleStatus);
+                    _DBReturnData.Code = 200;
+                    _DBReturnData.Message = "SUCCESS";
+                    _DBReturnData.Retval = "SUCCESS";
+
+                
+
+
+
+
+            }
+            catch (Exception ex)
+            {
+
+
+                _DBReturnData.Code = 500;
+                _DBReturnData.Message = "Internal Server Error";
+                _DBReturnData.Retval = null;
+            }
+
+            return new[] { _DBReturnData };
+
+        }
+
+
+
+        #region InhouseProduct
+
+
+        [Route("GetAllInhouseProducts")]
+        [HttpGet]
+        public ActionResult<IEnumerable<DBReturnData>> GetAllInhouseProducts(MLGetInhouseProduct _MLGetInhouseProduct)
+        {
+            MLProduct _MLProduct = new();
+            DLProduct _DLProduct = new();
+            DBReturnData _DBReturnData = new();
+            DataSet _DataSet = new();
+
+
+            try
+            {
+                _MLProduct.InhouseProductList = _DLProduct.GetAllInhouseProducts(_MLGetInhouseProduct);
+                if (_MLProduct.InhouseProductList.Count > 0)
+                {
+                    _DBReturnData.Dataset = _MLProduct.InhouseProductList;
+                    _DBReturnData.Code = 200;
+                    _DBReturnData.Message = "SUCCESS";
+                    _DBReturnData.Retval = "SUCCESS";
+
+                }
+                else
+                {
+                    _DBReturnData.Dataset = null;
+                    _DBReturnData.Retval = "FAILED";
+                    _DBReturnData.Message = "internal server error due to";
+                    _DBReturnData.Code = 500;
+                }
+
+
+
+            }
+            catch (Exception ex)
+            {
+
+                _DBReturnData.Dataset = null;
+                _DBReturnData.Code = 500;
+                _DBReturnData.Message = "Internal Server Error";
+                _DBReturnData.Retval = null;
+            }
+            return new[] { _DBReturnData };
+
+        }
+
+        [Route("InsertInhouseProduct")]
+        [HttpPost]
+        public ActionResult<IEnumerable<DBReturnData>> InsertInhouseProduct(MLInsertInhouseProduct _MLInsertInhouseProduct)
+        {
+            MLProduct _MLProduct = new();
+            DLProduct _DLProduct = new();
+            DBReturnData _DBReturnData = new();
+
+            DataSet _DataSet = new();
+            try
+            {
+            
+                 
+                    _MLProduct = _DLProduct.InsertInhouseProduct(_MLInsertInhouseProduct);
+                    _DBReturnData.Code = 200;
+                    _DBReturnData.Message = "SUCCESS";
+                    _DBReturnData.Retval = "SUCCESS";
+
+              
+
+
+
+            }
+            catch (Exception ex)
+            {
+
+                _DBReturnData.Dataset = null;
+                _DBReturnData.Code = 500;
+                _DBReturnData.Message = "Internal Server Error";
+                _DBReturnData.Retval = null;
+            }
+            return new[] { _DBReturnData };
+
+        }
+        [Route("UpdateInhouseProduct")]
+        [HttpPut]
+
+        public ActionResult<IEnumerable<DBReturnData>> UpdateInhouseProduct(MLUpdateInhouseProduct _MLUpdateInhouseProduct)
+        {
+            MLProduct _MLProduct = new();
+            DLProduct _DLProduct = new();
+            DBReturnData _DBReturnData = new();
+
+            DataSet _DataSet = new();
+            try
+            {
+             
+
+                    _MLProduct = _DLProduct.UpdateInhouseProduct(_MLUpdateInhouseProduct);
+                    _DBReturnData.Code = 200;
+                    _DBReturnData.Message = "SUCCESS";
+                    _DBReturnData.Retval = "SUCCESS";
+
+                
+           
+
+
+
+            }
+            catch (Exception ex)
+            {
+
+                _DBReturnData.Dataset = null;
+                _DBReturnData.Code = 500;
+                _DBReturnData.Message = "Internal Server Error";
+                _DBReturnData.Retval = null;
+            }
+            return new[] { _DBReturnData };
+
+        }
+
+        [Route("DeleteInhouseProduct")]
+        [HttpDelete]
+        public ActionResult<IEnumerable<DBReturnData>> DeleteInhouseProduct(MLDeleteInhouseProduct _MLDeleteInhouseProduct)
+        {
+            MLProduct _MLProduct = new();
+            DLProduct _DLProduct = new();
+            DBReturnData _DBReturnData = new();
+
+            DataSet _DataSet = new();
+            try
+            {
+               
+
+                    _MLProduct = _DLProduct.DeleteInhouseProduct(_MLDeleteInhouseProduct);
+                    _DBReturnData.Code = 200;
+                    _DBReturnData.Message = "SUCCESS";
+                    _DBReturnData.Retval = "SUCCESS";
+
+                
+              
+
+
+
+            }
+            catch (Exception ex)
+            {
+
+                _DBReturnData.Dataset = null;
+                _DBReturnData.Code = 500;
+                _DBReturnData.Message = "Internal Server Error";
+                _DBReturnData.Retval = null;
+            }
+            return new[] { _DBReturnData };
+
+        }
+
+        #endregion InhouseProduct
+
+    }
+}

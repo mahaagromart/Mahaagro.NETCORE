@@ -1,3 +1,4 @@
+
 ﻿using System.Data;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -12,6 +13,7 @@ using Newtonsoft.Json;
 using static ECOMAPP.ModelLayer.MLAuthetication;
 using static ECOMAPP.MiddleWare.AppEnums;
 using Microsoft.AspNetCore.Authorization;
+
 
 namespace ECOMAPP.Controllers
 {
@@ -32,7 +34,6 @@ namespace ECOMAPP.Controllers
             AuthenticationDTO result = new AuthenticationDTO();
             try
             {
-
 
                 result = authentication.Login(loginRequest.EmailId??"", loginRequest.PhoneNumber ?? "", loginRequest.Password ?? "");
 
@@ -166,6 +167,7 @@ namespace ECOMAPP.Controllers
 
         #endregion
 
+
         #region Phone Verification {same as verify email but for phone number}
         //Create Mail Verification
 
@@ -191,9 +193,29 @@ namespace ECOMAPP.Controllers
             }
             return Json(result);
 
-
         }
 
+        #endregion
+
+        #region Verify Email work in progress wait for changes on git
+
+
+        //[Route("VerifyEmail")]
+        //[HttpPost]
+        //public JsonResult VerifyEmail([FromBody] MlVerifyEmail verifyEmail)
+        //{
+        //    try
+        //    {
+
+        //    }
+        //    catch (Exception es)
+        //    {
+        //        dalbase.ErrorLog();
+        //    }
+
+        //}
+
+        #endregion
 
 
 

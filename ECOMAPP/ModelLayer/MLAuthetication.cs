@@ -2,6 +2,7 @@
 {
 
 
+
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -55,7 +56,6 @@
     }
 
 
-
     public class MLAuthetication
     {
 
@@ -74,12 +74,12 @@
 
         }
 
+
         public class UpdateUserProfile
         {
             public string ProfilePath { get; set; } = string.Empty;
         
         }
-
 
         public class MlLoginRequest
         {
@@ -89,12 +89,14 @@
             public string? Password { get; set; }
         
         }
+
         public class MlForgetPasswordOtpValidate
         {
             public string Email { get; set; } = string.Empty;
             public string OTP { get; set; } = string.Empty;
             public string Password { get; set; } = string.Empty;
         }
+
         public class MlVerifyEmail
         {
             public string? Email { get; set; }
@@ -113,7 +115,6 @@
         {
             public string? Email { get; set; }
         }
-
 
         public class AuthenticationDTO
         {

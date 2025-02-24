@@ -10,21 +10,22 @@ using Azure.Core;
 using static ECOMAPP.MiddleWare.AppEnums;
 using System.IdentityModel.Tokens.Jwt;
 
+
 namespace ECOMAPP.DataLayer
 {
     public class DLAuthentication:DALBASE
     {
 
+
         #region Login 
         public AuthenticationDTO Login(string EmailId, string PhoneNumber, string Password)
         {
-            AuthenticationDTO authenticationDTO = new();
 
+            AuthenticationDTO authenticationDTO = new();
             authenticationDTO.AuthenticationsList = new List<AuthenticationDTO.AuthenticationEntites>();
             try
             {
                 DataSet dataSet = new DataSet();    
-
                 if((string.IsNullOrEmpty(PhoneNumber) || PhoneNumber == "") && !string.IsNullOrEmpty(EmailId) )
                 {
                     using (DBAccess Db = new DBAccess())
@@ -70,9 +71,6 @@ namespace ECOMAPP.DataLayer
 
                     return authenticationDTO;
                 }
-
-                
-
                 if (dataSet != null && dataSet.Tables.Count > 0)
                 {
                     DataTable table = dataSet.Tables[0];
@@ -130,6 +128,7 @@ namespace ECOMAPP.DataLayer
 
         public AuthenticationDTO Register(RegistrationData rdata)
         {
+
             AuthenticationDTO authenticationDTO = new();
 
             authenticationDTO.AuthenticationsList = new List<AuthenticationDTO.AuthenticationEntites>();
@@ -218,6 +217,7 @@ namespace ECOMAPP.DataLayer
 
         public AuthenticationDTO VerifyEmail(MlVerifyEmail mdata)
         {
+
             AuthenticationDTO authenticationDTO = new();
 
             try
@@ -274,6 +274,7 @@ namespace ECOMAPP.DataLayer
 
 
         #endregion
+
 
         #region VerifyPhone 
 
