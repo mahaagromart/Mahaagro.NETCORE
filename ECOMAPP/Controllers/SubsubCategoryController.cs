@@ -2,6 +2,7 @@
 using ECOMAPP.DataLayer;
 using ECOMAPP.ModelLayer;
 using Microsoft.AspNetCore.Mvc;
+using static ECOMAPP.MiddleWare.AppEnums;
 using static ECOMAPP.ModelLayer.MLSubsubcategory;
 
 namespace ECOMAPP.Controllers
@@ -13,6 +14,7 @@ namespace ECOMAPP.Controllers
     {
         [Route("GetAllSubsubCategory")]
         [HttpGet]
+        [JwtAuthorization(Roles = [Roles.Admin])]
         public ActionResult<IEnumerable<DBReturnData>> GetAllSubsubCategory()
         {
             DLSubsubcategory _DLSubsubcategory = new();
@@ -53,6 +55,7 @@ namespace ECOMAPP.Controllers
         }
         [Route("InsertSubsubCategory")]
         [HttpPost]
+        [JwtAuthorization(Roles = [Roles.Admin])]
         public ActionResult<IEnumerable<DBReturnData>> InsertSubsubCategory(MLInsertsubsubcategory _MLInsertsubsubcategory)
         {
             DLSubsubcategory _DLSubsubcategory = new();
@@ -88,7 +91,7 @@ namespace ECOMAPP.Controllers
 
         [Route("UpdateSubsubCategory")]
         [HttpPut]
-
+        [JwtAuthorization(Roles = [Roles.Admin])]
         public ActionResult<IEnumerable<DBReturnData>> UpdateSubsubCategory(MLUpdateSubsubcategory _MLUpdateSubsubcategory)
         {
             DLSubsubcategory _DLSubsubcategory = new();
@@ -111,9 +114,11 @@ namespace ECOMAPP.Controllers
             }
             return new[] { _DBReturnData };
         }
+
+
         [Route("DeleteSubsubCategory")]
         [HttpDelete]
-
+        [JwtAuthorization(Roles = [Roles.Admin])]
         public ActionResult<IEnumerable<DBReturnData>> DeleteSubsubCategory(MLDeletesubsubcategory _MLDeletesubsubcategory)
         {
             DLSubsubcategory _DLSubsubcategory = new();

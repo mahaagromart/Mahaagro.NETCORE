@@ -2,6 +2,7 @@
 using ECOMAPP.DataLayer;
 using ECOMAPP.ModelLayer;
 using Microsoft.AspNetCore.Mvc;
+using static ECOMAPP.MiddleWare.AppEnums;
 using static ECOMAPP.ModelLayer.MLProductattribute;
 
 namespace ECOMAPP.Controllers
@@ -12,6 +13,7 @@ namespace ECOMAPP.Controllers
     {
         [Route("GetAllAttribute")]
         [HttpGet]
+        [JwtAuthorization(Roles = [Roles.Admin])]
         public ActionResult<IEnumerable<DBReturnData>> GetAllAttribute()
         {
             MLProductattribute _MLProductattribute = new();
@@ -50,7 +52,7 @@ namespace ECOMAPP.Controllers
         }
         [Route("InsertAttribute")]
         [HttpPost]
-
+        [JwtAuthorization(Roles = [Roles.Admin])]
         public ActionResult<IEnumerable<DBReturnData>> InsertAttribute(MLInsertProductAttribute _MLInsertProductAttribute)
         {
             MLProductattribute _MLProductattribute = new();
@@ -73,8 +75,10 @@ namespace ECOMAPP.Controllers
 
             return new[] { _DBReturnData };
         }
+
         [Route("UpdateAttribute")]
         [HttpPut]
+        [JwtAuthorization(Roles = [Roles.Admin])]
         public ActionResult<IEnumerable<DBReturnData>> UpdateAttribute(MLUpdateProductAttribute _MLUpdateProductAttribute)
         {
             MLProductattribute _MLProductattribute = new();
@@ -99,7 +103,7 @@ namespace ECOMAPP.Controllers
         }
         [Route("DeleteAttribute")]
         [HttpDelete]
-     
+        [JwtAuthorization(Roles = [Roles.Admin])]
         public ActionResult<IEnumerable<DBReturnData>> DeleteAttribute(MLDeleteProductAttribute _MLDeleteProductAttribute)
         {
             MLProductattribute _MLProductattribute = new();

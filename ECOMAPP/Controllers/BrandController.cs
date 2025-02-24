@@ -2,6 +2,7 @@
 using ECOMAPP.DataLayer;
 using ECOMAPP.ModelLayer;
 using Microsoft.AspNetCore.Mvc;
+using static ECOMAPP.MiddleWare.AppEnums;
 
 namespace ECOMAPP.Controllers
 {
@@ -12,6 +13,7 @@ namespace ECOMAPP.Controllers
 
         [Route("GetAllBrand")]
         [HttpGet]
+        [JwtAuthorization(Roles = [Roles.Admin])]
         public ActionResult<IEnumerable<DBReturnData>> GetAllBrand()
         {
             DLBrand _DLBrand = new();
@@ -52,6 +54,8 @@ namespace ECOMAPP.Controllers
         }
         [Route("InsertBrand")]
         [HttpPost]
+        [JwtAuthorization(Roles = [Roles.Admin])]
+
         public ActionResult<IEnumerable<DBReturnData>> InsertBrand()
         {
             DLBrand _DLBrand = new();
@@ -78,7 +82,7 @@ namespace ECOMAPP.Controllers
         }
         [Route("UpdateBrand")]
         [HttpPut]
-
+        [JwtAuthorization(Roles = [Roles.Admin])]
         public ActionResult<IEnumerable<DBReturnData>> UpdateBrand()
         {
             DLBrand _DLBrand = new();
@@ -103,8 +107,12 @@ namespace ECOMAPP.Controllers
 
             return new[] { _DBReturnData };
         }
+
+
         [Route("DeleteBrand")]
         [HttpDelete]
+        [JwtAuthorization(Roles = [Roles.Admin])]
+
         public ActionResult<IEnumerable<DBReturnData>> DeleteBrand()
         {
             DLBrand _DLBrand = new();

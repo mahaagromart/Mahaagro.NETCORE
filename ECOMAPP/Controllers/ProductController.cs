@@ -18,6 +18,7 @@ namespace ECOMAPP.Controllers
 
         [Route("GetAllProducts")]
         [HttpGet]
+        [JwtAuthorization(Roles = [Roles.Admin])]
         public ActionResult<IEnumerable<DBReturnData>> GetAllProducts(MlGetProduct _MlGetProduct)
         {
             MLProduct _MLProduct = new();
@@ -61,6 +62,7 @@ namespace ECOMAPP.Controllers
 
         [Route("InsertProduct")]
         [HttpPost]
+        [JwtAuthorization(Roles = [Roles.Admin])]
         public ActionResult<IEnumerable<DBReturnData>> InsertProduct(MlGetProduct _MlGetProduct)
         {
             MLProduct _MLProduct = new();
@@ -70,24 +72,15 @@ namespace ECOMAPP.Controllers
             DataSet _DataSet = new();
             try
             {
-               
-                
-                
-                    _MLProduct = _DLProduct.InsertProduct(_MlGetProduct);
-                    _DBReturnData.Code = 200;
-                    _DBReturnData.Message = "SUCCESS";
-                    _DBReturnData.Retval = "SUCCESS";
 
-                
-               
-
-
+                _MLProduct = _DLProduct.InsertProduct(_MlGetProduct);
+                _DBReturnData.Code = 200;
+                _DBReturnData.Message = "SUCCESS";
+                _DBReturnData.Retval = "SUCCESS";
 
             }
             catch (Exception ex)
             {
-
-     
                 _DBReturnData.Code = 500;
                 _DBReturnData.Message = "Internal Server Error";
                 _DBReturnData.Retval = null;
@@ -95,9 +88,11 @@ namespace ECOMAPP.Controllers
             return new[] { _DBReturnData };
 
         }
+
+
         [Route("UpdateProduct")]
         [HttpPut]
-
+        [JwtAuthorization(Roles = [Roles.Admin])]
         public ActionResult<IEnumerable<DBReturnData>> UpdateProduct(MlGetProduct _MlGetProduct)
         {
             MLProduct _MLProduct = new();
@@ -108,23 +103,15 @@ namespace ECOMAPP.Controllers
             try
             {
 
-                
-
-                    _MLProduct = _DLProduct.UpdateProduct(_MlGetProduct);
-                    _DBReturnData.Code = 200;
-                    _DBReturnData.Message = "SUCCESS";
-                    _DBReturnData.Retval = "SUCCESS";
+                _MLProduct = _DLProduct.UpdateProduct(_MlGetProduct);
+                _DBReturnData.Code = 200;
+                _DBReturnData.Message = "SUCCESS";
+                _DBReturnData.Retval = "SUCCESS";
 
                 
-
-
-
-
             }
             catch (Exception ex)
             {
-
-
                 _DBReturnData.Code = 500;
                 _DBReturnData.Message = "Internal Server Error";
                 _DBReturnData.Retval = null;
@@ -135,6 +122,7 @@ namespace ECOMAPP.Controllers
 
         [Route("DeleteProduct")]
         [HttpDelete]
+        [JwtAuthorization(Roles = [Roles.Admin])]
         public ActionResult<IEnumerable<DBReturnData>> DeleteProduct(MLDeleteProduct _MLDeleteProduct)
         {
             MLProduct _MLProduct = new();
@@ -145,22 +133,14 @@ namespace ECOMAPP.Controllers
             try
             {
 
-                
-
                     _MLProduct = _DLProduct.DeleteProduct(_MLDeleteProduct);
                     _DBReturnData.Code = 200;
                     _DBReturnData.Message = "SUCCESS";
                     _DBReturnData.Retval = "SUCCESS";
 
-                
-
-
-
-
             }
             catch (Exception ex)
             {
-
 
                 _DBReturnData.Code = 500;
                 _DBReturnData.Message = "Internal Server Error";
@@ -175,6 +155,7 @@ namespace ECOMAPP.Controllers
 
         [Route("ProductToggleCertified")]
         [HttpPut]
+        [JwtAuthorization(Roles = [Roles.Admin])]
         public ActionResult<IEnumerable<DBReturnData>> ProductToggleCertified(MLToggleCertified _MLToggleCertified)
         {
             MLProduct _MLProduct = new();
@@ -184,18 +165,11 @@ namespace ECOMAPP.Controllers
             DataSet _DataSet = new();
             try
             {
-
                 
-
-                    _MLProduct = _DLProduct.ProductToggleCertified(_MLToggleCertified);
-                    _DBReturnData.Code = 200;
-                    _DBReturnData.Message = "SUCCESS";
-                    _DBReturnData.Retval = "SUCCESS";
-
-                
-
-
-
+                _MLProduct = _DLProduct.ProductToggleCertified(_MLToggleCertified);
+                _DBReturnData.Code = 200;
+                _DBReturnData.Message = "SUCCESS";
+                _DBReturnData.Retval = "SUCCESS";
 
             }
             catch (Exception ex)
@@ -213,6 +187,7 @@ namespace ECOMAPP.Controllers
 
         [Route("ProductToggleStatus")]
         [HttpPut]
+        [JwtAuthorization(Roles = [Roles.Admin])]
         public ActionResult<IEnumerable<DBReturnData>> ProductToggleStatus(MLToggleStatus _MLToggleStatus)
         {
             MLProduct _MLProduct = new();
@@ -223,17 +198,10 @@ namespace ECOMAPP.Controllers
             try
             {
 
-             
-
-                     _MLProduct = _DLProduct.ProductToggleStatus(_MLToggleStatus);
-                    _DBReturnData.Code = 200;
-                    _DBReturnData.Message = "SUCCESS";
-                    _DBReturnData.Retval = "SUCCESS";
-
-                
-
-
-
+                    _MLProduct = _DLProduct.ProductToggleStatus(_MLToggleStatus);
+                _DBReturnData.Code = 200;
+                _DBReturnData.Message = "SUCCESS";
+                _DBReturnData.Retval = "SUCCESS";
 
             }
             catch (Exception ex)
@@ -251,11 +219,13 @@ namespace ECOMAPP.Controllers
 
 
 
+        
         #region InhouseProduct
 
 
         [Route("GetAllInhouseProducts")]
         [HttpGet]
+        [JwtAuthorization(Roles = [Roles.Admin])]
         public ActionResult<IEnumerable<DBReturnData>> GetAllInhouseProducts(MLGetInhouseProduct _MLGetInhouseProduct)
         {
             MLProduct _MLProduct = new();
@@ -300,6 +270,7 @@ namespace ECOMAPP.Controllers
 
         [Route("InsertInhouseProduct")]
         [HttpPost]
+        [JwtAuthorization(Roles = [Roles.Admin])]
         public ActionResult<IEnumerable<DBReturnData>> InsertInhouseProduct(MLInsertInhouseProduct _MLInsertInhouseProduct)
         {
             MLProduct _MLProduct = new();
@@ -309,16 +280,11 @@ namespace ECOMAPP.Controllers
             DataSet _DataSet = new();
             try
             {
-            
-                 
-                    _MLProduct = _DLProduct.InsertInhouseProduct(_MLInsertInhouseProduct);
-                    _DBReturnData.Code = 200;
-                    _DBReturnData.Message = "SUCCESS";
-                    _DBReturnData.Retval = "SUCCESS";
-
-              
-
-
+ 
+                _MLProduct = _DLProduct.InsertInhouseProduct(_MLInsertInhouseProduct);
+                _DBReturnData.Code = 200;
+                _DBReturnData.Message = "SUCCESS";
+                _DBReturnData.Retval = "SUCCESS";
 
             }
             catch (Exception ex)
@@ -334,7 +300,7 @@ namespace ECOMAPP.Controllers
         }
         [Route("UpdateInhouseProduct")]
         [HttpPut]
-
+        [JwtAuthorization(Roles = [Roles.Admin])]
         public ActionResult<IEnumerable<DBReturnData>> UpdateInhouseProduct(MLUpdateInhouseProduct _MLUpdateInhouseProduct)
         {
             MLProduct _MLProduct = new();
@@ -344,16 +310,10 @@ namespace ECOMAPP.Controllers
             DataSet _DataSet = new();
             try
             {
-             
-
-                    _MLProduct = _DLProduct.UpdateInhouseProduct(_MLUpdateInhouseProduct);
-                    _DBReturnData.Code = 200;
-                    _DBReturnData.Message = "SUCCESS";
-                    _DBReturnData.Retval = "SUCCESS";
-
-                
-           
-
+                _MLProduct = _DLProduct.UpdateInhouseProduct(_MLUpdateInhouseProduct);
+                _DBReturnData.Code = 200;
+                _DBReturnData.Message = "SUCCESS";
+                _DBReturnData.Retval = "SUCCESS";
 
 
             }
@@ -371,6 +331,8 @@ namespace ECOMAPP.Controllers
 
         [Route("DeleteInhouseProduct")]
         [HttpDelete]
+        [JwtAuthorization(Roles = [Roles.Admin])]
+
         public ActionResult<IEnumerable<DBReturnData>> DeleteInhouseProduct(MLDeleteInhouseProduct _MLDeleteInhouseProduct)
         {
             MLProduct _MLProduct = new();
@@ -379,18 +341,11 @@ namespace ECOMAPP.Controllers
 
             DataSet _DataSet = new();
             try
-            {
-               
-
+            { 
                     _MLProduct = _DLProduct.DeleteInhouseProduct(_MLDeleteInhouseProduct);
                     _DBReturnData.Code = 200;
                     _DBReturnData.Message = "SUCCESS";
                     _DBReturnData.Retval = "SUCCESS";
-
-                
-              
-
-
 
             }
             catch (Exception ex)
@@ -406,6 +361,7 @@ namespace ECOMAPP.Controllers
         }
 
         #endregion InhouseProduct
+
 
     }
 }

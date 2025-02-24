@@ -19,6 +19,7 @@ namespace ECOMAPP.Controllers
 
         [Route("GetAllCategory")]
         [HttpGet]
+        [JwtAuthorization(Roles = [Roles.Admin])]
         //[JwtAuthorization(Roles = new[] { Roles.User, Roles.Vendor })]
         public JsonResult GetAllCategory()
         {
@@ -45,7 +46,7 @@ namespace ECOMAPP.Controllers
 
         [Route("UpdateProductCategory")]
         [HttpPut]
-        //[JwtAuthorization(Roles = new[] { Roles.Admin })]
+        [JwtAuthorization(Roles = [Roles.Admin])]
         public JsonResult  UpdateProductCategory([FromBody] MlUpdateProductCategoryData _MlUpdateProductdata)
         {
       
@@ -74,7 +75,7 @@ namespace ECOMAPP.Controllers
 
         [Route("InsertProductCategory")]
         [HttpPost]
-        //[JwtAuthorization(Roles = new[] { Roles.Admin })]
+        [JwtAuthorization(Roles = [Roles.Admin])]
         public JsonResult InsertProductCategory([FromBody] MlInsertProductCategoryData _MlInsertProductdata)
         {
     
@@ -104,8 +105,7 @@ namespace ECOMAPP.Controllers
 
         [Route("DeleteProductCategory")]
         [HttpDelete]
-        //[JwtAuthorization(Roles = new[] { Roles.Admin })]
-
+        [JwtAuthorization(Roles = [Roles.Admin])]
         public ActionResult<IEnumerable<DBReturnData>> DeleteProductCategory([FromBody] MlDeleteProductCategory _MlDeleteCategoryData)
         {
             DLCatagory objDlcat = new();

@@ -2,6 +2,7 @@
 using ECOMAPP.DataLayer;
 using ECOMAPP.ModelLayer;
 using Microsoft.AspNetCore.Mvc;
+using static ECOMAPP.MiddleWare.AppEnums;
 
 namespace ECOMAPP.Controllers
 {
@@ -12,7 +13,7 @@ namespace ECOMAPP.Controllers
 
         [Route("GetAllVarients")]
         [HttpGet]
-     
+        [JwtAuthorization(Roles = [Roles.Admin])]
         public ActionResult<IEnumerable<DBReturnData>> GetAllVarients()
         {
             MLVarients _MLVarients = new();
@@ -54,6 +55,7 @@ namespace ECOMAPP.Controllers
 
         [Route("InsertVarients")]
         [HttpPost]
+        [JwtAuthorization(Roles = [Roles.Admin])]
         public ActionResult<IEnumerable<DBReturnData>> InsertVarients()
         {
             MLVarients _MLVarients = new();
@@ -83,6 +85,7 @@ namespace ECOMAPP.Controllers
 
         [Route("UpdateVarients")]
         [HttpPut]
+        [JwtAuthorization(Roles = [Roles.Admin])]
         public ActionResult<IEnumerable<DBReturnData>> UpdateVarients()
         {
             MLVarients _MLVarients = new();
@@ -111,6 +114,7 @@ namespace ECOMAPP.Controllers
         }
         [Route("DeleteVarients")]
         [HttpDelete]
+        [JwtAuthorization(Roles = [Roles.Admin])]
         public ActionResult<IEnumerable<DBReturnData>> DeleteVarients()
         {
             MLVarients _MLVarients = new();

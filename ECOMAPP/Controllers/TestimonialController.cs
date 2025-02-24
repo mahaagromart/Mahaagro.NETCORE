@@ -2,6 +2,7 @@
 using ECOMAPP.DataLayer;
 using ECOMAPP.ModelLayer;
 using Microsoft.AspNetCore.Mvc;
+using static ECOMAPP.MiddleWare.AppEnums;
 using static ECOMAPP.ModelLayer.MLTestimonial;
 
 namespace ECOMAPP.Controllers
@@ -12,7 +13,7 @@ namespace ECOMAPP.Controllers
     {
         [Route("GetAllTestimonial")]
         [HttpGet]
-    
+        [JwtAuthorization(Roles = [Roles.Admin])]
         public ActionResult<IEnumerable<DBReturnData>> GetAllTestimonial()
         {
             DLTestimonial _DLTestimonial = new();

@@ -2,6 +2,7 @@
 using ECOMAPP.DataLayer;
 using ECOMAPP.ModelLayer;
 using Microsoft.AspNetCore.Mvc;
+using static ECOMAPP.MiddleWare.AppEnums;
 using static ECOMAPP.ModelLayer.MLSubcategory;
 
 namespace ECOMAPP.Controllers
@@ -14,7 +15,7 @@ namespace ECOMAPP.Controllers
     {
         [Route("GetAllSubCategory")]
         [HttpGet]
-
+        [JwtAuthorization(Roles = [Roles.Admin])]
         public ActionResult<IEnumerable<DBReturnData>> GetAllSubCategory()
         {
             DLSubcategory _DLSubcategory = new();
@@ -58,6 +59,7 @@ namespace ECOMAPP.Controllers
         }
         [Route("InsertSubCategory")]
         [HttpPost]
+        [JwtAuthorization(Roles = [Roles.Admin])]
         public ActionResult<IEnumerable<DBReturnData>> InsertSubCategory(MLInsertSubcategory _MLInsertSubcategory)
         {
             DLSubcategory _DLSubcategory = new();
@@ -84,10 +86,11 @@ namespace ECOMAPP.Controllers
 
             return new[] { DBReturnData };
         }
+
+
         [Route("UpdateSubCategory")]
         [HttpPut]
-
-
+        [JwtAuthorization(Roles = [Roles.Admin])]
         public ActionResult<IEnumerable<DBReturnData>> UpdateSubCategory(MLUpdateSubcategory _MLUpdateSubcategory)
         {
             MLSubcategory _MLSubcategory = new();
@@ -111,9 +114,11 @@ namespace ECOMAPP.Controllers
             }
             return new[] { _DBReturnData };
         }
+
+
         [Route("DeleteSubCategory")]
         [HttpDelete]
-
+        [JwtAuthorization(Roles = [Roles.Admin])]
         public ActionResult<IEnumerable<DBReturnData>> DeleteSubCategory(MLDeleteSubCateggory _MLDeleteSubCateggory)
         {
             MLSubcategory _MLSubcategory = new();
@@ -140,9 +145,11 @@ namespace ECOMAPP.Controllers
 
 
         }
+
+
         [Route("GetSubCategoryThroughCategoryId")]
         [HttpGet]
-
+        [JwtAuthorization(Roles = [Roles.Admin])]
         public ActionResult<IEnumerable<DBReturnData>> GetSubCategoryThroughCategoryId(MLGetThroughCategoryId _MLGetThroughCategoryId)
         {
             MLSubcategory _MLSubcategory = new();
@@ -169,10 +176,11 @@ namespace ECOMAPP.Controllers
             return new[] { _DBReturnData };
 
         }
+
+
         [Route("GetSubCategoryById")]
         [HttpGet]
-
-
+        [JwtAuthorization(Roles = [Roles.Admin])]
         public ActionResult<IEnumerable<DBReturnData>> GetSubCategoryById(MLGetThroughId _MLGetThroughId)
         {
             MLSubcategory _MLSubcategory = new();
