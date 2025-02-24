@@ -26,12 +26,24 @@ namespace ECOMAPP.ModelLayer
 
     public class MlInsertProductCategoryData
     {
-        public string? Category_id { get; set; }
+
         public string? Category_Name {get;set;} 
         public string? Image {get;set;} 
     }
 
-    public class EcommerceCategoryDTO
+    public class MlUpdateProductCategoryData
+    {
+        public int Category_id { get; set; }
+        public string? Category_Name { get; set; }
+        public string? Image { get; set; }
+    }
+
+    public class MlDeleteProductCategory
+    {
+        public int Category_id { get; set; }
+    }
+
+    public class MLCategoryDTO
     {
 
         public int Code { get; set; }
@@ -50,8 +62,8 @@ namespace ECOMAPP.ModelLayer
 
         }
 
-        public List<EcommerceCategoryDTO.Category> CategoryList { get; set; }
-
+        public List<MLCategoryDTO.Category> CategoryList { get; set; }
+    
     }
 
 

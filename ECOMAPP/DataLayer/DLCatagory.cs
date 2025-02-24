@@ -2,61 +2,77 @@
 using System.Data;
 using Microsoft.AspNetCore.Mvc;
 using ECOMAPP.CommonRepository;
+using static ECOMAPP.CommonRepository.DBEnums;
+using static System.Net.Mime.MediaTypeNames;
+using System.Collections;
 
 namespace ECOMAPP.DataLayer
 {
     public class DLCatagory 
     {
 
-        #region Commented section
-
-        //public DataSet InsertProductCategory(MlInsertProductCategoryData rdata)
-        //{
-        //    string ProcedureName = "SP_CATEGORY";
-        //    DataSet _dataSet = new DataSet();
-
-        //    // Create the DataTable with the necessary columns
-        //    DataTable dataTable = new DataTable();
-        //    dataTable.Columns.Add("CATEGORY_ID", typeof(int)); // Required for UPDATE/DELETE operations
-        //    dataTable.Columns.Add("Category_Name", typeof(string));
-        //    dataTable.Columns.Add("Image", typeof(string));
-        //    dataTable.Columns.Add("Priority", typeof(Int32));
-
-        //    // If the CategoryList is not null, process it
-        //    if (_mlCrudCategory.CategoryList != null)
-        //    {
-        //        foreach (var category in _mlCrudCategory.CategoryList)
-        //        {
-        //            DataRow row = dataTable.NewRow();
-        //            row["Category_Name"] = category.Category_Name;
-        //            row["Image"] = category.Image;
-        //            row["Priority"] = category.Priority;
-
-        //            // Add the row to the DataTable
-        //            dataTable.Rows.Add(row);
-        //        }
-
-        //        using (DBAccess dbAccess = new DBAccess())
-        //        {
-        //            dbAccess.DBProcedureName = ProcedureName;
-
-        //            // Add parameters for the mode and category list
-        //            dbAccess.AddParameters("Mode", _mlCrudCategory.Mode);
-        //            dbAccess.AddParameters("@CategoryList", dataTable);
-
-        //            // Execute the stored procedure and retrieve the result set
-        //            _dataSet = dbAccess.DBExecute();
-        //        }
-        //    }
-
-        //    return _dataSet;
-        //}
-
-        #endregion
-
-        public EcommerceCategoryDTO InsertProductCategory(MlInsertProductCategoryData data)
+        MLCategoryDTO objMLCategory = new();
+        DALBASE DS = new DALBASE();
+        public MLCategoryDTO GetAllCategory()
         {
-            EcommerceCategoryDTO category = new EcommerceCategoryDTO();
+            DataSet dataSet = new DataSet();
+            try
+            {
+                objMLCategory.CategoryList = new List<MLCategoryDTO.Category>();
+
+                using DBAccess Db = new();
+                Db.DBProcedureName = "SP_CATEGORY";
+                Db.AddParameters("@Action", "SELECTCATAGORY");
+                dataSet = Db.DBExecute();
+                Db.Dispose();
+                if (dataSet != null && dataSet.Tables.Count > 0)
+                {
+                    DataTable datatable = dataSet.Tables[0];
+
+                    string retval = dataSet.Tables[1].Rows[0]["RETVAL"]?.ToString() ?? "";
+
+       
+
+                    foreach (DataRow row in datatable.Rows)
+                    {
+
+                        if (retval == "SUCCESS")
+                        {
+
+
+                            MLCategoryDTO.Category Category = new MLCategoryDTO.Category
+                            {
+                                
+                                Category_id = Convert.IsDBNull(row["Category_id"]) ? 0 : Convert.ToInt32(row["Category_id"]),
+                                Category_Name = row["Category_Name"]?.ToString() ?? string.Empty,
+                                CreationDate = row["CreationDate"]?.ToString() ?? string.Empty,
+                                Image = row["Image"]?.ToString() ?? string.Empty,
+                                Priority = Convert.IsDBNull(row["priority"]) ? 0 : Convert.ToInt32(row["priority"]),
+                                Status = row["Status"].ToString() ?? string.Empty,
+
+                            };
+                            objMLCategory.CategoryList.Add(Category);
+                        }
+                    }
+
+                }
+
+            }
+            catch (Exception ex) 
+            {
+
+                DS.ErrorLog("DLCategory", "GetAllCategory", ex.ToString());
+                objMLCategory.Message = "Internal Server Error";
+                objMLCategory.Code = 500;
+
+            }
+
+            return objMLCategory;
+
+        }
+        public MLCategoryDTO InsertProductCategory(MlInsertProductCategoryData data)
+        {
+            MLCategoryDTO category = new MLCategoryDTO();
             try
             {
                 DataSet ds = new DataSet();
@@ -104,6 +120,104 @@ namespace ECOMAPP.DataLayer
             return category;
 
 
+        }
+        public MLCategoryDTO UpdateProductCategory(MlUpdateProductCategoryData data)
+        {
+            MLCategoryDTO category = new MLCategoryDTO();
+            try
+            {
+                DataSet ds = new DataSet();
+                using (DBAccess Db = new())
+                {
+                    Db.DBProcedureName = "SP_CATEGORY";
+                    Db.AddParameters("@Action", "UPDATECATEGORY");
+                    Db.AddParameters("@Category_id", data.Category_id);
+                    Db.AddParameters("@Category_Name", data.Category_Name ?? "");
+                    Db.AddParameters("@Image", data.Image ?? "");
+                    ds = Db.DBExecute();
+                    Db.Dispose();
+                }
+                if (ds != null && ds.Tables.Count > 0)
+                {
+                    DataTable Dtable = ds.Tables[0];
+                    foreach (DataRow dr in Dtable.Rows)
+                    {
+                        if (dr["RETVAL"]?.ToString() == "SUCCESS")
+                        {
+                            category.Message = "SUCCESS";
+                            category.Code = 200;
+                        }
+                        else
+                        {
+                            category.Message = "failed to insert";
+                            category.Code = 401;
+                        }
+                    }
+
+
+                }
+                else
+                {
+                    category.Message = "NOT EXISTS";
+                    category.Code = 400;
+                }
+
+
+
+            }
+            catch (Exception ex)
+            {
+                DS.ErrorLog("DLCategory", "UpdateProductCategory", ex.ToString());
+                objMLCategory.Message = "Internal Server Error";
+                objMLCategory.Code = 500;
+            }
+            return category;
+
+
+        }
+        public MLCategoryDTO DeleteProductCategory(MlDeleteProductCategory data)
+        {
+            MLCategoryDTO _MLCategoryDTO = new MLCategoryDTO();
+
+            try
+            {
+                DataSet _DataSet = new();
+                using (DBAccess dB = new DBAccess())
+                {
+                    dB.DBProcedureName = "SP_CATEGORY";
+                    dB.AddParameters("@Action", "DELETECATEGORY");
+                    dB.AddParameters("@Category_id", data.Category_id);
+                    _DataSet = dB.DBExecute();
+                }
+
+                if (_DataSet != null && _DataSet.Tables.Count > 0 && _DataSet.Tables[0].Rows.Count > 0)
+                {
+                    string Retval = _DataSet.Tables[0].Rows[0]["RETVAL"]?.ToString() ?? "";
+                    if (Retval == "SUCCESS")
+                    {
+                        _MLCategoryDTO.Message = "SUCCESS";
+                        _MLCategoryDTO.Code = 200;
+                    }
+                    else
+                    {
+                        _MLCategoryDTO.Message = "FAILED";
+                        _MLCategoryDTO.Code = 401;
+                    }
+                }
+                else
+                {
+                    _MLCategoryDTO.Message = "No data returned from DB";
+                    _MLCategoryDTO.Code = 404;
+                }
+            }
+            catch (Exception ex)
+            {
+                DS.ErrorLog("DLCategory", "DeleteProductCategory", ex.ToString());
+                _MLCategoryDTO.Message = "Internal Server Error";
+                _MLCategoryDTO.Code = 500;
+            }
+
+            return _MLCategoryDTO;
         }
 
 

@@ -14,88 +14,47 @@ namespace ECOMAPP.Controllers
     public class CategoryController : Controller
     {
         DLCatagory ObjDLCategory = new();
-        EcommerceCategoryDTO ObjDLCategoryDTO = new();
+        MLCategoryDTO ObjMLCategory = new();
 
-        //[JwtAuthorization(Roles = new[] { Roles.User, Roles.Vendor })]
-        //DLCatagory catdl = new();
-
-
-
-        #region insertedcat commented
-
-        //[Route("InsertProductCategory")]
-        //[HttpPost]
-        //public IEnumerable<DBReturnData> InsertProductCategory([FromBody] MLCrudCategory _mlCrudCategory)
-        //{
-        //    ObjDLCategory = new DLCatagory();
-        //    var objReturnData = new DBReturnData();
-
-        //    try
-        //    {
-        //        // Here you may apply reference handling if necessary
-        //        var options = new JsonSerializerOptions
-        //        {
-        //            ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve
-        //        };
-
-        //        objReturnData.Dataset = ObjDLCategory.InsertProductCategory(_mlCrudCategory);
-        //        //objReturnData.Dataset = new DataSet();
-        //        objReturnData.Status = DBEnums.Status.SUCCESS;
-        //        objReturnData.Message = DBEnums.Status.SUCCESS.ToString();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        // Log the exception (implement logging)
-        //        objReturnData.Dataset = null;
-        //        objReturnData.Status = DBEnums.Status.FAILURE;
-        //        objReturnData.Message = DBEnums.Status.FAILURE.ToString() + " DUE TO " + ex.Message;
-        //    }
-
-        //    return new[] { objReturnData };
-        //}
-
-
-        #endregion
-
-
-        #region Commented code
 
         [Route("GetAllCategory")]
         [HttpGet]
         //[JwtAuthorization(Roles = new[] { Roles.User, Roles.Vendor })]
-
-        public JsonResult InsertProductCategory([FromBody])
+        public JsonResult GetAllCategory()
         {
-            ObjDLCategory = new DLCatagory();
-            DBReturnData objReturnData = new DBReturnData();
             try
             {
-                objReturnData.Dataset = ObjDLCategory.GetAllCategory();
-               
+                ObjMLCategory = ObjDLCategory.GetAllCategory();
+                if (ObjMLCategory.CategoryList.Count > 0)
+                {
+                    ObjMLCategory.Code = 200;
+                    ObjMLCategory.Message = "SUCCESS";
+                    ObjMLCategory.Retval = "SUCCESS";
+
+                }
             }
             catch (Exception ex)
             {
-                objReturnData.Dataset = null;
-                objReturnData.Status = DBEnums.Status.FAILURE;
-                objReturnData.Message = DBEnums.Status.FAILURE.ToString() + " due to " + ex.Message;
+                ObjMLCategory.Retval = "Failed";
+                ObjMLCategory.Message = "internal server error due to" + ex.ToString();
+                ObjMLCategory.Code = 500;
             }
-            return new[] { objReturnData };
+            return Json(ObjMLCategory);
         }
 
 
-
-        //[Route("UpdateProductCategory")]
-        //[HttpPut]
-        //[JwtAuthorization(Roles = new[] { Roles.User, Roles.Vendor })]
-        public IEnumerable<DBReturnData> UpdateProductCategory([FromBody] MlInsertProductCategoryData _MlInsertProductdata)
+        [Route("UpdateProductCategory")]
+        [HttpPut]
+        //[JwtAuthorization(Roles = new[] { Roles.Admin })]
+        public JsonResult  UpdateProductCategory([FromBody] MlUpdateProductCategoryData _MlUpdateProductdata)
         {
-            var objDLProduct = new DLProduct();
+      
             var objReturnData = new DBReturnData();
 
             try
             {
 
-                ObjDLCategoryDTO = ObjDLCategory.InsertProductCategory(_MlInsertProductdata);
+                ObjMLCategory = ObjDLCategory.UpdateProductCategory(_MlUpdateProductdata);
                 objReturnData.Status = DBEnums.Status.SUCCESS;
                 objReturnData.Message = DBEnums.Status.SUCCESS.ToString();
 
@@ -109,60 +68,70 @@ namespace ECOMAPP.Controllers
 
 
             }
-            return new[] { objReturnData };
+            return Json( objReturnData );
         }
 
 
-        //[Route("DeleteEcommerceCategory")]
-        //[HttpPut]
-        //[JwtAuthorization(Roles = new[] { Roles.User, Roles.Vendor })]
-        //public IEnumerable<DBReturnData> DeleteEcommerceCategory([FromBody] MLFilterProduct mLFilterProduct)
-        //{
-        //    var objDLProduct = new DLProduct();
-        //    var objReturnData = new DBReturnData();
-
-        //    try
-        //    {
-
-        //        objReturnData.Dataset = objDLProduct.DeleteEcommerceCategory(mLFilterProduct);
-        //        objReturnData.Status = DBEnums.Status.SUCCESS;
-        //        objReturnData.Message = DBEnums.Status.SUCCESS.ToString();
-
-
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        objReturnData.Dataset = null;
-        //        objReturnData.Status = DBEnums.Status.FAILURE;
-        //        objReturnData.Message = DBEnums.Status.FAILURE.ToString() + " DUE TO " + ex.ToString();
-
-
-        //    }
-        //    return new[] { objReturnData };
-        //}
-
-
-        #endregion
-
         [Route("InsertProductCategory")]
         [HttpPost]
+        //[JwtAuthorization(Roles = new[] { Roles.Admin })]
         public JsonResult InsertProductCategory([FromBody] MlInsertProductCategoryData _MlInsertProductdata)
         {
+    
+            var objReturnData = new DBReturnData();
 
             try
             {
 
-                 ObjDLCategoryDTO =  ObjDLCategory.InsertProductCategory(_MlInsertProductdata);
+
+                ObjMLCategory = ObjDLCategory.InsertProductCategory(_MlInsertProductdata);
+                objReturnData.Status = DBEnums.Status.SUCCESS;
+                objReturnData.Message = DBEnums.Status.SUCCESS.ToString();
 
             }
             catch (Exception ex)
             {
-            
-                
+
+                objReturnData.Status = DBEnums.Status.FAILURE;
+                objReturnData.Message = DBEnums.Status.FAILURE.ToString() + " DUE TO " + ex.ToString();
+
+
             }
-            return Json(ObjDLCategoryDTO);
+            return Json(ObjMLCategory);
 
         }
+
+
+        [Route("DeleteProductCategory")]
+        [HttpDelete]
+        //[JwtAuthorization(Roles = new[] { Roles.Admin })]
+
+        public ActionResult<IEnumerable<DBReturnData>> DeleteProductCategory([FromBody] MlDeleteProductCategory _MlDeleteCategoryData)
+        {
+            DLCatagory objDlcat = new();
+            DBReturnData _DBReturnData = new();
+            try
+            {
+                ObjMLCategory = objDlcat.DeleteProductCategory(_MlDeleteCategoryData);
+                _DBReturnData.Code = 200;
+                _DBReturnData.Message = "";
+                _DBReturnData.Retval = "SUCCESS";
+
+
+
+            }
+            catch (Exception ex)
+            {
+                _DBReturnData.Code = 500;
+                _DBReturnData.Message = "Internal Server Error";
+                _DBReturnData.Retval = null;
+            }
+
+            return new[] { _DBReturnData };
+
+
+        }
+
 
 
     }
