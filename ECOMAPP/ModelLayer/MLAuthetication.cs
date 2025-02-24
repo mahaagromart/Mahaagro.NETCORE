@@ -1,5 +1,61 @@
 ﻿namespace ECOMAPP.ModelLayer
 {
+
+
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+
+    namespace EcommerceAPI.DTO
+    {
+        public class EcommerceCategoryDTO
+        {
+
+            public int Code { get; set; }
+            public string Message { get; set; }
+            public string Retval { get; set; }
+
+
+
+
+
+
+
+            public class Category
+            {
+
+                public int Category_id { get; set; }
+                public string Category_Name { get; set; }
+                public string CreationDate { get; set; }
+                public string Image { get; set; }
+                public int Priority { get; set; }
+                public string Status { get; set; }
+
+            }
+            
+            public class DemoDto
+            {
+                public class DemoDTOCHild
+                {
+                    public string prop1 { get; set; }
+                    public string prop2 { get; set; }
+                    public string prop3 { get; set; }
+                    
+
+                }
+            }
+            
+            public List<EcommerceCategoryDTO.Category> CategoryList { get; set; }
+            public List<EcommerceCategoryDTO.DemoDto.DemoDTOCHild> catList { get; set; }
+
+
+        }
+    }
+
+
+
     public class MLAuthetication
     {
 
@@ -18,6 +74,13 @@
 
         }
 
+        public class UpdateUserProfile
+        {
+            public string ProfilePath { get; set; } = string.Empty;
+        
+        }
+
+
         public class MlLoginRequest
         {
 
@@ -26,13 +89,32 @@
             public string? Password { get; set; }
         
         }
-
+        public class MlForgetPasswordOtpValidate
+        {
+            public string Email { get; set; } = string.Empty;
+            public string OTP { get; set; } = string.Empty;
+            public string Password { get; set; } = string.Empty;
+        }
         public class MlVerifyEmail
         {
             public string? Email { get; set; }
             public string? Otp { get; set; }
         }
-        
+
+        public class MlVerifyPhone
+        {
+            public string? PhoneNumber { get; set; }
+                
+            public string? Otp { get; set; }
+
+        }
+
+        public class MlSendOtpEmail
+        {
+            public string? Email { get; set; }
+        }
+
+
         public class AuthenticationDTO
         {
 
