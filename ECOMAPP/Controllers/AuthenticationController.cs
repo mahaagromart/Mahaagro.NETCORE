@@ -1,12 +1,19 @@
-﻿using System.IdentityModel.Tokens.Jwt;
+
+﻿using System.Data;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using System.Text.Json.Serialization;
+using System.Text.Json;
 using ECOMAPP.CommonRepository;
 using ECOMAPP.DataLayer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using static ECOMAPP.ModelLayer.MLAuthetication;
+using static ECOMAPP.MiddleWare.AppEnums;
+using Microsoft.AspNetCore.Authorization;
+
 
 namespace ECOMAPP.Controllers
 {
@@ -28,8 +35,7 @@ namespace ECOMAPP.Controllers
             try
             {
 
-
-                result = authentication.Login(loginRequest.EmailId, loginRequest.PhoneNumber, loginRequest.Password);
+                result = authentication.Login(loginRequest.EmailId??"", loginRequest.PhoneNumber ?? "", loginRequest.Password ?? "");
 
                 if (result.Code == 200)
                 {
@@ -39,35 +45,34 @@ namespace ECOMAPP.Controllers
 
                     if (conf != null)
                     {
-                        var secretKey = conf["AppConstants:JwtSecretKey"].ToString();
-                        var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
+                        var secretKey = conf["AppConstants:JwtSecretKey"]?.ToString();
+                        var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey??""));
                         var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-                        var claims = new[]
+                        if (result.AuthenticationsList != null && result.AuthenticationsList.Count>0)
                         {
 
-                            new Claim("UserId", result.AuthenticationsList[0].UserId),
-                            new Claim("DesignationId",result.AuthenticationsList[0].DesignationId),
-                            new Claim("DesignationName",result.AuthenticationsList[0].DesignationName),
-                        };
+                            var claims = new[]
+                            {
 
-                        var token = new JwtSecurityToken(
-                             claims: claims,
-                             expires: DateTime.Now.AddDays(14),
-                             signingCredentials: credentials
-                        );
+                                new Claim("UserId", result.AuthenticationsList[0].UserId),
+                                new Claim("DesignationId",result.AuthenticationsList[0].DesignationId),
+                                new Claim("DesignationName",result.AuthenticationsList[0].DesignationName),
+                            };
+
+                            var token = new JwtSecurityToken(
+                                 claims: claims,
+                                 expires: DateTime.Now.AddDays(14),
+                                 signingCredentials: credentials
+                            );
 
 
-                        var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
-                        result.Token = tokenString;
+                            var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
+                            result.Token = tokenString;
 
+                        }
                     }
                 }
-                else
-                {
-                    result.Code = 401;
-                    result.Message = "Login Failed phone number email or password possibly incorrect!!";
-                    result.Retval = "Failed";
-                }
+                
 
 
             }
@@ -75,10 +80,12 @@ namespace ECOMAPP.Controllers
             {
                 DALBASE err = new();
                 err.ErrorLog("Authentication", "Login", ex.ToString());
-
+                result.Code = 500;
+                result.Message = "Internal Server Error";
+                result.Retval = "Failed";
+                result.AuthenticationsList = [];
             };
 
-            JsonResult json = Json(JsonConvert.SerializeObject(result));
             return Json(result);
 
 
@@ -133,6 +140,63 @@ namespace ECOMAPP.Controllers
 
         #endregion
 
+        #region Verify Email {send the email and the otp to this endoitnt after triggering send email for email verification}
+
+
+        [Route("VerifyEmail")]
+        [HttpPost]
+        public JsonResult VerifyEmail([FromBody] MlVerifyEmail verifyEmail)
+        {
+            AuthenticationDTO result = new();
+            DLAuthentication dlauth = new();
+            try
+            {
+                result = dlauth.VerifyEmail(verifyEmail);
+
+
+            }
+            catch (Exception es)
+            {
+                result.Code = 500;
+                result.Message = "Failed";
+                result.Retval = "Failed";
+                dalbase.ErrorLog("VerifyEmail","authentication",es.ToString());
+            }
+            return Json(result);
+        }
+
+        #endregion
+
+
+        #region Phone Verification {same as verify email but for phone number}
+        //Create Mail Verification
+
+        [Route("VerifyPhone")]
+        [HttpPost]
+        public JsonResult VerifyPhone([FromBody] MlVerifyPhone data)
+        {
+
+            AuthenticationDTO result = new();
+            DLAuthentication dlauth = new();
+            try
+            {
+                result = dlauth.VerifyPhone(data);
+
+
+            }
+            catch (Exception es)
+            {
+                result.Code = 500;
+                result.Message = "Failed";
+                result.Retval = "Failed";
+                dalbase.ErrorLog("VerifyEmail", "authentication", es.ToString());
+            }
+            return Json(result);
+
+        }
+
+        #endregion
+
         #region Verify Email work in progress wait for changes on git
 
 
@@ -152,6 +216,203 @@ namespace ECOMAPP.Controllers
         //}
 
         #endregion
+
+
+
+        #endregion
+
+        #region send otp Email {send otp on the registerd users email id for thier verificatoion
+
+        [Route("SendOtpEmail")]
+        [HttpPost]
+        public JsonResult SendOtpEmail([FromBody] MlSendOtpEmail mlSendOtpEmail)
+        {
+            AuthenticationDTO objAuthDTO = new AuthenticationDTO();
+            DLAuthentication dlauth = new();
+            try
+            {
+               objAuthDTO = dlauth.SendOtpEmail(mlSendOtpEmail);
+
+            }
+            catch (Exception ex)
+            {
+                objAuthDTO.Code = 500;
+                objAuthDTO.Retval = "Internal server error";
+                objAuthDTO.Message = "Unknown Exception on server";
+                dlauth.ErrorLog("VerifyEmail ", "Authentication", ex.ToString());
+            }
+           
+            return Json(objAuthDTO);
+            
+
+        }
+
+        #endregion
+
+        #region Forgetpassword otp trigger
+
+        [Route("ForgetPasswordOtpTrigger")]
+        [HttpPost]
+        public JsonResult ForgetPasswordOtpTrigger([FromBody] MlSendOtpEmail mlSendOtpEmail)
+        {
+            AuthenticationDTO objAuthDTO = new();
+            DLAuthentication dlauth = new();
+            try
+            {
+                 objAuthDTO = dlauth.ForgetPasswordOtpTrigger(mlSendOtpEmail);
+
+            }
+            catch (Exception ed)
+            {
+                dlauth.ErrorLog("VerifyEmail ", "Authentication", ed.ToString());
+                objAuthDTO.Code = 500;
+                objAuthDTO.Message = "Internal Server Error";
+                objAuthDTO.Retval = "Internal server error";
+                objAuthDTO.AuthenticationsList = null;
+            }
+
+            return Json(objAuthDTO);
+        
+
+        }
+
+        #endregion
+
+        #region ForgetPasswordOtpValidate
+        [Route("ForgetPasswordOtpValidate")]
+        [HttpPost]
+        public JsonResult ForgetPasswordOtpValidate([FromBody] MlForgetPasswordOtpValidate mlForgetPasswordOtpValidate)
+        {
+
+            AuthenticationDTO objAuthDTO = new();
+            DLAuthentication dLAuthentication = new();
+            try
+            {
+                objAuthDTO = dLAuthentication.ForgetPasswordOtpValidate(mlForgetPasswordOtpValidate.Email, mlForgetPasswordOtpValidate.OTP, mlForgetPasswordOtpValidate.Password);
+
+            }
+            catch (Exception ed)
+            {
+                dLAuthentication.ErrorLog("VerifyEmail ", "Authentication", ed.ToString());
+                objAuthDTO.Code = 500;
+                objAuthDTO.Message = "Internal Server Error";
+                objAuthDTO.Retval = "Failed";
+            }
+            //return Json(new { Code = 500, Status = "Failed to Authenticate" });
+            return Json(objAuthDTO);
+            //return Json(authenticationBAL.VerifyEmail(Email));
+
+
+        }
+
+
+        #endregion
+
+        #region getuserprofile
+        [Route("GetUserProfile")]
+        [HttpPost]
+        [JwtAuthorization(Roles = [Roles.Admin, Roles.Vendor, Roles.User, Roles.ReprotAnalysis])]
+        public JsonResult GetUserProfile()
+        {
+
+            AuthenticationDTO objauthdto = new();
+            DLAuthentication dLAuthentication = new();
+            string? JwtToken = Request.Headers.Authorization;
+            if (string.IsNullOrEmpty(JwtToken))
+            {
+                objauthdto.Code = 401;
+                objauthdto.Message = "Authorization header is missing";
+                return Json(objauthdto);
+
+            }
+            JwtToken = JwtToken["Bearer ".Length..].Trim();
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(JwtToken);
+            var tokenS = jsonToken as JwtSecurityToken;
+
+            var UserIdH = tokenS?.Claims.First(claim => claim.Type == "UserId")?.Value;
+
+            if (UserIdH == "" || UserIdH == null)
+            {
+                objauthdto.Code = 401;
+                objauthdto.Retval = "access denied";
+                objauthdto.Message = "permission denied";
+                return Json(objauthdto);
+            }
+
+            try
+            {
+                objauthdto = dLAuthentication.GetUserProfile(UserIdH);
+                objauthdto.Code = 200;
+                objauthdto.Message = "Sucess";
+                objauthdto.Retval = "Sucess";
+            }
+            catch (Exception a)
+            {
+                objauthdto.Code = 500;
+                objauthdto.Retval = "Internal Server Error";
+                objauthdto.Message = "Internal server error";
+                dLAuthentication.ErrorLog("getuserProfile ", "Authentication", a.ToString());
+            }
+            return Json(objauthdto);
+
+        }
+        #endregion
+
+        #region update user profile
+
+        [Route("UpdateUserProfile")]
+        [HttpPost]
+        [JwtAuthorization(Roles = [Roles.Admin, Roles.User, Roles.Vendor ])]
+        public JsonResult UpdateUserProfile([FromBody] UpdateUserProfile updateUserProfile)
+        {
+            DLAuthentication dLAuthentication = new();
+            AuthenticationDTO objauthdto = new();
+            string? JwtToken = Request.Headers["Authorization"];
+            if (JwtToken == null)
+            {
+                objauthdto.Code = 401;
+                objauthdto.Message = "Invalid parameters";
+                objauthdto.Retval = "Failed";
+                return Json(objauthdto);
+            } 
+            JwtToken = JwtToken["Bearer ".Length..].Trim();
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(JwtToken);
+            var tokenS = jsonToken as JwtSecurityToken;
+            var UserId = tokenS?.Claims.First(claim => claim.Type == "UserId").Value;
+            
+            if (UserId == "" || UserId == null)
+            {
+                objauthdto.Code = 401;
+                objauthdto.Retval = "access denied";
+                objauthdto.Message = "permission denied";
+                return Json(objauthdto);
+
+            }
+            try
+            {
+                objauthdto = dLAuthentication.UpdateUserProfile(UserId, updateUserProfile.ProfilePath);
+
+            }
+            catch (Exception ex)
+            {
+                objauthdto.Code = 500;
+                objauthdto.Retval = "Internal Server Error";
+                objauthdto.Message = "Unexpected Internal server error";
+                dLAuthentication.ErrorLog("UpdateUserProfile", "authentication", ex.ToString());
+            }
+            return Json(objauthdto);
+
+        }
+
+
+
+
+
+
+        #endregion
+
 
     }
 }

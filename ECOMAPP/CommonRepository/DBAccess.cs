@@ -72,7 +72,6 @@ namespace ECOMAPP.CommonRepository
 
     }
 
-
     public class DALBASE
     {
         public void ErrorLog(string MethodName, string ClassName, string Message)
@@ -83,16 +82,15 @@ namespace ECOMAPP.CommonRepository
                 {
                     Db.DBProcedureName = "SP_ErrorLog";
                     Db.DBParameterList = new List<DBParameters>{ 
-                        new DBParameters{
+                        new (){
                         ParameterName = "@MethodName",
                         ParameterValue = MethodName                        
                         },
-                        new DBParameters
-                        {
+                        new() {
                             ParameterName = "@ClassName",
                             ParameterValue = ClassName
                         },
-                        new DBParameters
+                        new ()
                         {
                             ParameterName = "@ErrorMsg",
                             ParameterValue = Message
@@ -152,5 +150,6 @@ namespace ECOMAPP.CommonRepository
 
 
     }
+
 
 }
