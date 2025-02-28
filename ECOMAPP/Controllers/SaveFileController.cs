@@ -6,12 +6,19 @@ namespace ECOMAPP.Controllers
 {
     [Route("[controller]")]
     [ApiController]
+
+
+
     public class SaveFileController : Controller
     {
 
+
+
+
+
         [Route("SaveImage")]
         [HttpPost]
-        [JwtAuthorization(Roles = [Roles.Admin,Roles.User,Roles.Vendor])]
+        [JwtAuthorization(Roles = [Roles.Admin, Roles.User, Roles.Vendor])]
         public async Task<IActionResult> SaveImage(IFormFile Image, [FromForm] string folderType)
         {
 

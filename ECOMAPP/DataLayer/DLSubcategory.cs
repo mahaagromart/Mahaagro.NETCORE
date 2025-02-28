@@ -10,7 +10,7 @@ namespace ECOMAPP.DataLayer
 {
     public class DLSubcategory
     {
-       
+
         public List<MLSubcategory.Subcategory> GetAllSubCategory()
         {
             MLSubcategory _MLSubcategory = new();
@@ -37,7 +37,7 @@ namespace ECOMAPP.DataLayer
                     DataTable dataTable = _Dataset.Tables[0];
                     string Retval = _Dataset.Tables[1].Rows[0]["RETVAL"]?.ToString() ?? "";
 
-                  
+
                     if (Retval == "SUCCESS")
                     {
                         foreach (DataRow row in dataTable.Rows)
@@ -72,8 +72,8 @@ namespace ECOMAPP.DataLayer
                 _DBReturnData.Message = "Internal Server Error";
             }
 
-           
-            return _MLSubcategory.SubcategoryList;  
+
+            return _MLSubcategory.SubcategoryList;
         }
 
         public MLSubcategory InsertSubCategory(MLInsertSubcategory Data)
@@ -140,7 +140,7 @@ namespace ECOMAPP.DataLayer
 
 
 
-            }
+        }
 
         public MLSubcategory UpdateSubCategory(MLUpdateSubcategory Data)
         {
@@ -214,8 +214,8 @@ namespace ECOMAPP.DataLayer
         {
             DLSubcategory _DLSubcategory = new DLSubcategory();
             MLSubcategory _MLSubcategory = new MLSubcategory();
-            DALBASE _DALBASE=new DALBASE();
-            DBReturnData _DBReturnData = new DBReturnData();    
+            DALBASE _DALBASE = new DALBASE();
+            DBReturnData _DBReturnData = new DBReturnData();
             try
             {
                 DataSet _DataSet = new();
@@ -227,10 +227,10 @@ namespace ECOMAPP.DataLayer
                     _DataSet = _DBAccess.DBExecute();
                     _DBAccess.Dispose();
 
-                
+
 
                 }
-                if(_DataSet !=null && _DataSet.Tables.Count > 0)
+                if (_DataSet != null && _DataSet.Tables.Count > 0)
                 {
                     DataTable _DataTable = _DataSet.Tables[0];
                     foreach (DataRow _DataRow in _DataTable.Rows)
@@ -251,7 +251,7 @@ namespace ECOMAPP.DataLayer
                 }
 
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _DALBASE.ErrorLog("DeleteSubCategory", "DLSubcategory", ex.Message);
                 _DBReturnData.Message = "Internal Server Error";
@@ -261,6 +261,69 @@ namespace ECOMAPP.DataLayer
             return _MLSubcategory;
 
         }
+
+        //public MLSubcategory GetSubCategoryThroughCategoryId(MLGetThroughCategoryId Data)
+        //{
+        //    MLSubcategory _MLSubcategory = new MLSubcategory();
+        //    DLSubcategory _DLSubcategory = new DLSubcategory();
+        //    DALBASE _DALBASE = new();
+        //    DBReturnData _DBReturnData = new();
+
+        //    try
+        //    {
+        //        DataSet _DataSet = new();
+        //        using (DBAccess _DBAccess = new())
+        //        {
+        //            _DBAccess.DBProcedureName = "SP_SUBCATEGORY";
+        //            _DBAccess.AddParameters("@Action", "GETSUBCATEGORYTHROUGHID");
+        //            _DBAccess.AddParameters("@Category_id", Data.Category_id);
+        //            _DataSet = _DBAccess.DBExecute();
+        //            _DBAccess.Dispose();
+        //        }
+        //        if (_DataSet != null && _DataSet.Tables.Count > 0)
+        //        {
+        //            DataTable dataTable = _DataSet.Tables[0];
+        //            string Retval = _DataSet.Tables[1].Rows[0]["RETVAL"]?.ToString() ?? "";
+
+
+        //            if (Retval == "SUCCESS")
+        //            {
+        //                foreach (DataRow row in dataTable.Rows)
+        //                {
+        //                    var subcategory = new MLSubcategory.Subcategory
+        //                    {
+        //                        id = row["id"] == DBNull.Value ? 0 : Convert.ToInt32(row["id"]),
+        //                        Category_Name = row["Category_Name"]?.ToString() ?? string.Empty,
+        //                        Subcategory_Name = row["Subcategory_Name"]?.ToString() ?? string.Empty,
+        //                        CreationDate = row["CreationDate"]?.ToString() ?? string.Empty,
+        //                        Priority = row["priority"] == DBNull.Value ? 0 : Convert.ToInt32(row["priority"])
+        //                    };
+        //                    _MLSubcategory.SubcategoryList.Add(subcategory);
+        //                }
+        //            }
+        //            else
+        //            {
+        //                _DBReturnData.Code = 400;
+        //                _DBReturnData.Message = "FAILED";
+        //            }
+        //        }
+        //        else
+        //        {
+        //            _DBReturnData.Code = 404;
+        //            _DBReturnData.Message = "No subcategories found.";
+        //        }
+
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _DALBASE.ErrorLog("GetSubCategoryThroughCategoryId", "DLSubcategory", ex.Message);
+        //        _DBReturnData.Message = "Internal Server Error";
+        //        _DBReturnData.Code = 400;
+
+        //    }
+        //    return _MLSubcategory;
+
+        //}
 
         public MLSubcategory GetSubCategoryThroughCategoryId(MLGetThroughCategoryId Data)
         {
@@ -272,7 +335,7 @@ namespace ECOMAPP.DataLayer
             try
             {
                 DataSet _DataSet = new();
-                using(DBAccess _DBAccess = new())
+                using (DBAccess _DBAccess = new())
                 {
                     _DBAccess.DBProcedureName = "SP_SUBCATEGORY";
                     _DBAccess.AddParameters("@Action", "GETSUBCATEGORYTHROUGHID");
@@ -280,31 +343,58 @@ namespace ECOMAPP.DataLayer
                     _DataSet = _DBAccess.DBExecute();
                     _DBAccess.Dispose();
                 }
-                if (_DataSet != null && _DataSet.Tables.Count > 0)
+                //if (_DataSet != null && _DataSet.Tables.Count > 0)
+                //{
+                //    DataTable dataTable = _DataSet.Tables[0];
+                //    string Retval = _DataSet.Tables[1].Rows[0]["RETVAL"]?.ToString() ?? "";
+
+
+                //    if (Retval == "SUCCESS")
+                //    {
+                //        foreach (DataRow row in dataTable.Rows)
+                //        {
+                //            var subcategory  = new MLSubcategory.MLGetbySubCategory
+                //            {
+                //                id = row["id"] == DBNull.Value ? 0 : Convert.ToInt32(row["id"]),
+                //                Category_id = row["Category_id"] == DBNull.Value ? 0 : Convert.ToInt32(row["Category_id"]),
+                //                Category_Name = row["Category_Name"]?.ToString() ?? string.Empty,
+                //                Subcategory_Name = row["Subcategory_Name"]?.ToString() ?? string.Empty
+
+                //            };
+                //            _MLSubcategory.SubCategoryListByCategory.Add(subcategory);
+                //        }
+                //    }
+                //    else
+                //    {
+                //        _DBReturnData.Code = 400;
+                //        _DBReturnData.Message = "FAILED";
+                //    }
+                //}
+                //else
+                //{
+                //    _DBReturnData.Code = 404;
+                //    _DBReturnData.Message = "No subcategories found.";
+                //}
+                if (_DataSet != null && _DataSet.Tables.Count > 0 && _DataSet.Tables[0].Rows.Count > 0)
                 {
                     DataTable dataTable = _DataSet.Tables[0];
                     string Retval = _DataSet.Tables[1].Rows[0]["RETVAL"]?.ToString() ?? "";
 
-
                     if (Retval == "SUCCESS")
                     {
+                        _MLSubcategory.SubCategoryListByCategory = new List<MLSubcategory.MLGetbySubCategory>();
+
                         foreach (DataRow row in dataTable.Rows)
                         {
-                            var subcategory  = new MLSubcategory.Subcategory
+                            var subcategory = new MLSubcategory.MLGetbySubCategory
                             {
                                 id = row["id"] == DBNull.Value ? 0 : Convert.ToInt32(row["id"]),
+                                Category_id = row["Category_id"] == DBNull.Value ? 0 : Convert.ToInt32(row["Category_id"]),
                                 Category_Name = row["Category_Name"]?.ToString() ?? string.Empty,
-                                Subcategory_Name = row["Subcategory_Name"]?.ToString() ?? string.Empty,
-                                CreationDate = row["CreationDate"]?.ToString() ?? string.Empty,
-                                Priority = row["priority"] == DBNull.Value ? 0 : Convert.ToInt32(row["priority"])
+                                Subcategory_Name = row["Subcategory_Name"]?.ToString() ?? string.Empty
                             };
-                            _MLSubcategory.SubcategoryList.Add(subcategory);
+                            _MLSubcategory.SubCategoryListByCategory.Add(subcategory);
                         }
-                    }
-                    else
-                    {
-                        _DBReturnData.Code = 400;
-                        _DBReturnData.Message = "FAILED";
                     }
                 }
                 else
@@ -312,7 +402,6 @@ namespace ECOMAPP.DataLayer
                     _DBReturnData.Code = 404;
                     _DBReturnData.Message = "No subcategories found.";
                 }
-
             }
             catch (Exception ex)
             {
@@ -324,6 +413,7 @@ namespace ECOMAPP.DataLayer
             return _MLSubcategory;
 
         }
+
 
         public MLSubcategory GetSubCategoryById(MLGetThroughId Data)
         {
@@ -340,7 +430,7 @@ namespace ECOMAPP.DataLayer
                 {
                     _DBACCESS.DBProcedureName = "SP_SUBCATEGORY";
                     _DBACCESS.AddParameters("@Action", "SELECTBYCATEGORYID");
-                    _DBACCESS.AddParameters("@id",Data.id);
+                    _DBACCESS.AddParameters("@id", Data.id);
                     _DataSet = _DBACCESS.DBExecute();
                     _DBACCESS.Dispose();
 
@@ -379,4 +469,4 @@ namespace ECOMAPP.DataLayer
 
 
     }
-} 
+}
