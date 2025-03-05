@@ -18,7 +18,6 @@ namespace ECOMAPP.Controllers
 
         [Route("GetAllProducts")]
         [HttpGet]
-        [JwtAuthorization(Roles = [Roles.Admin])]
         public ActionResult<DBReturnData> GetAllProducts()
         {
             try
