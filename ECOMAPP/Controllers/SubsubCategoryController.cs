@@ -59,16 +59,13 @@ namespace ECOMAPP.Controllers
         public ActionResult<IEnumerable<DBReturnData>> InsertSubsubCategory(MLInsertsubsubcategory _MLInsertsubsubcategory)
         {
             DLSubsubcategory _DLSubsubcategory = new();
-            MLSubsubcategory _MLSubsubcategory = new();
             DBReturnData _DBReturnData = new();
 
 
             try
             {
-                _MLSubsubcategory = _DLSubsubcategory.InsertSubsubCategory(_MLInsertsubsubcategory);
-                _DBReturnData.Code = 200;
-                _DBReturnData.Message = "";
-                _DBReturnData.Retval = "SUCCESS";
+                _DBReturnData = _DLSubsubcategory.InsertSubsubCategory(_MLInsertsubsubcategory);
+         
 
 
             }

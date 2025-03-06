@@ -60,10 +60,8 @@ namespace ECOMAPP.Controllers
             DBReturnData _DBReturnData = new();
             try
             {
-                _MLProductattribute = _DLProductattribute.InsertAttribute(_MLInsertProductAttribute);
-                _DBReturnData.Code = 200;
-                _DBReturnData.Message = "";
-                _DBReturnData.Retval = "SUCCESS";
+                _DBReturnData = _DLProductattribute.InsertAttribute(_MLInsertProductAttribute);
+                
             }
             catch (Exception ex)
             {
@@ -86,10 +84,8 @@ namespace ECOMAPP.Controllers
             DBReturnData _DBReturnData = new();
             try
             {
-                _MLProductattribute = _DLProductattribute.UpdateAttribute(_MLUpdateProductAttribute);
-                _DBReturnData.Code = 200;
-                _DBReturnData.Message = "";
-                _DBReturnData.Retval = "SUCCESS";
+                _DBReturnData = _DLProductattribute.UpdateAttribute(_MLUpdateProductAttribute);
+              
             }
             catch (Exception ex)
             {
@@ -101,6 +97,8 @@ namespace ECOMAPP.Controllers
 
             return new[] { _DBReturnData };
         }
+
+
         [Route("DeleteAttribute")]
         [HttpDelete]
         [JwtAuthorization(Roles = [Roles.Admin])]
@@ -111,10 +109,8 @@ namespace ECOMAPP.Controllers
             DBReturnData _DBReturnData = new();
             try
             {
-                _MLProductattribute = _DLProductattribute.DeleteAttribute(_MLDeleteProductAttribute);
-                _DBReturnData.Code = 200;
-                _DBReturnData.Message = "";
-                _DBReturnData.Retval = "SUCCESS";
+                _DBReturnData = _DLProductattribute.DeleteAttribute(_MLDeleteProductAttribute);
+                
             }
             catch (Exception ex)
             {

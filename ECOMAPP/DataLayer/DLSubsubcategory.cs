@@ -69,7 +69,7 @@ namespace ECOMAPP.DataLayer
             return _MLSubsubcategory.SubsubCategoryList;
         }
 
-        public MLSubsubcategory InsertSubsubCategory(MLInsertsubsubcategory Data)
+        public DBReturnData InsertSubsubCategory(MLInsertsubsubcategory Data)
         {
             MLSubsubcategory _MLSubsubcategory = new();
             DALBASE _DALBASE = new();
@@ -119,12 +119,12 @@ namespace ECOMAPP.DataLayer
                 _DBReturnData.Message = "Internal Server Error";
 
             }
-            return _MLSubsubcategory;
+            return _DBReturnData;
 
         }
 
 
-        public MLSubsubcategory UpdateSubsubCategory(MLUpdateSubsubcategory Data)
+        public DBReturnData UpdateSubsubCategory(MLUpdateSubsubcategory Data)
         {
             MLSubsubcategory _MLSubsubcategory = new();
             DALBASE _DALBASE = new();
@@ -176,12 +176,12 @@ namespace ECOMAPP.DataLayer
                 _DBReturnData.Message = "Internal Server Error";
 
             }
-            return _MLSubsubcategory;
+            return _DBReturnData;
 
         }
 
 
-        public MLSubsubcategory DeleteSubsubCategory(MLDeletesubsubcategory Data)
+        public DBReturnData DeleteSubsubCategory(MLDeletesubsubcategory Data)
         {
             MLSubsubcategory _MLSubsubcategory = new();
             DALBASE _DALBASE = new();
@@ -227,7 +227,7 @@ namespace ECOMAPP.DataLayer
                 _DBReturnData.Code = 500;
                 _DBReturnData.Message = "Internal Server Error";
             }
-            return _MLSubsubcategory;
+            return _DBReturnData;
 
         }
     }

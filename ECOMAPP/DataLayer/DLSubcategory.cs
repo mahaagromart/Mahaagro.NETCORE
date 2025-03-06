@@ -76,9 +76,9 @@ namespace ECOMAPP.DataLayer
             return _MLSubcategory.SubcategoryList;
         }
 
-        public MLSubcategory InsertSubCategory(MLInsertSubcategory Data)
+        public DBReturnData InsertSubCategory(MLInsertSubcategory Data)
         {
-            MLSubcategory _MLSubcategory = new MLSubcategory();
+
             DBReturnData _DBReturnData = new DBReturnData();
             DALBASE _DALBASE = new();
             try
@@ -103,18 +103,13 @@ namespace ECOMAPP.DataLayer
                     {
                         if (dr["RETVAL"]?.ToString() == "SUCCESS")
                         {
-
                             _DBReturnData.Message = "SUCCESS";
                             _DBReturnData.Code = 200;
-
-
                         }
                         else
                         {
-
                             _DBReturnData.Message = "FAILED";
                             _DBReturnData.Code = 401;
-
                         }
                     }
 
@@ -134,15 +129,12 @@ namespace ECOMAPP.DataLayer
                 _DBReturnData.Code = 500;
 
             }
-            return _MLSubcategory;
 
-
-
-
+            return _DBReturnData;
 
         }
 
-        public MLSubcategory UpdateSubCategory(MLUpdateSubcategory Data)
+        public DBReturnData UpdateSubCategory(MLUpdateSubcategory Data)
         {
             MLSubcategory _MLSubcategory = new MLSubcategory();
             DBReturnData _DBReturnData = new DBReturnData();
@@ -201,16 +193,12 @@ namespace ECOMAPP.DataLayer
                 _DBReturnData.Code = 500;
 
             }
-            return _MLSubcategory;
-
-
-
-
+            return _DBReturnData;
 
         }
 
 
-        public MLSubcategory DeleteSubCategory(MLDeleteSubCateggory Data)
+        public DBReturnData DeleteSubCategory(MLDeleteSubCateggory Data)
         {
             DLSubcategory _DLSubcategory = new DLSubcategory();
             MLSubcategory _MLSubcategory = new MLSubcategory();
@@ -258,7 +246,7 @@ namespace ECOMAPP.DataLayer
                 _DBReturnData.Code = 400;
 
             }
-            return _MLSubcategory;
+            return _DBReturnData;
 
         }
 
@@ -415,10 +403,9 @@ namespace ECOMAPP.DataLayer
         }
 
 
-        public MLSubcategory GetSubCategoryById(MLGetThroughId Data)
+        public DBReturnData GetSubCategoryById(MLGetThroughId Data)
         {
             MLSubcategory _MLSubcate = new MLSubcategory();
-            DLSubcategory _DLSubcate = new DLSubcategory();
             DALBASE _DALBASE = new();
             DBReturnData _DBReturnData = new DBReturnData();
 
@@ -463,7 +450,7 @@ namespace ECOMAPP.DataLayer
                 _DBReturnData.Message = "Internal Server Error";
                 _DBReturnData.Code = 400;
             }
-            return _MLSubcate;
+            return _DBReturnData;
 
         }
 
