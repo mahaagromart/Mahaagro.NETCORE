@@ -65,8 +65,6 @@ namespace ECOMAPP.Controllers
             try
             {
                 _DBReturnData = _DLSubsubcategory.InsertSubsubCategory(_MLInsertsubsubcategory);
-         
-
 
             }
 
@@ -92,14 +90,11 @@ namespace ECOMAPP.Controllers
         public ActionResult<IEnumerable<DBReturnData>> UpdateSubsubCategory(MLUpdateSubsubcategory _MLUpdateSubsubcategory)
         {
             DLSubsubcategory _DLSubsubcategory = new();
-            MLSubsubcategory _MLSubsubcategory = new();
             DBReturnData _DBReturnData = new();
             try
             {
-                _MLSubsubcategory = _DLSubsubcategory.UpdateSubsubCategory(_MLUpdateSubsubcategory);
-                _DBReturnData.Code = 200;
-                _DBReturnData.Message = "";
-                _DBReturnData.Retval = "SUCCESS";
+                _DBReturnData = _DLSubsubcategory.UpdateSubsubCategory(_MLUpdateSubsubcategory);
+        
             }
             catch (Exception ex)
             {
@@ -123,10 +118,8 @@ namespace ECOMAPP.Controllers
             DBReturnData _DBReturnData = new();
             try
             {
-                _MLSubsubcategory = _DLSubsubcategory.DeleteSubsubCategory(_MLDeletesubsubcategory);
-                _DBReturnData.Code = 200;
-                _DBReturnData.Message = "";
-                _DBReturnData.Retval = "SUCCESS";
+                _DBReturnData = _DLSubsubcategory.DeleteSubsubCategory(_MLDeletesubsubcategory);
+    
 
             }
             catch (Exception ex)
