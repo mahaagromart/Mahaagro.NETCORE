@@ -259,7 +259,7 @@ namespace ECOMAPP.DataLayer
         //}
 
 
-        public MLProduct DeleteProduct(MLDeleteProduct data)
+        public DBReturnData DeleteProduct(MLDeleteProduct data)
         {
             MLProduct _MLProduct = new();
             DALBASE _DALBASE = new();
@@ -309,14 +309,14 @@ namespace ECOMAPP.DataLayer
                 _DBReturnData.Code = 500;
             }
 
-            return _MLProduct;
+            return _DBReturnData;
         }
 
 
 
-        public MLProduct ProductToggleCertified(MLToggleCertified data)
+        public DBReturnData ProductToggleCertified(MLToggleCertified data)
         {
-            MLProduct _MLProduct = new();
+            //MLProduct _MLProduct = new();
             DALBASE _DALBASE = new();
             DBReturnData _DBReturnData = new();
 
@@ -365,10 +365,10 @@ namespace ECOMAPP.DataLayer
 
             }
 
-            return _MLProduct;
+            return _DBReturnData;
         }
 
-        public MLProduct ProductToggleStatus(MLToggleStatus data)
+        public DBReturnData ProductToggleStatus(MLToggleStatus data)
         {
             MLProduct _MLProduct = new();
             DALBASE _DALBASE = new();
@@ -419,7 +419,7 @@ namespace ECOMAPP.DataLayer
 
             }
 
-            return _MLProduct;
+            return _DBReturnData;
         }
 
 
@@ -501,7 +501,7 @@ namespace ECOMAPP.DataLayer
             return _MLProduct.InhouseProductList;
         }
 
-        public MLProduct InsertInhouseProduct(MLInsertInhouseProduct data)
+        public DBReturnData InsertInhouseProduct(MLInsertInhouseProduct data)
         {
             MLProduct _MLProduct = new();
             DALBASE _DALBASE = new();
@@ -562,10 +562,10 @@ namespace ECOMAPP.DataLayer
 
             }
 
-            return _MLProduct;
+            return _DBReturnData;
         }
 
-        public MLProduct UpdateInhouseProduct(MLUpdateInhouseProduct data)
+        public DBReturnData UpdateInhouseProduct(MLUpdateInhouseProduct data)
         {
             MLProduct _MLProduct = new();
             DALBASE _DALBASE = new();
@@ -626,12 +626,11 @@ namespace ECOMAPP.DataLayer
 
             }
 
-            return _MLProduct;
+            return _DBReturnData;
         }
 
-        public MLProduct DeleteInhouseProduct(MLDeleteInhouseProduct data)
+        public DBReturnData DeleteInhouseProduct(MLDeleteInhouseProduct data)
         {
-            MLProduct _MLProduct = new();
             DALBASE _DALBASE = new();
             DBReturnData _DBReturnData = new();
 
@@ -680,7 +679,7 @@ namespace ECOMAPP.DataLayer
 
             }
 
-            return _MLProduct;
+            return _DBReturnData;
         }
 
         #endregion InhouseProduct

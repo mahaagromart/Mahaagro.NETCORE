@@ -53,6 +53,8 @@ namespace ECOMAPP.Controllers
 
         }
 
+
+        //START TODO YET TO IMPLEMET IT'S A WROMG SCHEMA
         [Route("InsertVarients")]
         [HttpPost]
         [JwtAuthorization(Roles = [Roles.Admin])]
@@ -142,6 +144,7 @@ namespace ECOMAPP.Controllers
 
         }
 
+        //END TODO YET TO IMPLEMET IT'S A WROMG SCHEMA
 
     }
 }

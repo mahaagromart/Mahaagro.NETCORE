@@ -72,7 +72,7 @@ namespace ECOMAPP.DataLayer
 
             return _MLProductattribute.ProductAttributeList;
         }
-        public MLProductattribute InsertAttribute(MLInsertProductAttribute Data)
+        public DBReturnData InsertAttribute(MLInsertProductAttribute Data)
         {
             MLProductattribute _MLProductattribute = new();
             DALBASE _DALBASE = new();
@@ -123,10 +123,10 @@ namespace ECOMAPP.DataLayer
 
             }
 
-            return _MLProductattribute;
+            return _DBReturnData;
         }
 
-        public MLProductattribute UpdateAttribute(MLUpdateProductAttribute Data)
+        public DBReturnData UpdateAttribute(MLUpdateProductAttribute Data)
         {
             MLProductattribute _MLProductattribute = new();
             DALBASE _DALBASE = new();
@@ -182,11 +182,11 @@ namespace ECOMAPP.DataLayer
 
             }
 
-            return _MLProductattribute;
+            return _DBReturnData;
         }
 
 
-        public MLProductattribute DeleteAttribute(MLDeleteProductAttribute Data)
+        public DBReturnData DeleteAttribute(MLDeleteProductAttribute Data)
         {
             MLProductattribute _MLProductattribute = new();
             DALBASE _DALBASE = new();
@@ -240,7 +240,7 @@ namespace ECOMAPP.DataLayer
 
             }
 
-            return _MLProductattribute;
+            return _DBReturnData;
         }
 
 

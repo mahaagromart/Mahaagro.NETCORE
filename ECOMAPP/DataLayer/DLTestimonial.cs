@@ -72,10 +72,9 @@ namespace ECOMAPP.DataLayer
             return _MLTestimonial.TestimonialList;
         }
 
-        public MLTestimonial InsertEcommerceTestimonial(MLInsertTestimonial Data)
+        public DBReturnData InsertEcommerceTestimonial(MLInsertTestimonial Data)
         {
-            MLTestimonial _MLTestimonial = new();
-            DLTestimonial _DLTestimonial = new();
+      
             DBReturnData _DBReturnData = new();
 
             DataSet _DataSet = new();
@@ -118,16 +117,13 @@ namespace ECOMAPP.DataLayer
 
             }
 
-            return  _MLTestimonial ;
+            return _DBReturnData;
 
         }
 
-        public MLTestimonial UpdateEcommerceTestimonial(MLUpdateTestimonial Data)
+        public DBReturnData UpdateEcommerceTestimonial(MLUpdateTestimonial Data)
         {
-            MLTestimonial _MLTestimonial = new();
-            DLTestimonial _DLTestimonial = new();
             DBReturnData _DBReturnData = new();
-
             DataSet _DataSet = new();
 
             try
@@ -168,17 +164,16 @@ namespace ECOMAPP.DataLayer
 
             }
 
-            return _MLTestimonial;
+            return _DBReturnData;
 
         }
 
 
         
 
-       public MLTestimonial DeleteEcommerceTestimonial(MLDeleteTestimonial Data)
-        {
-            MLTestimonial _MLTestimonial = new();
-            DLTestimonial _DLTestimonial = new();
+       public DBReturnData DeleteEcommerceTestimonial(MLDeleteTestimonial Data)
+       {
+        
             DBReturnData _DBReturnData = new();
 
             DataSet _DataSet = new();
@@ -221,7 +216,7 @@ namespace ECOMAPP.DataLayer
 
             }
 
-            return _MLTestimonial;
+            return _DBReturnData;
 
         }
     }

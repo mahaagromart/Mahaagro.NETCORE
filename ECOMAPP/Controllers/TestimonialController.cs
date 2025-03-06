@@ -51,20 +51,18 @@ namespace ECOMAPP.Controllers
             return new[] { _DBReturnData };
 
         }
+
+
         [Route("InsertEcommerceTestimonial")]
         [HttpPost]
         public ActionResult<IEnumerable<DBReturnData>> InsertEcommerceTestimonial(MLInsertTestimonial _MLInsertTestimonial)
         {
             DLTestimonial _DLTestimonial = new();
-            MLTestimonial _MLTestimonial = new();
             DBReturnData _DBReturnData = new();
 
             try
             {
-                _MLTestimonial = _DLTestimonial.InsertEcommerceTestimonial(_MLInsertTestimonial);
-                _DBReturnData.Code = 200;
-                _DBReturnData.Message = "";
-                _DBReturnData.Retval = "SUCCESS";
+                _DBReturnData = _DLTestimonial.InsertEcommerceTestimonial(_MLInsertTestimonial);
 
             }
             catch (Exception ex)
@@ -77,20 +75,18 @@ namespace ECOMAPP.Controllers
 
             return new[] { _DBReturnData };
         }
+
+
         [Route("UpdateEcommerceTestimonial")]
         [HttpPost]
         public ActionResult<IEnumerable<DBReturnData>> UpdateEcommerceTestimonial(MLUpdateTestimonial _MLUpdateTestimonial)
         {
             DLTestimonial _DLTestimonial = new();
-            MLTestimonial _MLTestimonial = new();
             DBReturnData _DBReturnData = new();
 
             try
             {
-                _MLTestimonial = _DLTestimonial.UpdateEcommerceTestimonial(_MLUpdateTestimonial);
-                _DBReturnData.Code = 200;
-                _DBReturnData.Message = "";
-                _DBReturnData.Retval = "SUCCESS";
+                _DBReturnData = _DLTestimonial.UpdateEcommerceTestimonial(_MLUpdateTestimonial);
 
             }
             catch (Exception ex)
@@ -103,6 +99,8 @@ namespace ECOMAPP.Controllers
 
             return new[] { _DBReturnData };
         }
+
+
         [Route("DeleteEcommerceTestimonial")]
         [HttpDelete]
         public ActionResult<IEnumerable<DBReturnData>> DeleteEcommerceTestimonial(MLDeleteTestimonial _MLDeleteTestimonial)
@@ -114,9 +112,7 @@ namespace ECOMAPP.Controllers
             try
             {
                 _MLTestimonial = _DLTestimonial.DeleteEcommerceTestimonial(_MLDeleteTestimonial);
-                _DBReturnData.Code = 200;
-                _DBReturnData.Message = "";
-                _DBReturnData.Retval = "SUCCESS";
+              
 
             }
             catch (Exception ex)

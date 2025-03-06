@@ -56,9 +56,13 @@ namespace ECOMAPP.Controllers
             {
 
                 ObjMLCategory = ObjDLCategory.UpdateProductCategory(_MlUpdateProductdata);
-                objReturnData.Status = DBEnums.Status.SUCCESS;
-                objReturnData.Message = DBEnums.Status.SUCCESS.ToString();
+                if (ObjMLCategory.Code == 200)
+                {
+                    objReturnData.Status = DBEnums.Status.SUCCESS;
+                    objReturnData.Message = DBEnums.Status.SUCCESS.ToString();
 
+                }
+                
 
             }
             catch (Exception ex)
@@ -86,8 +90,11 @@ namespace ECOMAPP.Controllers
 
 
                 ObjMLCategory = ObjDLCategory.InsertProductCategory(_MlInsertProductdata);
-                objReturnData.Status = DBEnums.Status.SUCCESS;
-                objReturnData.Message = DBEnums.Status.SUCCESS.ToString();
+                if(ObjMLCategory.Code == 200)
+                {
+                    objReturnData.Status = DBEnums.Status.SUCCESS;
+                    objReturnData.Message = DBEnums.Status.SUCCESS.ToString();
+                }
 
             }
             catch (Exception ex)
@@ -113,10 +120,20 @@ namespace ECOMAPP.Controllers
             try
             {
                 ObjMLCategory = objDlcat.DeleteProductCategory(_MlDeleteCategoryData);
-                _DBReturnData.Code = 200;
-                _DBReturnData.Message = "";
-                _DBReturnData.Retval = "SUCCESS";
+                if(ObjMLCategory.Code == 200)
+                {
+                    _DBReturnData.Code = 200;
+                    _DBReturnData.Message = "";
+                    _DBReturnData.Retval = "SUCCESS";
 
+                }
+                else
+                {
+                    _DBReturnData.Message = "FAILED";
+                    _DBReturnData.Code = 401;
+                    _DBReturnData.Retval = "FAILED";
+
+                }
 
 
             }

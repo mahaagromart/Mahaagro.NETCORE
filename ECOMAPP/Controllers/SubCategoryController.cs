@@ -63,15 +63,10 @@ namespace ECOMAPP.Controllers
         public ActionResult<IEnumerable<DBReturnData>> InsertSubCategory(MLInsertSubcategory _MLInsertSubcategory)
         {
             DLSubcategory _DLSubcategory = new();
-            MLSubcategory _MLSubcategory = new();
             DBReturnData DBReturnData = new();
             try
             {
-                _MLSubcategory = _DLSubcategory.InsertSubCategory(_MLInsertSubcategory);
-                DBReturnData.Code = 200;
-                DBReturnData.Message = "";
-                DBReturnData.Retval = "SUCCESS";
-
+                DBReturnData = _DLSubcategory.InsertSubCategory(_MLInsertSubcategory);
             }
             catch (Exception ex)
             {
@@ -93,12 +88,11 @@ namespace ECOMAPP.Controllers
         [JwtAuthorization(Roles = [Roles.Admin])]
         public ActionResult<IEnumerable<DBReturnData>> UpdateSubCategory(MLUpdateSubcategory _MLUpdateSubcategory)
         {
-            MLSubcategory _MLSubcategory = new();
             DLSubcategory _DLSubcategory = new();
             DBReturnData _DBReturnData = new();
             try
             {
-                _MLSubcategory = _DLSubcategory.UpdateSubCategory(_MLUpdateSubcategory);
+                _DBReturnData = _DLSubcategory.UpdateSubCategory(_MLUpdateSubcategory);
                 _DBReturnData.Code = 200;
                 _DBReturnData.Message = "";
                 _DBReturnData.Retval = "SUCCESS";
@@ -127,11 +121,7 @@ namespace ECOMAPP.Controllers
             try
             {
                 _MLSubcategory = _DLSubcategory.DeleteSubCategory(_MLDeleteSubCateggory);
-                _DBReturnData.Code = 200;
-                _DBReturnData.Message = "";
-                _DBReturnData.Retval = "SUCCESS";
-
-
+             
             }
             catch (Exception ex)
             {
