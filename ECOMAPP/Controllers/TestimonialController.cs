@@ -111,7 +111,7 @@ namespace ECOMAPP.Controllers
 
             try
             {
-                _MLTestimonial = _DLTestimonial.DeleteEcommerceTestimonial(_MLDeleteTestimonial);
+                _DBReturnData = _DLTestimonial.DeleteEcommerceTestimonial(_MLDeleteTestimonial);
               
 
             }
