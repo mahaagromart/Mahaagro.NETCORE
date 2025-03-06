@@ -65,10 +65,8 @@ namespace ECOMAPP.DataLayer
 
         }
 
-        public MLBrand InsertBrand()
+        public DBReturnData InsertBrand()
         {
-            MLBrand _MLBrand = new();
-            DALBASE _DALBASE = new();
             DBReturnData _DBReturnData = new();
 
             DataSet _DataSet = new();
@@ -110,13 +108,12 @@ namespace ECOMAPP.DataLayer
 
 
 
-            return _MLBrand;
+            return _DBReturnData;
         }
 
-        public MLBrand UpdateBrand()
+        public DBReturnData UpdateBrand()
         {
-            MLBrand _MLBrand = new();
-            DALBASE _DALBASE = new();
+            MLBrand _MLBrand = new(); 
             DBReturnData _DBReturnData = new();
 
             DataSet _DataSet = new();
@@ -158,15 +155,13 @@ namespace ECOMAPP.DataLayer
 
 
 
-            return _MLBrand;
+            return _DBReturnData;
         }
 
 
 
-        public MLBrand DeleteBrand()
+        public DBReturnData DeleteBrand()
         {
-            MLBrand _MLBrand = new();
-            DALBASE _DALBASE = new();
             DBReturnData _DBReturnData = new();
 
             DataSet _DataSet = new();
@@ -208,7 +203,7 @@ namespace ECOMAPP.DataLayer
 
 
 
-            return _MLBrand;
+            return _DBReturnData;
         }
     }
 }

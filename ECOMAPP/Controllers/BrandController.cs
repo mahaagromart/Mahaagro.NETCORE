@@ -59,16 +59,13 @@ namespace ECOMAPP.Controllers
         public ActionResult<IEnumerable<DBReturnData>> InsertBrand()
         {
             DLBrand _DLBrand = new();
-            MLBrand _MLBrand = new();
             DBReturnData _DBReturnData = new();
             try
             {
-                    _MLBrand = _DLBrand.InsertBrand();
-                    _DBReturnData.Code = 200;
-                    _DBReturnData.Message = "";
-                    _DBReturnData.Retval = "SUCCESS";
+                    _DBReturnData = _DLBrand.InsertBrand();
+                    
                 
-             }
+            }
             catch (Exception ex)
             {
                 _DBReturnData.Dataset = null;
@@ -80,20 +77,20 @@ namespace ECOMAPP.Controllers
 
             return new[] { _DBReturnData };
         }
+
+
+
         [Route("UpdateBrand")]
         [HttpPut]
         [JwtAuthorization(Roles = [Roles.Admin])]
         public ActionResult<IEnumerable<DBReturnData>> UpdateBrand()
         {
             DLBrand _DLBrand = new();
-            MLBrand _MLBrand = new();
             DBReturnData _DBReturnData = new();
             try
             {
-                _MLBrand = _DLBrand.UpdateBrand();
-                _DBReturnData.Code = 200;
-                _DBReturnData.Message = "";
-                _DBReturnData.Retval = "SUCCESS";
+                _DBReturnData = _DLBrand.UpdateBrand();
+          
 
             }
             catch (Exception ex)
@@ -112,18 +109,14 @@ namespace ECOMAPP.Controllers
         [Route("DeleteBrand")]
         [HttpDelete]
         [JwtAuthorization(Roles = [Roles.Admin])]
-
         public ActionResult<IEnumerable<DBReturnData>> DeleteBrand()
         {
             DLBrand _DLBrand = new();
-            MLBrand _MLBrand = new();
             DBReturnData _DBReturnData = new();
             try
             {
-                _MLBrand = _DLBrand.DeleteBrand();
-                _DBReturnData.Code = 200;
-                _DBReturnData.Message = "";
-                _DBReturnData.Retval = "SUCCESS";
+                _DBReturnData = _DLBrand.DeleteBrand();
+            
 
             }
             catch (Exception ex)

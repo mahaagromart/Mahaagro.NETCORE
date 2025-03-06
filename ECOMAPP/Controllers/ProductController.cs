@@ -353,7 +353,6 @@ namespace ECOMAPP.Controllers
 
         public ActionResult<IEnumerable<DBReturnData>> DeleteInhouseProduct(MLDeleteInhouseProduct _MLDeleteInhouseProduct)
         {
-            MLProduct _MLProduct = new();
             DLProduct _DLProduct = new();
             DBReturnData _DBReturnData = new();
 

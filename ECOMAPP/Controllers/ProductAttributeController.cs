@@ -50,6 +50,8 @@ namespace ECOMAPP.Controllers
             }
             return new[] { _DBReturnData };
         }
+
+
         [Route("InsertAttribute")]
         [HttpPost]
         [JwtAuthorization(Roles = [Roles.Admin])]

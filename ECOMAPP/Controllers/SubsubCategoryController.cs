@@ -67,9 +67,6 @@ namespace ECOMAPP.Controllers
                 _DBReturnData = _DLSubsubcategory.InsertSubsubCategory(_MLInsertsubsubcategory);
 
             }
-
-
-
             catch (Exception ex)
             {
                 _DBReturnData.Dataset = null;
