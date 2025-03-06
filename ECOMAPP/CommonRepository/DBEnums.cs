@@ -8,21 +8,21 @@
             ADD = 0, UPDATE = 1, DELETE = 2, UNDELETE = 3, SEARCH = 4, VIEW = 5, COPY = 6
         }
 
-        public enum Codes
+         public enum Codes
         {
-            Success = 200,
-            Created = 201,
-            Accepted = 202,
-            NoContent = 204,
-            BadRequest = 400,
-            Unauthorized = 401,
-            Forbidden = 403,
-            NotFound = 404,
-            Conflict = 409,
-            InternalServerError = 500,
-            NotImplemented = 501,
-            BadGateway = 502,
-            ServiceUnavailable = 503
+            SUCCESS = 200,
+            CREATED = 201,
+            ACCEPTED = 202,
+            NO_CONTENT = 204,
+            BAD_REQUEST = 400,
+            UNAUTHORIZED = 401,
+            FORBIDDEN = 403,
+            NOT_FOUND = 404,
+            CONFLICT = 409,
+            INTERNAL_SERVER_ERROR = 500,
+            NOT_IMPLEMENTED = 501,
+            BAD_GATEWAY = 502,
+            SERVICE_UNAVAILABLE = 503
         }
         //public enum Code { s, d }
 
