@@ -56,9 +56,13 @@ namespace ECOMAPP.Controllers
             {
 
                 ObjMLCategory = ObjDLCategory.UpdateProductCategory(_MlUpdateProductdata);
-                objReturnData.Status = DBEnums.Status.SUCCESS;
-                objReturnData.Message = DBEnums.Status.SUCCESS.ToString();
+                if (ObjMLCategory.Code == 200)
+                {
+                    objReturnData.Status = DBEnums.Status.SUCCESS;
+                    objReturnData.Message = DBEnums.Status.SUCCESS.ToString();
 
+                }
+                
 
             }
             catch (Exception ex)
@@ -86,8 +90,11 @@ namespace ECOMAPP.Controllers
 
 
                 ObjMLCategory = ObjDLCategory.InsertProductCategory(_MlInsertProductdata);
-                objReturnData.Status = DBEnums.Status.SUCCESS;
-                objReturnData.Message = DBEnums.Status.SUCCESS.ToString();
+                if(ObjMLCategory.Code == 200)
+                {
+                    objReturnData.Status = DBEnums.Status.SUCCESS;
+                    objReturnData.Message = DBEnums.Status.SUCCESS.ToString();
+                }
 
             }
             catch (Exception ex)
@@ -112,19 +119,29 @@ namespace ECOMAPP.Controllers
             DBReturnData _DBReturnData = new();
             try
             {
-                ObjMLCategory = objDlcat.DeleteProductCategory(_MlDeleteCategoryData);
-                _DBReturnData.Code = 200;
-                _DBReturnData.Message = "";
-                _DBReturnData.Retval = "SUCCESS";
+                _DBReturnData = objDlcat.DeleteProductCategory(_MlDeleteCategoryData);
+                if(ObjMLCategory.Code == 200)
+                {
+                    _DBReturnData.Code = DBEnums.Codes.SUCCESS;
+                    _DBReturnData.Message =DBEnums.Status.SUCCESS.ToString();
+                    _DBReturnData.Retval = DBEnums.Status.SUCCESS.ToString();
 
+                }
+                else
+                {
+                    _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+                    _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
+                    _DBReturnData.Retval = DBEnums.Status.FAILURE.ToString();
+
+                }
 
 
             }
             catch (Exception ex)
             {
-                _DBReturnData.Code = 500;
-                _DBReturnData.Message = "Internal Server Error";
-                _DBReturnData.Retval = null;
+                _DBReturnData.Code = DBEnums.Codes.BAD_REQUEST;
+                _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+                _DBReturnData.Retval = DBEnums.Status.FAILURE.ToString();
             }
 
             return new[] { _DBReturnData };

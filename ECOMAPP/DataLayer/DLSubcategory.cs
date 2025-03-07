@@ -55,30 +55,30 @@ namespace ECOMAPP.DataLayer
                     }
                     else
                     {
-                        _DBReturnData.Code = 400;
-                        _DBReturnData.Message = "FAILED";
+                        _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
+                        _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
                     }
                 }
                 else
                 {
-                    _DBReturnData.Code = 404;
-                    _DBReturnData.Message = "No subcategories found.";
+                    _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
+                    _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
                 }
             }
             catch (Exception ex)
             {
                 _DALBASE.ErrorLog("GetAllSubCategory", "DLSubcategory", ex.Message);
-                _DBReturnData.Code = 500;
-                _DBReturnData.Message = "Internal Server Error";
+                _DBReturnData.Code = DBEnums.Codes.BAD_REQUEST;
+                _DBReturnData.Message = DBEnums.Status.FAILURE.ToString() + ex.Message.ToString();
             }
 
 
             return _MLSubcategory.SubcategoryList;
         }
 
-        public MLSubcategory InsertSubCategory(MLInsertSubcategory Data)
+        public DBReturnData InsertSubCategory(MLInsertSubcategory Data)
         {
-            MLSubcategory _MLSubcategory = new MLSubcategory();
+
             DBReturnData _DBReturnData = new DBReturnData();
             DALBASE _DALBASE = new();
             try
@@ -103,26 +103,21 @@ namespace ECOMAPP.DataLayer
                     {
                         if (dr["RETVAL"]?.ToString() == "SUCCESS")
                         {
-
-                            _DBReturnData.Message = "SUCCESS";
-                            _DBReturnData.Code = 200;
-
-
+                            _DBReturnData.Message = DBEnums.Status.SUCCESS.ToString();
+                            _DBReturnData.Code = DBEnums.Codes.SUCCESS;
                         }
                         else
                         {
-
-                            _DBReturnData.Message = "FAILED";
-                            _DBReturnData.Code = 401;
-
+                            _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+                            _DBReturnData.Code =DBEnums.Codes.INTERNAL_SERVER_ERROR;
                         }
                     }
 
                 }
                 else
                 {
-                    _DBReturnData.Message = "NOT EXISTS";
-                    _DBReturnData.Code = 400;
+                    _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+                    _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
 
                 }
             }
@@ -130,19 +125,16 @@ namespace ECOMAPP.DataLayer
             {
 
                 _DALBASE.ErrorLog("InsertSubCategory", "DLSubcategory", ex.Message.ToString());
-                _DBReturnData.Message = "Internal Server Error";
-                _DBReturnData.Code = 500;
+                _DBReturnData.Message = DBEnums.Status.FAILURE.ToString() + ex.Message.ToString();
+                _DBReturnData.Code = DBEnums.Codes.BAD_REQUEST;
 
             }
-            return _MLSubcategory;
 
-
-
-
+            return _DBReturnData;
 
         }
 
-        public MLSubcategory UpdateSubCategory(MLUpdateSubcategory Data)
+        public DBReturnData UpdateSubCategory(MLUpdateSubcategory Data)
         {
             MLSubcategory _MLSubcategory = new MLSubcategory();
             DBReturnData _DBReturnData = new DBReturnData();
@@ -171,16 +163,16 @@ namespace ECOMAPP.DataLayer
                         if (dr["RETVAL"]?.ToString() == "SUCCESS")
                         {
 
-                            _DBReturnData.Message = "SUCCESS";
-                            _DBReturnData.Code = 200;
+                            _DBReturnData.Message =DBEnums.Status.SUCCESS.ToString();
+                            _DBReturnData.Code = DBEnums.Codes.SUCCESS;
 
 
                         }
                         else
                         {
 
-                            _DBReturnData.Message = "FAILED";
-                            _DBReturnData.Code = 401;
+                            _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+                            _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
 
                         }
                     }
@@ -188,8 +180,8 @@ namespace ECOMAPP.DataLayer
                 }
                 else
                 {
-                    _DBReturnData.Message = "NOT EXISTS";
-                    _DBReturnData.Code = 400;
+                    _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+                    _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
 
                 }
             }
@@ -197,20 +189,16 @@ namespace ECOMAPP.DataLayer
             {
 
                 _DALBASE.ErrorLog("InsertSubCategory", "DLSubcategory", ex.Message.ToString());
-                _DBReturnData.Message = "Internal Server Error";
-                _DBReturnData.Code = 500;
+                _DBReturnData.Message = DBEnums.Status.FAILURE.ToString() + ex.Message.ToString();
+                _DBReturnData.Code = DBEnums.Codes.BAD_REQUEST;
 
             }
-            return _MLSubcategory;
-
-
-
-
+            return _DBReturnData;
 
         }
 
 
-        public MLSubcategory DeleteSubCategory(MLDeleteSubCateggory Data)
+        public DBReturnData DeleteSubCategory(MLDeleteSubCateggory Data)
         {
             DLSubcategory _DLSubcategory = new DLSubcategory();
             MLSubcategory _MLSubcategory = new MLSubcategory();
@@ -237,14 +225,14 @@ namespace ECOMAPP.DataLayer
                     {
                         if (_DataRow["RETVAL"]?.ToString() == "SUCCESS")
                         {
-                            _DBReturnData.Message = "SUCCESS";
-                            _DBReturnData.Code = 200;
+                            _DBReturnData.Message = DBEnums.Status.SUCCESS.ToString();
+                            _DBReturnData.Code = DBEnums.Codes.SUCCESS;
 
                         }
                         else
                         {
-                            _DBReturnData.Message = "FAILED";
-                            _DBReturnData.Code = 400;
+                            _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+                            _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
 
                         }
                     }
@@ -254,76 +242,15 @@ namespace ECOMAPP.DataLayer
             catch (Exception ex)
             {
                 _DALBASE.ErrorLog("DeleteSubCategory", "DLSubcategory", ex.Message);
-                _DBReturnData.Message = "Internal Server Error";
-                _DBReturnData.Code = 400;
+                _DBReturnData.Message = DBEnums.Status.FAILURE.ToString() + ex.Message.ToString();
+                _DBReturnData.Code = DBEnums.Codes.BAD_REQUEST;
 
             }
-            return _MLSubcategory;
+            return _DBReturnData;
 
         }
 
-        //public MLSubcategory GetSubCategoryThroughCategoryId(MLGetThroughCategoryId Data)
-        //{
-        //    MLSubcategory _MLSubcategory = new MLSubcategory();
-        //    DLSubcategory _DLSubcategory = new DLSubcategory();
-        //    DALBASE _DALBASE = new();
-        //    DBReturnData _DBReturnData = new();
-
-        //    try
-        //    {
-        //        DataSet _DataSet = new();
-        //        using (DBAccess _DBAccess = new())
-        //        {
-        //            _DBAccess.DBProcedureName = "SP_SUBCATEGORY";
-        //            _DBAccess.AddParameters("@Action", "GETSUBCATEGORYTHROUGHID");
-        //            _DBAccess.AddParameters("@Category_id", Data.Category_id);
-        //            _DataSet = _DBAccess.DBExecute();
-        //            _DBAccess.Dispose();
-        //        }
-        //        if (_DataSet != null && _DataSet.Tables.Count > 0)
-        //        {
-        //            DataTable dataTable = _DataSet.Tables[0];
-        //            string Retval = _DataSet.Tables[1].Rows[0]["RETVAL"]?.ToString() ?? "";
-
-
-        //            if (Retval == "SUCCESS")
-        //            {
-        //                foreach (DataRow row in dataTable.Rows)
-        //                {
-        //                    var subcategory = new MLSubcategory.Subcategory
-        //                    {
-        //                        id = row["id"] == DBNull.Value ? 0 : Convert.ToInt32(row["id"]),
-        //                        Category_Name = row["Category_Name"]?.ToString() ?? string.Empty,
-        //                        Subcategory_Name = row["Subcategory_Name"]?.ToString() ?? string.Empty,
-        //                        CreationDate = row["CreationDate"]?.ToString() ?? string.Empty,
-        //                        Priority = row["priority"] == DBNull.Value ? 0 : Convert.ToInt32(row["priority"])
-        //                    };
-        //                    _MLSubcategory.SubcategoryList.Add(subcategory);
-        //                }
-        //            }
-        //            else
-        //            {
-        //                _DBReturnData.Code = 400;
-        //                _DBReturnData.Message = "FAILED";
-        //            }
-        //        }
-        //        else
-        //        {
-        //            _DBReturnData.Code = 404;
-        //            _DBReturnData.Message = "No subcategories found.";
-        //        }
-
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _DALBASE.ErrorLog("GetSubCategoryThroughCategoryId", "DLSubcategory", ex.Message);
-        //        _DBReturnData.Message = "Internal Server Error";
-        //        _DBReturnData.Code = 400;
-
-        //    }
-        //    return _MLSubcategory;
-
-        //}
+      
 
         public MLSubcategory GetSubCategoryThroughCategoryId(MLGetThroughCategoryId Data)
         {
@@ -343,38 +270,7 @@ namespace ECOMAPP.DataLayer
                     _DataSet = _DBAccess.DBExecute();
                     _DBAccess.Dispose();
                 }
-                //if (_DataSet != null && _DataSet.Tables.Count > 0)
-                //{
-                //    DataTable dataTable = _DataSet.Tables[0];
-                //    string Retval = _DataSet.Tables[1].Rows[0]["RETVAL"]?.ToString() ?? "";
-
-
-                //    if (Retval == "SUCCESS")
-                //    {
-                //        foreach (DataRow row in dataTable.Rows)
-                //        {
-                //            var subcategory  = new MLSubcategory.MLGetbySubCategory
-                //            {
-                //                id = row["id"] == DBNull.Value ? 0 : Convert.ToInt32(row["id"]),
-                //                Category_id = row["Category_id"] == DBNull.Value ? 0 : Convert.ToInt32(row["Category_id"]),
-                //                Category_Name = row["Category_Name"]?.ToString() ?? string.Empty,
-                //                Subcategory_Name = row["Subcategory_Name"]?.ToString() ?? string.Empty
-
-                //            };
-                //            _MLSubcategory.SubCategoryListByCategory.Add(subcategory);
-                //        }
-                //    }
-                //    else
-                //    {
-                //        _DBReturnData.Code = 400;
-                //        _DBReturnData.Message = "FAILED";
-                //    }
-                //}
-                //else
-                //{
-                //    _DBReturnData.Code = 404;
-                //    _DBReturnData.Message = "No subcategories found.";
-                //}
+               
                 if (_DataSet != null && _DataSet.Tables.Count > 0 && _DataSet.Tables[0].Rows.Count > 0)
                 {
                     DataTable dataTable = _DataSet.Tables[0];
@@ -399,15 +295,15 @@ namespace ECOMAPP.DataLayer
                 }
                 else
                 {
-                    _DBReturnData.Code = 404;
-                    _DBReturnData.Message = "No subcategories found.";
+                    _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
+                    _DBReturnData.Message =DBEnums.Status.FAILURE.ToString();
                 }
             }
             catch (Exception ex)
             {
                 _DALBASE.ErrorLog("GetSubCategoryThroughCategoryId", "DLSubcategory", ex.Message);
-                _DBReturnData.Message = "Internal Server Error";
-                _DBReturnData.Code = 400;
+                _DBReturnData.Message = DBEnums.Status.FAILURE.ToString() + ex.Message.ToString();
+                _DBReturnData.Code = DBEnums.Codes.BAD_REQUEST;
 
             }
             return _MLSubcategory;
@@ -415,10 +311,9 @@ namespace ECOMAPP.DataLayer
         }
 
 
-        public MLSubcategory GetSubCategoryById(MLGetThroughId Data)
+        public DBReturnData GetSubCategoryById(MLGetThroughId Data)
         {
             MLSubcategory _MLSubcate = new MLSubcategory();
-            DLSubcategory _DLSubcate = new DLSubcategory();
             DALBASE _DALBASE = new();
             DBReturnData _DBReturnData = new DBReturnData();
 
@@ -443,14 +338,15 @@ namespace ECOMAPP.DataLayer
                     {
                         if (_DataRow["RETVAL"]?.ToString() == "SUCCESS")
                         {
-                            _DBReturnData.Message = "SUCCESS";
-                            _DBReturnData.Code = 200;
+                            _DBReturnData.Message = DBEnums.Status.SUCCESS.ToString();
+                            _DBReturnData.Code = DBEnums.Codes.SUCCESS;
 
                         }
                         else
                         {
-                            _DBReturnData.Message = "FAILED";
-                            _DBReturnData.Code = 400;
+                            _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+                            _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
+                                
 
                         }
                     }
@@ -460,10 +356,10 @@ namespace ECOMAPP.DataLayer
             catch (Exception ex)
             {
                 _DALBASE.ErrorLog("GetSubCategoryById", "DLSubcategory", ex.Message);
-                _DBReturnData.Message = "Internal Server Error";
-                _DBReturnData.Code = 400;
+                _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+                _DBReturnData.Code = DBEnums.Codes.BAD_REQUEST;
             }
-            return _MLSubcate;
+            return _DBReturnData;
 
         }
 

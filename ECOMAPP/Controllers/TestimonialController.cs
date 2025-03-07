@@ -25,84 +25,82 @@ namespace ECOMAPP.Controllers
                 if (_MLTestimonial.TestimonialList.Count > 0)
                 {
                     _DBReturnData.Dataset = _MLTestimonial.TestimonialList[0];
-                    _DBReturnData.Code = 200;
-                    _DBReturnData.Message = "";
-                    _DBReturnData.Retval = "SUCCESS";
+                    _DBReturnData.Code = DBEnums.Codes.SUCCESS;
+                    _DBReturnData.Message =DBEnums.Status.SUCCESS.ToString();
+                    _DBReturnData.Retval = DBEnums.Status.SUCCESS.ToString();
                 }
                 else
                 {
                     _DBReturnData.Dataset = null;
-                    _DBReturnData.Retval = "FAILED";
-                    _DBReturnData.Message = "internal server error due to";
-                    _DBReturnData.Code = 500;
+                    _DBReturnData.Retval = DBEnums.Status.FAILURE.ToString();
+                    _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+                    _DBReturnData.Code = DBEnums.Codes.BAD_REQUEST;
                 }
 
             
 
             } catch (Exception ex)
             {
-                _DBReturnData.Dataset = null;
-                _DBReturnData.Code = 500;
-                _DBReturnData.Message = "Internal Server Error";
-                _DBReturnData.Retval = null;
+    
+                _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
+                _DBReturnData.Message =DBEnums.Status.FAILURE.ToString() +ex.Message.ToString();
+                _DBReturnData.Retval = DBEnums.Status.FAILURE.ToString();
 
             }
 
             return new[] { _DBReturnData };
 
         }
+
+
         [Route("InsertEcommerceTestimonial")]
         [HttpPost]
         public ActionResult<IEnumerable<DBReturnData>> InsertEcommerceTestimonial(MLInsertTestimonial _MLInsertTestimonial)
         {
             DLTestimonial _DLTestimonial = new();
-            MLTestimonial _MLTestimonial = new();
             DBReturnData _DBReturnData = new();
 
             try
             {
-                _MLTestimonial = _DLTestimonial.InsertEcommerceTestimonial(_MLInsertTestimonial);
-                _DBReturnData.Code = 200;
-                _DBReturnData.Message = "";
-                _DBReturnData.Retval = "SUCCESS";
+                _DBReturnData = _DLTestimonial.InsertEcommerceTestimonial(_MLInsertTestimonial);
 
             }
             catch (Exception ex)
             {
-                _DBReturnData.Dataset = null;
-                _DBReturnData.Retval = "FAILED";
-                _DBReturnData.Message = "internal server error due to";
-                _DBReturnData.Code = 500;
+ 
+                _DBReturnData.Retval = DBEnums.Status.FAILURE.ToString();
+                _DBReturnData.Message = DBEnums.Status.FAILURE.ToString() + ex.Message.ToString();
+                _DBReturnData.Code = DBEnums.Codes.BAD_REQUEST;
             }
 
             return new[] { _DBReturnData };
         }
+
+
         [Route("UpdateEcommerceTestimonial")]
         [HttpPost]
         public ActionResult<IEnumerable<DBReturnData>> UpdateEcommerceTestimonial(MLUpdateTestimonial _MLUpdateTestimonial)
         {
             DLTestimonial _DLTestimonial = new();
-            MLTestimonial _MLTestimonial = new();
             DBReturnData _DBReturnData = new();
 
             try
             {
-                _MLTestimonial = _DLTestimonial.UpdateEcommerceTestimonial(_MLUpdateTestimonial);
-                _DBReturnData.Code = 200;
-                _DBReturnData.Message = "";
-                _DBReturnData.Retval = "SUCCESS";
+                _DBReturnData = _DLTestimonial.UpdateEcommerceTestimonial(_MLUpdateTestimonial);
 
             }
             catch (Exception ex)
             {
                 _DBReturnData.Dataset = null;
-                _DBReturnData.Retval = "FAILED";
-                _DBReturnData.Message = "internal server error due to";
-                _DBReturnData.Code = 500;
+                _DBReturnData.Retval = DBEnums.Status.FAILURE.ToString();
+                _DBReturnData.Message = DBEnums.Status.FAILURE.ToString() + ex.Message.ToString();
+                _DBReturnData.Code = DBEnums.Codes.BAD_REQUEST;
             }
 
             return new[] { _DBReturnData };
         }
+
+
         [Route("DeleteEcommerceTestimonial")]
         [HttpDelete]
         public ActionResult<IEnumerable<DBReturnData>> DeleteEcommerceTestimonial(MLDeleteTestimonial _MLDeleteTestimonial)
@@ -113,18 +111,16 @@ namespace ECOMAPP.Controllers
 
             try
             {
-                _MLTestimonial = _DLTestimonial.DeleteEcommerceTestimonial(_MLDeleteTestimonial);
-                _DBReturnData.Code = 200;
-                _DBReturnData.Message = "";
-                _DBReturnData.Retval = "SUCCESS";
+                _DBReturnData = _DLTestimonial.DeleteEcommerceTestimonial(_MLDeleteTestimonial);
+              
 
             }
             catch (Exception ex)
             {
-                _DBReturnData.Dataset = null;
-                _DBReturnData.Retval = "FAILED";
-                _DBReturnData.Message = "internal server error due to";
-                _DBReturnData.Code = 500;
+       
+                _DBReturnData.Retval = DBEnums.Status.FAILURE.ToString();
+                _DBReturnData.Message = DBEnums.Status.FAILURE.ToString() + ex.Message.ToString();
+                _DBReturnData.Code = DBEnums.Codes.BAD_REQUEST;
             }
 
             return new[] { _DBReturnData };

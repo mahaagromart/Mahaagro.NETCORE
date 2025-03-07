@@ -105,6 +105,7 @@ namespace ECOMAPP.DataLayer
         {
             List<MLProduct.MlGetProduct> products = new();
             DALBASE _DALBASE = new();
+            DBReturnData _DBReturnData = new();
 
             try
             {
@@ -220,6 +221,7 @@ namespace ECOMAPP.DataLayer
             catch (Exception ex)
             {
                 _DALBASE.ErrorLog("GetAllProducts", "DLProduct", ex.ToString());
+
             }
 
             return products;
@@ -292,21 +294,21 @@ namespace ECOMAPP.DataLayer
                     {
                         if (row["RETVAL"]?.ToString() == "SUCCESS")
                         {
-                            _DBReturnData.Message = "SUCCESS";
-                            _DBReturnData.Code = 200;
+                            _DBReturnData.Message =DBEnums.Status.SUCCESS.ToString();
+                            _DBReturnData.Code = DBEnums.Codes.SUCCESS;
                         }
                         else
                         {
-                            _DBReturnData.Message = "FAILED";
-                            _DBReturnData.Code = 401;
+                            _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+                            _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
                         }
                     }
 
                 }
                 else
                 {
-                    _DBReturnData.Message = "NOT EXISTS";
-                    _DBReturnData.Code = 400;
+                    _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+                    _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
                 }
 
 
@@ -314,82 +316,21 @@ namespace ECOMAPP.DataLayer
             catch (Exception ex)
             {
                 _DALBASE.ErrorLog("InsertProduct", "DLProduct", ex.ToString());
-                _DBReturnData.Message = "Internal Server Error";
-                _DBReturnData.Code = 500;
+                _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+                _DBReturnData.Code = DBEnums.Codes.BAD_REQUEST;
 
             }
 
-            //return _MLProduct;
+       
             return _DBReturnData;
         }
 
 
 
-        //public MLProduct UpdateProduct(MlGetProduct data)
-        //{
-        //    MLProduct _MLProduct = new();
-        //    DALBASE _DALBASE = new();
-        //    DBReturnData _DBReturnData = new();
-
-        //    DataSet _DataSet = new();
-        //    try
-        //    {
-        //        using (DBAccess _DBAccess = new())
-        //        {
-        //            _DBAccess.DBProcedureName = "SP_PRODUCT";
-        //            _DBAccess.AddParameters("@Action", "INSERTPRODUCT");
-        //            _DBAccess.AddParameters("@Product_Name", data.Product_Name ?? "");
-        //            _DBAccess.AddParameters("@Product_Name", data.Product_id ?? "");
-        //            _DBAccess.AddParameters("@Quantity", data.Quantity);
-        //            _DBAccess.AddParameters("@Image", data.Image ?? "");
-        //            _DBAccess.AddParameters("@Description", data.Description ?? "");
-        //            _DBAccess.AddParameters("@Rating", data.Rating ?? "");
-        //            _DBAccess.AddParameters("@Category_id", data.Category_id ?? "");
-        //            _DBAccess.AddParameters("@CreationDate", data.CreationDate ?? "");
-        //            _DBAccess.AddParameters("@SubSubcategory_id", data.SubSubcategory_id);
-        //            _DBAccess.AddParameters("@UpdationDate", data.UpdationDate ?? "");
-        //            _DBAccess.AddParameters("@Price", data.Price);
-        //            _DataSet = _DBAccess.DBExecute();
-        //            _DataSet.Dispose();
-
-        //        }
-        //        if (_DataSet != null && _DataSet.Tables.Count > 0)
-        //        {
-        //            DataTable _DataTable = new();
-        //            foreach (DataRow row in _DataSet.Tables)
-        //            {
-        //                if (row["RETVAL"]?.ToString() == "SUCCESS")
-        //                {
-
-        //                    _DBReturnData.Message = "SUCCESS";
-        //                    _DBReturnData.Code = 200;
-        //                }
-        //                else
-        //                {
-        //                    _DBReturnData.Message = "FAILED";
-        //                    _DBReturnData.Code = 401;
-        //                }
-        //            }
-        //        }
-        //        else
-        //        {
-        //            _DBReturnData.Message = "NOT EXISTS";
-        //            _DBReturnData.Code = 400;
-        //        }
-
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _DALBASE.ErrorLog("UpdateProduct", "DLProduct", ex.ToString());
-        //        _DBReturnData.Message = "Internal Server Error";
-        //        _DBReturnData.Code = 500;
-        //    }
-
-        //    return _MLProduct;
-        //}
+      
 
 
-        public MLProduct DeleteProduct(MLDeleteProduct data)
+        public DBReturnData DeleteProduct(MLDeleteProduct data)
         {
             MLProduct _MLProduct = new();
             DALBASE _DALBASE = new();
@@ -415,41 +356,40 @@ namespace ECOMAPP.DataLayer
                         if (row["RETVAL"]?.ToString() == "SUCCESS")
                         {
 
-                            _DBReturnData.Message = "SUCCESS";
-                            _DBReturnData.Code = 200;
+                            _DBReturnData.Message = DBEnums.Status.SUCCESS.ToString();
+                            _DBReturnData.Code = DBEnums.Codes.SUCCESS;
                         }
                         else
                         {
-                            _DBReturnData.Message = "FAILED";
-                            _DBReturnData.Code = 401;
+                            _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+                            _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
                         }
                     }
                 }
                 else
                 {
-                    _DBReturnData.Message = "NOT EXISTS";
-                    _DBReturnData.Code = 400;
+                    _DBReturnData.Message = DBEnums.Status.SUCCESS.ToString();
+                    _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
                 }
 
             }
             catch (Exception ex)
             {
                 _DALBASE.ErrorLog("DeleteProduct", "DLProduct", ex.ToString());
-                _DBReturnData.Message = "Internal Server Error";
-                _DBReturnData.Code = 500;
+                _DBReturnData.Message = DBEnums.Status.SUCCESS.ToString();
+                _DBReturnData.Code = DBEnums.Codes.BAD_REQUEST;
             }
 
-            return _MLProduct;
+            return _DBReturnData;
         }
 
 
 
-        public MLProduct ProductToggleCertified(MLToggleCertified data)
+        public DBReturnData ProductToggleCertified(MLToggleCertified data)
         {
-            MLProduct _MLProduct = new();
+  
             DALBASE _DALBASE = new();
             DBReturnData _DBReturnData = new();
-
             DataSet _DataSet = new();
             try
             {
@@ -470,35 +410,35 @@ namespace ECOMAPP.DataLayer
                         if (row["RETVAL"]?.ToString() == "SUCCESS")
                         {
 
-                            _DBReturnData.Message = "SUCCESS";
-                            _DBReturnData.Code = 200;
+                            _DBReturnData.Message = DBEnums.Status.SUCCESS.ToString();
+                            _DBReturnData.Code = DBEnums.Codes.SUCCESS;
                         }
                         else
                         {
-                            _DBReturnData.Message = "FAILED";
-                            _DBReturnData.Code = 401;
+                            _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+                            _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
                         }
                     }
                 }
                 else
                 {
-                    _DBReturnData.Message = "NOT EXISTS";
-                    _DBReturnData.Code = 400;
+                    _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+                    _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
                 }
 
             }
             catch (Exception ex)
             {
                 _DALBASE.ErrorLog("ProductToggleCertified", "DLProduct", ex.ToString());
-                _DBReturnData.Message = "Internal Server Error";
-                _DBReturnData.Code = 500;
+                _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+                _DBReturnData.Code = DBEnums.Codes.BAD_REQUEST;
 
             }
 
-            return _MLProduct;
+            return _DBReturnData;
         }
 
-        public MLProduct ProductToggleStatus(MLToggleStatus data)
+        public DBReturnData ProductToggleStatus(MLToggleStatus data)
         {
             MLProduct _MLProduct = new();
             DALBASE _DALBASE = new();
@@ -524,32 +464,32 @@ namespace ECOMAPP.DataLayer
                         if (row["RETVAL"]?.ToString() == "SUCCESS")
                         {
 
-                            _DBReturnData.Message = "SUCCESS";
-                            _DBReturnData.Code = 200;
+                            _DBReturnData.Message = DBEnums.Status.SUCCESS.ToString();
+                            _DBReturnData.Code = DBEnums.Codes.SUCCESS;
                         }
                         else
                         {
-                            _DBReturnData.Message = "FAILED";
-                            _DBReturnData.Code = 401;
+                            _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+                            _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
                         }
                     }
                 }
                 else
                 {
-                    _DBReturnData.Message = "NOT EXISTS";
-                    _DBReturnData.Code = 400;
+                    _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+                    _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
                 }
 
             }
             catch (Exception ex)
             {
                 _DALBASE.ErrorLog("ProductToggleStatus", "DLProduct", ex.ToString());
-                _DBReturnData.Message = "Internal Server Error";
-                _DBReturnData.Code = 500;
+                _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+                _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
 
             }
 
-            return _MLProduct;
+            return _DBReturnData;
         }
 
 
@@ -610,29 +550,29 @@ namespace ECOMAPP.DataLayer
 
                         else
                         {
-                            _DBReturnData.Message = "FAILED";
-                            _DBReturnData.Code = 401;
+                            _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+                            _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
                         }
                     }
                 }
                 else
                 {
-                    _DBReturnData.Message = "NOT EXISTS";
-                    _DBReturnData.Code = 400;
+                    _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+                    _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
                 }
 
             }
             catch (Exception ex)
             {
                 _DALBASE.ErrorLog("GetAllInhouseProducts", "DLProduct", ex.ToString());
-                _DBReturnData.Message = "Internal Server Error";
-                _DBReturnData.Code = 500;
+                _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+                _DBReturnData.Code = DBEnums.Codes.BAD_REQUEST;
             }
 
             return _MLProduct.InhouseProductList;
         }
 
-        public MLProduct InsertInhouseProduct(MLInsertInhouseProduct data)
+        public DBReturnData InsertInhouseProduct(MLInsertInhouseProduct data)
         {
             MLProduct _MLProduct = new();
             DALBASE _DALBASE = new();
@@ -668,35 +608,35 @@ namespace ECOMAPP.DataLayer
                         if (row["RETVAL"]?.ToString() == "SUCCESS")
                         {
 
-                            _DBReturnData.Message = "SUCCESS";
-                            _DBReturnData.Code = 200;
+                            _DBReturnData.Message = DBEnums.Status.SUCCESS.ToString();
+                            _DBReturnData.Code = DBEnums.Codes.SUCCESS;
                         }
                         else
                         {
-                            _DBReturnData.Message = "FAILED";
-                            _DBReturnData.Code = 401;
+                            _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+                            _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
                         }
                     }
                 }
                 else
                 {
-                    _DBReturnData.Message = "NOT EXISTS";
-                    _DBReturnData.Code = 400;
+                    _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+                    _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
                 }
 
             }
             catch (Exception ex)
             {
                 _DALBASE.ErrorLog("InsertInhouseProduct", "DLProduct", ex.ToString());
-                _DBReturnData.Message = "Internal Server Error";
-                _DBReturnData.Code = 500;
+                _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+                _DBReturnData.Code = DBEnums.Codes.BAD_REQUEST;
 
             }
 
-            return _MLProduct;
+            return _DBReturnData;
         }
 
-        public MLProduct UpdateInhouseProduct(MLUpdateInhouseProduct data)
+        public DBReturnData UpdateInhouseProduct(MLUpdateInhouseProduct data)
         {
             MLProduct _MLProduct = new();
             DALBASE _DALBASE = new();
@@ -732,37 +672,36 @@ namespace ECOMAPP.DataLayer
                         if (row["RETVAL"]?.ToString() == "SUCCESS")
                         {
 
-                            _DBReturnData.Message = "SUCCESS";
-                            _DBReturnData.Code = 200;
+                            _DBReturnData.Message = DBEnums.Status.SUCCESS.ToString();
+                            _DBReturnData.Code = DBEnums.Codes.SUCCESS;
                         }
                         else
                         {
-                            _DBReturnData.Message = "FAILED";
-                            _DBReturnData.Code = 401;
+                            _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+                            _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
                         }
                     }
                 }
                 else
                 {
-                    _DBReturnData.Message = "NOT EXISTS";
-                    _DBReturnData.Code = 400;
+                    _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+                    _DBReturnData.Code = DBEnums.Codes.BAD_REQUEST;
                 }
 
             }
             catch (Exception ex)
             {
                 _DALBASE.ErrorLog("UpdateInhouseProduct", "DLProduct", ex.ToString());
-                _DBReturnData.Message = "Internal Server Error";
-                _DBReturnData.Code = 500;
+                _DBReturnData.Message =DBEnums.Status.FAILURE.ToString() + ex.Message.ToString();
+                _DBReturnData.Code = DBEnums.Codes.BAD_REQUEST;
 
             }
 
-            return _MLProduct;
+            return _DBReturnData;
         }
 
-        public MLProduct DeleteInhouseProduct(MLDeleteInhouseProduct data)
+        public DBReturnData DeleteInhouseProduct(MLDeleteInhouseProduct data)
         {
-            MLProduct _MLProduct = new();
             DALBASE _DALBASE = new();
             DBReturnData _DBReturnData = new();
 
@@ -787,31 +726,31 @@ namespace ECOMAPP.DataLayer
                         {
 
                             _DBReturnData.Message = "SUCCESS";
-                            _DBReturnData.Code = 200;
+                            _DBReturnData.Code = DBEnums.Codes.SUCCESS;
                         }
                         else
                         {
-                            _DBReturnData.Message = "FAILED";
-                            _DBReturnData.Code = 401;
+                            _DBReturnData.Message =DBEnums.Status.FAILURE.ToString();
+                            _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
                         }
                     }
                 }
                 else
                 {
-                    _DBReturnData.Message = "NOT EXISTS";
-                    _DBReturnData.Code = 400;
+                    _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+                    _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
                 }
 
             }
             catch (Exception ex)
             {
                 _DALBASE.ErrorLog("DeleteInhouseProduct", "DLProduct", ex.ToString());
-                _DBReturnData.Message = "Internal Server Error";
-                _DBReturnData.Code = 500;
+                _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+                _DBReturnData.Code = DBEnums.Codes.BAD_REQUEST;
 
             }
 
-            return _MLProduct;
+            return _DBReturnData;
         }
 
         #endregion InhouseProduct

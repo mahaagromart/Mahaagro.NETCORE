@@ -49,34 +49,34 @@ namespace ECOMAPP.DataLayer
                     }
                     else
                     {
-                        _DBReturnData.Code = 400;
-                        _DBReturnData.Message = "FAILED";
+                        _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
+                        _DBReturnData.Message =DBEnums.Status.FAILURE.ToString();
 
                     }
                 }
                 else
                 {
-                    _DBReturnData.Code = 404;
-                    _DBReturnData.Message = "No Testimonial found.";
+                    _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
+                    _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
                 }
 
             }
             catch (Exception ex) 
             {
                 _DALBASE.ErrorLog("GetAllTestimonial", "DLTestimonial", ex.Message);
-                _DBReturnData.Code = 500;
-                _DBReturnData.Message = "Internal Server Error";
+                _DBReturnData.Code = DBEnums.Codes.BAD_REQUEST;
+                _DBReturnData.Message = DBEnums.Status.FAILURE.ToString() + ex.Message.ToString();
 
             }
 
             return _MLTestimonial.TestimonialList;
         }
 
-        public MLTestimonial InsertEcommerceTestimonial(MLInsertTestimonial Data)
+        public DBReturnData InsertEcommerceTestimonial(MLInsertTestimonial Data)
         {
-            MLTestimonial _MLTestimonial = new();
-            DLTestimonial _DLTestimonial = new();
+      
             DBReturnData _DBReturnData = new();
+            DALBASE _DALBASE = new();
 
             DataSet _DataSet = new();
            
@@ -97,13 +97,13 @@ namespace ECOMAPP.DataLayer
                     {
                         if (Row["RETVAL"]?.ToString() == "SUCCESS")
                         {
-                            _DBReturnData.Message = "SUCCESS";
-                            _DBReturnData.Code = 200;
+                            _DBReturnData.Message = DBEnums.Status.SUCCESS.ToString();
+                            _DBReturnData.Code = DBEnums.Codes.SUCCESS;
                         }
                         else
                         {
-                            _DBReturnData.Message = "FAILED";
-                            _DBReturnData.Code = 401;
+                            _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+                            _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
                         }
 
                     }
@@ -113,22 +113,21 @@ namespace ECOMAPP.DataLayer
             }
             catch (Exception ex)
             {
-                _DBReturnData.Message = "NOT EXISTS";
-                _DBReturnData.Code = 400;
+                _DALBASE.ErrorLog("InsertEcommerceTestimonial", "DLTestimonial", ex.Message);
+                _DBReturnData.Message =DBEnums.Status.FAILURE.ToString() + ex.Message.ToString();
+                _DBReturnData.Code = DBEnums.Codes.BAD_GATEWAY;
 
             }
 
-            return  _MLTestimonial ;
+            return _DBReturnData;
 
         }
 
-        public MLTestimonial UpdateEcommerceTestimonial(MLUpdateTestimonial Data)
+        public DBReturnData UpdateEcommerceTestimonial(MLUpdateTestimonial Data)
         {
-            MLTestimonial _MLTestimonial = new();
-            DLTestimonial _DLTestimonial = new();
             DBReturnData _DBReturnData = new();
-
             DataSet _DataSet = new();
+            DALBASE _DALBASE = new();
 
             try
             {
@@ -147,13 +146,13 @@ namespace ECOMAPP.DataLayer
                     {
                         if (Row["RETVAL"]?.ToString() == "SUCCESS")
                         {
-                            _DBReturnData.Message = "SUCCESS";
-                            _DBReturnData.Code = 200;
+                            _DBReturnData.Message = DBEnums.Status.SUCCESS.ToString();
+                            _DBReturnData.Code = DBEnums.Codes.SUCCESS;
                         }
                         else
                         {
-                            _DBReturnData.Message = "FAILED";
-                            _DBReturnData.Code = 401;
+                            _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+                            _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
                         }
 
                     }
@@ -163,23 +162,24 @@ namespace ECOMAPP.DataLayer
             }
             catch (Exception ex)
             {
-                _DBReturnData.Message = "NOT EXISTS";
-                _DBReturnData.Code = 400;
+                _DALBASE.ErrorLog("UpdateEcommerceTestimonial", "DLTestimonial", ex.Message);
+                _DBReturnData.Message = DBEnums.Status.FAILURE.ToString() + ex.ToString();
+                _DBReturnData.Code = DBEnums.Codes.BAD_REQUEST;
 
             }
 
-            return _MLTestimonial;
+            return _DBReturnData;
 
         }
 
 
         
 
-       public MLTestimonial DeleteEcommerceTestimonial(MLDeleteTestimonial Data)
-        {
-            MLTestimonial _MLTestimonial = new();
-            DLTestimonial _DLTestimonial = new();
+       public DBReturnData DeleteEcommerceTestimonial(MLDeleteTestimonial Data)
+       {
+        
             DBReturnData _DBReturnData = new();
+            DALBASE _DALBASE = new();
 
             DataSet _DataSet = new();
 
@@ -200,13 +200,13 @@ namespace ECOMAPP.DataLayer
                     {
                         if (Row["RETVAL"]?.ToString() == "SUCCESS")
                         {
-                            _DBReturnData.Message = "SUCCESS";
-                            _DBReturnData.Code = 200;
+                            _DBReturnData.Message = DBEnums.Status.SUCCESS.ToString();
+                            _DBReturnData.Code = DBEnums.Codes.SUCCESS;
                         }
                         else
                         {
-                            _DBReturnData.Message = "FAILED";
-                            _DBReturnData.Code = 401;
+                            _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+                            _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
                         }
 
                     }
@@ -216,12 +216,13 @@ namespace ECOMAPP.DataLayer
             }
             catch (Exception ex)
             {
-                _DBReturnData.Message = "NOT EXISTS";
-                _DBReturnData.Code = 400;
+                _DALBASE.ErrorLog("DeleteEcommerceTestimonial", "DLTestimonial", ex.Message);
+                _DBReturnData.Message = DBEnums.Status.FAILURE.ToString() +ex.ToString();
+                _DBReturnData.Code = DBEnums.Codes.BAD_REQUEST;
 
             }
 
-            return _MLTestimonial;
+            return _DBReturnData;
 
         }
     }

@@ -8,7 +8,7 @@
             ADD = 0, UPDATE = 1, DELETE = 2, UNDELETE = 3, SEARCH = 4, VIEW = 5, COPY = 6
         }
 
-        public enum Codes
+         public enum Codes
         {
             SUCCESS = 200,
             CREATED = 201,
@@ -24,7 +24,7 @@
             BAD_GATEWAY = 502,
             SERVICE_UNAVAILABLE = 503
         }
-
+        //public enum Code { s, d }
 
 
 

@@ -27,25 +27,25 @@ namespace ECOMAPP.Controllers
                 if (_MLVarients.VarientsList.Count > 0)
                 {
                     _DBReturnData.Dataset = _MLVarients.VarientsList;
-                    _DBReturnData.Code = 200;
-                    _DBReturnData.Message = "SUCCESS";
-                    _DBReturnData.Retval = "SUCCESS";
+                    _DBReturnData.Code = DBEnums.Codes.SUCCESS;
+                    _DBReturnData.Message = DBEnums.Status.SUCCESS.ToString();
+                    _DBReturnData.Retval = DBEnums.Status.SUCCESS.ToString();
 
                 }
                 else
                 {
                     _DBReturnData.Dataset = null;
-                    _DBReturnData.Code = 200;
-                    _DBReturnData.Message = "FAILED";
-                    _DBReturnData.Retval = "FAILED";
+                    _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
+                    _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+                    _DBReturnData.Retval = DBEnums.Status.FAILURE.ToString();
                 }
 
             }
             catch(Exception ex)
             {
-                _DBReturnData.Retval = "FAILED";
-                _DBReturnData.Message = "internal server error due to" + ex.ToString();
-                _DBReturnData.Code = 500;
+                _DBReturnData.Retval = DBEnums.Status.FAILURE.ToString();
+                _DBReturnData.Message = DBEnums.Status.FAILURE.ToString() + ex.ToString();
+                _DBReturnData.Code = DBEnums.Codes.BAD_REQUEST;
 
             }
             return new[] { _DBReturnData } ;
@@ -53,6 +53,8 @@ namespace ECOMAPP.Controllers
 
         }
 
+
+  
         [Route("InsertVarients")]
         [HttpPost]
         [JwtAuthorization(Roles = [Roles.Admin])]
@@ -66,16 +68,16 @@ namespace ECOMAPP.Controllers
             try
             {
        
-                _DBReturnData.Code = 200;
-                _DBReturnData.Message = "SUCCESS";
-                _DBReturnData.Retval = "SUCCESS";
+                _DBReturnData.Code = DBEnums.Codes.SUCCESS;
+                _DBReturnData.Message = DBEnums.Status.SUCCESS.ToString();
+                _DBReturnData.Retval = DBEnums.Status.SUCCESS.ToString();
 
             }
             catch (Exception ex)
             {
-                _DBReturnData.Retval = "FAILED";
-                _DBReturnData.Message = "internal server error due to" + ex.ToString();
-                _DBReturnData.Code = 500;
+                _DBReturnData.Retval = DBEnums.Status.FAILURE.ToString();
+                _DBReturnData.Message = DBEnums.Status.FAILURE.ToString() + ex.ToString();
+                _DBReturnData.Code = DBEnums.Codes.BAD_REQUEST;
 
             }
             return new[] { _DBReturnData };
@@ -96,16 +98,16 @@ namespace ECOMAPP.Controllers
             try
             {
 
-                _DBReturnData.Code = 200;
-                _DBReturnData.Message = "SUCCESS";
-                _DBReturnData.Retval = "SUCCESS";
+                _DBReturnData.Code = DBEnums.Codes.SUCCESS;
+                _DBReturnData.Message = DBEnums.Status.SUCCESS.ToString();
+                _DBReturnData.Retval = DBEnums.Status.SUCCESS.ToString();
 
             }
             catch (Exception ex)
             {
-                _DBReturnData.Retval = "FAILED";
-                _DBReturnData.Message = "internal server error due to" + ex.ToString();
-                _DBReturnData.Code = 500;
+                _DBReturnData.Retval = DBEnums.Status.FAILURE.ToString();
+                _DBReturnData.Message = DBEnums.Status.FAILURE.ToString() + ex.ToString();
+                _DBReturnData.Code = DBEnums.Codes.BAD_GATEWAY;
 
             }
             return new[] { _DBReturnData };
@@ -125,16 +127,16 @@ namespace ECOMAPP.Controllers
             try
             {
 
-                _DBReturnData.Code = 200;
-                _DBReturnData.Message = "SUCCESS";
-                _DBReturnData.Retval = "SUCCESS";
+                _DBReturnData.Code = DBEnums.Codes.SUCCESS;
+                _DBReturnData.Message = DBEnums.Status.SUCCESS.ToString();
+                _DBReturnData.Retval = DBEnums.Status.SUCCESS.ToString();
 
             }
             catch (Exception ex)
             {
-                _DBReturnData.Retval = "FAILED";
-                _DBReturnData.Message = "internal server error due to" + ex.ToString();
-                _DBReturnData.Code = 500;
+                _DBReturnData.Retval = DBEnums.Status.FAILURE.ToString();
+                _DBReturnData.Message = DBEnums.Status.FAILURE.ToString() + ex.ToString();
+                _DBReturnData.Code = DBEnums.Codes.BAD_GATEWAY;
 
             }
             return new[] { _DBReturnData };
@@ -142,6 +144,7 @@ namespace ECOMAPP.Controllers
 
         }
 
+        //END TODO YET TO IMPLEMET IT'S A WROMG SCHEMA
 
     }
 }

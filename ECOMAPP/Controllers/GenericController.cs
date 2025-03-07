@@ -13,7 +13,7 @@ namespace ECOMAPP.Controllers
     {
         [Route("GetFaq")]
         [HttpPost]
-        [JwtAuthorization(Roles = [Roles.Admin,Roles.User,Roles.Vendor,Roles.OrderManager,Roles.HelpAndSupport,Roles.ReprotAnalysis])]
+       // [JwtAuthorization(Roles = [Roles.Admin,Roles.User,Roles.Vendor,Roles.OrderManager,Roles.HelpAndSupport,Roles.ReprotAnalysis])]
         public JsonResult GetFaq()
         {
 

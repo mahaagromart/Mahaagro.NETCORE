@@ -26,30 +26,32 @@ namespace ECOMAPP.Controllers
                 if( _MLProductattribute.ProductAttributeList.Count > 0)
                 {
                     _DBReturnData.Dataset = _MLProductattribute.ProductAttributeList;
-                    _DBReturnData.Code = 200;
-                    _DBReturnData.Message = "";
-                    _DBReturnData.Retval = "SUCCESS";
+                    _DBReturnData.Code = DBEnums.Codes.SUCCESS;
+                    _DBReturnData.Message =DBEnums.Status.SUCCESS.ToString();
+                    _DBReturnData.Retval = DBEnums.Status.SUCCESS.ToString();
                 }
                 else
                 {
                     _DBReturnData.Dataset = null;
-                    _DBReturnData.Code = 400;
-                    _DBReturnData.Message = "internal server error due to";
-                    _DBReturnData.Retval = "FAILED";
+                    _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
+                    _DBReturnData.Message =DBEnums.Status.FAILURE.ToString();
+                    _DBReturnData.Retval = DBEnums.Status.FAILURE.ToString();
                 }
 
 
             }
             catch(Exception ex) 
             {
-                _DBReturnData.Dataset = null;
-                _DBReturnData.Code = 500;
-                _DBReturnData.Message = "Internal Server Error";
-                _DBReturnData.Retval = null;
+        
+                _DBReturnData.Code = DBEnums.Codes.BAD_REQUEST;
+                _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+                _DBReturnData.Retval = DBEnums.Status.FAILURE.ToString();
 
             }
             return new[] { _DBReturnData };
         }
+
+
         [Route("InsertAttribute")]
         [HttpPost]
         [JwtAuthorization(Roles = [Roles.Admin])]
@@ -60,16 +62,14 @@ namespace ECOMAPP.Controllers
             DBReturnData _DBReturnData = new();
             try
             {
-                _MLProductattribute = _DLProductattribute.InsertAttribute(_MLInsertProductAttribute);
-                _DBReturnData.Code = 200;
-                _DBReturnData.Message = "";
-                _DBReturnData.Retval = "SUCCESS";
+                _DBReturnData = _DLProductattribute.InsertAttribute(_MLInsertProductAttribute);
+                
             }
             catch (Exception ex)
             {
-                _DBReturnData.Code = 500;
-                _DBReturnData.Message = "Internal Server Error";
-                _DBReturnData.Retval = null;
+                _DBReturnData.Code = DBEnums.Codes.BAD_REQUEST;
+                _DBReturnData.Message = DBEnums.Status.FAILURE.ToString() + ex.ToString();
+                _DBReturnData.Retval = DBEnums.Status.FAILURE.ToString();
 
             }
 
@@ -86,21 +86,21 @@ namespace ECOMAPP.Controllers
             DBReturnData _DBReturnData = new();
             try
             {
-                _MLProductattribute = _DLProductattribute.UpdateAttribute(_MLUpdateProductAttribute);
-                _DBReturnData.Code = 200;
-                _DBReturnData.Message = "";
-                _DBReturnData.Retval = "SUCCESS";
+                _DBReturnData = _DLProductattribute.UpdateAttribute(_MLUpdateProductAttribute);
+              
             }
             catch (Exception ex)
             {
-                _DBReturnData.Code = 500;
-                _DBReturnData.Message = "Internal Server Error";
-                _DBReturnData.Retval = null;
+                _DBReturnData.Code = DBEnums.Codes.BAD_REQUEST;
+                _DBReturnData.Message = DBEnums.Status.FAILURE.ToString() + ex.ToString();
+                _DBReturnData.Retval = DBEnums.Status.FAILURE.ToString();
 
             }
 
             return new[] { _DBReturnData };
         }
+
+
         [Route("DeleteAttribute")]
         [HttpDelete]
         [JwtAuthorization(Roles = [Roles.Admin])]
@@ -111,16 +111,14 @@ namespace ECOMAPP.Controllers
             DBReturnData _DBReturnData = new();
             try
             {
-                _MLProductattribute = _DLProductattribute.DeleteAttribute(_MLDeleteProductAttribute);
-                _DBReturnData.Code = 200;
-                _DBReturnData.Message = "";
-                _DBReturnData.Retval = "SUCCESS";
+                _DBReturnData = _DLProductattribute.DeleteAttribute(_MLDeleteProductAttribute);
+                
             }
             catch (Exception ex)
             {
-                _DBReturnData.Code = 500;
-                _DBReturnData.Message = "Internal Server Error";
-                _DBReturnData.Retval = null;
+                _DBReturnData.Code = DBEnums.Codes.BAD_REQUEST;
+                _DBReturnData.Message = DBEnums.Status.FAILURE.ToString() + ex.ToString();
+                _DBReturnData.Retval = DBEnums.Status.FAILURE.ToString();
 
             }
 

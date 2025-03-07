@@ -50,29 +50,29 @@ namespace ECOMAPP.DataLayer
                     }
                     else
                     {
-                        _DBReturnData.Code = 400;
-                        _DBReturnData.Message = "FAILED";
+                        _DBReturnData.Code =DBEnums.Codes.INTERNAL_SERVER_ERROR;
+                        _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
 
                     }
                 }
                 else
                 {
-                    _DBReturnData.Code = 404;
-                    _DBReturnData.Message = "No Testimonial found.";
+                    _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
+                    _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
                 }
 
             }
             catch (Exception ex)
             {
                 _DALBASE.ErrorLog("GetAllAttribute", "DLProductattribute", ex.Message);
-                _DBReturnData.Code = 500;
-                _DBReturnData.Message = "Internal Server Error";
+                _DBReturnData.Code = DBEnums.Codes.BAD_REQUEST;
+                _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
 
             }
 
             return _MLProductattribute.ProductAttributeList;
         }
-        public MLProductattribute InsertAttribute(MLInsertProductAttribute Data)
+        public DBReturnData InsertAttribute(MLInsertProductAttribute Data)
         {
             MLProductattribute _MLProductattribute = new();
             DALBASE _DALBASE = new();
@@ -98,35 +98,35 @@ namespace ECOMAPP.DataLayer
                     {
                         if (Row["RETVAL"]?.ToString() == "SUCCESS")
                         {
-                            _DBReturnData.Message = "SUCCESS";
-                            _DBReturnData.Code = 200;
+                            _DBReturnData.Message = DBEnums.Status.SUCCESS.ToString();
+                            _DBReturnData.Code = DBEnums.Codes.SUCCESS;
                         }
                         else
                         {
-                            _DBReturnData.Message = "FAILED";
-                            _DBReturnData.Code = 401;
+                            _DBReturnData.Message =DBEnums.Status.FAILURE.ToString();
+                            _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
                         }
                     }
                 }
                 else
                 {
-                    _DBReturnData.Code = 404;
-                    _DBReturnData.Message = "No Testimonial found.";
+                    _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+                    _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
                 }
 
             }
             catch (Exception ex)
             {
                 _DALBASE.ErrorLog("InsertAttribute", "DLProductattribute", ex.Message);
-                _DBReturnData.Code = 500;
-                _DBReturnData.Message = "Internal Server Error";
+                _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+                _DBReturnData.Code = DBEnums.Codes.BAD_REQUEST;
 
             }
 
-            return _MLProductattribute;
+            return _DBReturnData;
         }
 
-        public MLProductattribute UpdateAttribute(MLUpdateProductAttribute Data)
+        public DBReturnData UpdateAttribute(MLUpdateProductAttribute Data)
         {
             MLProductattribute _MLProductattribute = new();
             DALBASE _DALBASE = new();
@@ -153,13 +153,13 @@ namespace ECOMAPP.DataLayer
                     {
                         if (Row["RETVAL"]?.ToString() == "SUCCESS")
                         {
-                            _DBReturnData.Message = "SUCCESS";
-                            _DBReturnData.Code = 200;
+                            _DBReturnData.Message = DBEnums.Status.SUCCESS.ToString();
+                            _DBReturnData.Code = DBEnums.Codes.SUCCESS;
                         }
                         else
                         {
-                            _DBReturnData.Message = "FAILED";
-                            _DBReturnData.Code = 401;
+                            _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+                            _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
                         }
                     }
 
@@ -169,24 +169,24 @@ namespace ECOMAPP.DataLayer
         
                 else
                 {
-                    _DBReturnData.Code = 404;
-                    _DBReturnData.Message = "No Testimonial found.";
+                    _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+                    _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
                 }
 
             }
             catch (Exception ex)
             {
                 _DALBASE.ErrorLog("UpdateAttribute", "DLProductattribute", ex.Message);
-                _DBReturnData.Code = 500;
-                _DBReturnData.Message = "Internal Server Error";
+                _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+                _DBReturnData.Code = DBEnums.Codes.BAD_REQUEST;
 
             }
 
-            return _MLProductattribute;
+            return _DBReturnData;
         }
 
 
-        public MLProductattribute DeleteAttribute(MLDeleteProductAttribute Data)
+        public DBReturnData DeleteAttribute(MLDeleteProductAttribute Data)
         {
             MLProductattribute _MLProductattribute = new();
             DALBASE _DALBASE = new();
@@ -212,13 +212,13 @@ namespace ECOMAPP.DataLayer
                     {
                         if (Row["RETVAL"]?.ToString() == "SUCCESS")
                         {
-                            _DBReturnData.Message = "SUCCESS";
-                            _DBReturnData.Code = 200;
+                            _DBReturnData.Message = DBEnums.Status.SUCCESS.ToString();
+                            _DBReturnData.Code = DBEnums.Codes.SUCCESS;
                         }
                         else
                         {
-                            _DBReturnData.Message = "FAILED";
-                            _DBReturnData.Code = 401;
+                            _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+                            _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
                         }
                     }
 
@@ -227,20 +227,20 @@ namespace ECOMAPP.DataLayer
                 
                 else
                 {
-                    _DBReturnData.Code = 404;
-                    _DBReturnData.Message = "No Testimonial found.";
+                    _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+                    _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
                 }
 
             }
             catch (Exception ex)
             {
                 _DALBASE.ErrorLog("GetAllTestimonial", "DLProductattribute", ex.Message);
-                _DBReturnData.Code = 500;
-                _DBReturnData.Message = "Internal Server Error";
+                _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+                _DBReturnData.Code = DBEnums.Codes.BAD_REQUEST;
 
             }
 
-            return _MLProductattribute;
+            return _DBReturnData;
         }
 
 
