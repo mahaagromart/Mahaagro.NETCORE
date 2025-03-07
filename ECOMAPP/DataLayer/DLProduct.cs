@@ -12,6 +12,95 @@ namespace ECOMAPP.DataLayer
 {
     public class DLProduct
     {
+        //public List<MLProduct.MlGetProduct> GetAllProducts()
+        //{
+        //    List<MLProduct.MlGetProduct> products = new();
+        //    DALBASE _DALBASE = new();
+
+        //    try
+        //    {
+        //        using (DBAccess _DBAccess = new())
+        //        {
+        //            _DBAccess.DBProcedureName = "SP_PRODUCT";
+        //            _DBAccess.AddParameters("@Action", "SELECTPRODUCTANDPRICELOGISTICES");
+
+        //            using DataSet _DataSet = _DBAccess.DBExecute();
+
+
+        //            if (_DataSet == null || _DataSet.Tables.Count < 4)
+        //                return products;
+
+        //            DataTable productTable = _DataSet.Tables[0];
+        //            DataTable pricingTable = _DataSet.Tables[1];
+        //            DataTable logisticsTable = _DataSet.Tables[2];
+        //            DataTable imagesTable=_DataSet.Tables[3];
+
+        //            foreach (DataRow productRow in productTable.Rows)
+        //            {
+        //                string PROD_ID = productRow["PROD_ID"]?.ToString() ?? string.Empty;
+
+        //                #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
+        //                DataRow pricingRow = pricingTable.AsEnumerable().FirstOrDefault(row => row["PROD_ID"]?.ToString() == PROD_ID);
+
+        //                DataRow logisticsRow = logisticsTable.AsEnumerable().FirstOrDefault(row => row["PROD_ID"]?.ToString() == PROD_ID);
+
+        //                string Retval = _DataSet.Tables[4].Rows[0]["RETVAL"]?.ToString() ?? "";
+
+        //                if (Retval  == "SUCCESS")
+        //                {
+
+        //                    MLProduct.MlGetProduct product = new()
+        //                    {
+        //                        Id = productId,
+        //                        CATEGORY_ID = productRow["CATEGORY"]?.ToString() ?? string.Empty,
+        //                        Product_Name = productRow["Product_Name"]?.ToString() ?? string.Empty,
+        //                        SUB_CATEGORY_ID = productRow["SUB_CATEGORY"]?.ToString() ?? string.Empty,
+        //                        IMAGES = productRow["IMAGES"]?.ToString() ?? string.Empty,
+        //                        BRAND = productRow["BRAND"]?.ToString() ?? string.Empty,
+        //                        sku = productRow["sku"]?.ToString() ?? string.Empty,
+        //                        UNIT = productRow["UNIT"]?.ToString() ?? string.Empty,
+        //                        TAGS_INPUT = productRow["TAGS_INPUT"] != DBNull.Value
+        //                       ? productRow["TAGS_INPUT"].ToString().Split(',', StringSplitOptions.RemoveEmptyEntries)
+        //                       : Array.Empty<string>(),
+        //                        HSN = productRow["HSN"]?.ToString() ?? string.Empty,
+
+
+        //                        PRICING = pricingRow != null ? Convert.ToInt32(pricingRow["PRICING"]) : 0,
+        //                        MAXIMUM_RETAIL_PRICE = pricingRow != null ? Convert.ToInt32(pricingRow["MAXIMUM_RETAIL_PRICE"]) : 0,
+        //                        SELLING_PRICE = pricingRow != null ? Convert.ToInt32(pricingRow["SELLING_PRICE"]) : 0,
+        //                        MINIMUM_ORDER_QUANTITY = pricingRow != null ? Convert.ToInt32(pricingRow["MINIMUM_ORDER_QUANTITY"]) : 0,
+        //                        CURRENT_STOCK_QUANTITY = pricingRow != null ? Convert.ToInt32(pricingRow["CURRENT_STOCK_QUANTITY"]) : 0,
+        //                        DISCOUNT_TYPE = pricingRow?["DISCOUNT_TYPE"]?.ToString() ?? string.Empty,
+        //                        DISCOUNT_AMOUNT = pricingRow?["DISCOUNT_AMOUNT"]?.ToString() ?? string.Empty,
+        //                        TAX_AMOUNT = pricingRow?["TAX_AMOUNT"]?.ToString() ?? string.Empty,
+        //                        TAX_CALCULATION = pricingRow?["TAX_CALCULATION"]?.ToString() ?? string.Empty,
+        //                        CALCULATED_PRICE = pricingRow?["CALCULATED_PRICE"]?.ToString() ?? string.Empty,
+
+        //                        PACKAGE_WEIGHT = logisticsRow != null ? Convert.ToInt32(logisticsRow["PACKAGE_WEIGHT"]) : 0,
+        //                        PACKAGE_SHAPE = logisticsRow?["PACKAGE_SHAPE"]?.ToString() ?? string.Empty,
+        //                        PACKAGE_LENGTH = logisticsRow?["PACKAGE_LENGTH"]?.ToString() ?? string.Empty,
+        //                        PACKAGE_WIDTH = logisticsRow?["PACKAGE_WIDTH"]?.ToString() ?? string.Empty,
+        //                        PACKAGE_HEIGHT = logisticsRow?["PACKAGE_HEIGHT"]?.ToString() ?? string.Empty,
+        //                        PACKAGE_DIAMETER = logisticsRow?["PACKAGE_DIAMETER"]?.ToString() ?? string.Empty,
+        //                        PACKAGE_TOTAL_VOLUME = logisticsRow?["PACKAGE_TOTAL_VOLUME"]?.ToString() ?? string.Empty,
+        //                    };
+
+        //                    products.Add(product);
+        //                }
+
+
+        //            }
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _DALBASE.ErrorLog("GetAllProducts", "DLProduct", ex.ToString());
+        //    }
+
+        //    return products;
+        //}
+
+
         public List<MLProduct.MlGetProduct> GetAllProducts()
         {
             List<MLProduct.MlGetProduct> products = new();
@@ -22,66 +111,109 @@ namespace ECOMAPP.DataLayer
                 using (DBAccess _DBAccess = new())
                 {
                     _DBAccess.DBProcedureName = "SP_PRODUCT";
-                    _DBAccess.AddParameters("@Action", "SELECTPRODUCT");
+                    _DBAccess.AddParameters("@Action", "SELECTPRODUCTANDPRICELOGISTICES");
 
                     using DataSet _DataSet = _DBAccess.DBExecute();
 
-
-                    if (_DataSet == null || _DataSet.Tables.Count < 3)
+                    // Ensure all required tables exist
+                    if (_DataSet == null || _DataSet.Tables.Count < 5)
                         return products;
 
                     DataTable productTable = _DataSet.Tables[0];
                     DataTable pricingTable = _DataSet.Tables[1];
                     DataTable logisticsTable = _DataSet.Tables[2];
+                    DataTable imagesTable = _DataSet.Tables[3];
 
-                    foreach (DataRow productRow in productTable.Rows)
+                    string retval = _DataSet.Tables[4].Rows[0]["RETVAL"]?.ToString() ?? "";
+
+                    if (retval == "SUCCESS")
                     {
-                        int productId = Convert.IsDBNull(productRow["Id"]) ? 0 : Convert.ToInt32(productRow["Id"]);
-
-
-                        DataRow pricingRow = pricingTable.AsEnumerable()
-                            .FirstOrDefault(row => Convert.ToInt32(row["Id"]) == productId);
-
-                        DataRow logisticsRow = logisticsTable.AsEnumerable()
-                            .FirstOrDefault(row => Convert.ToInt32(row["Id"]) == productId);
-
-                        MLProduct.MlGetProduct product = new()
+                        foreach (DataRow productRow in productTable.Rows)
                         {
-                            Id = productId,
-                            CATEGORY_ID = productRow["CATEGORY"]?.ToString() ?? string.Empty,
-                            Product_Name = productRow["Product_Name"]?.ToString() ?? string.Empty,
-                            SUB_CATEGORY_ID = productRow["SUB_CATEGORY"]?.ToString() ?? string.Empty,
-                            Images = productRow["Images"]?.ToString() ?? string.Empty,
-                            BRAND = productRow["BRAND"]?.ToString() ?? string.Empty,
-                            sku = productRow["sku"]?.ToString() ?? string.Empty,
-                            UNIT = productRow["UNIT"]?.ToString() ?? string.Empty,
-                            TAGS_INPUT = productRow["TAGS_INPUT"] != DBNull.Value
-                                ? productRow["TAGS_INPUT"].ToString().Split(',', StringSplitOptions.RemoveEmptyEntries)
-                                : Array.Empty<string>(),
-                            HSN = productRow["HSN"]?.ToString() ?? string.Empty,
+                            string PROD_ID = productRow["PROD_ID"]?.ToString() ?? string.Empty;
+
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
+                            DataRow pricingRow = pricingTable.AsEnumerable()
+                                .FirstOrDefault(row => row["PROD_ID"]?.ToString() == PROD_ID);
+                            DataRow logisticsRow = logisticsTable.AsEnumerable()
+                                .FirstOrDefault(row => row["PROD_ID"]?.ToString() == PROD_ID);
+
+                                                    // Get all images for the product
+                                                    List<MLImages> images = imagesTable.AsEnumerable()
+                                              .Where(row => row["PROD_ID"]?.ToString() == PROD_ID)
+                                              .OrderBy(row => Convert.ToInt32(row["ID"])) // Sort by priority
+                                              .Select(row => new MLImages
+                                              {
+                                                  ID = Convert.ToInt32(row["ID"]),
+                                                  Product_Images = row["Product_Images"]?.ToString() ?? string.Empty,
+                                                  PROD_ID = row["PROD_ID"]?.ToString() ?? string.Empty
+                                              })
+                                              .ToList();
 
 
-                            PRICING = pricingRow != null ? Convert.ToInt32(pricingRow["PRICING"]) : 0,
-                            MAXIMUM_RETAIL_PRICE = pricingRow != null ? Convert.ToInt32(pricingRow["MAXIMUM_RETAIL_PRICE"]) : 0,
-                            SELLING_PRICE = pricingRow != null ? Convert.ToInt32(pricingRow["SELLING_PRICE"]) : 0,
-                            MINIMUM_ORDER_QUANTITY = pricingRow != null ? Convert.ToInt32(pricingRow["MINIMUM_ORDER_QUANTITY"]) : 0,
-                            CURRENT_STOCK_QUANTITY = pricingRow != null ? Convert.ToInt32(pricingRow["CURRENT_STOCK_QUANTITY"]) : 0,
-                            DISCOUNT_TYPE = pricingRow?["DISCOUNT_TYPE"]?.ToString() ?? string.Empty,
-                            DISCOUNT_AMOUNT = pricingRow?["DISCOUNT_AMOUNT"]?.ToString() ?? string.Empty,
-                            TAX_AMOUNT = pricingRow?["TAX_AMOUNT"]?.ToString() ?? string.Empty,
-                            TAX_CALCULATION = pricingRow?["TAX_CALCULATION"]?.ToString() ?? string.Empty,
-                            CALCULATED_PRICE = pricingRow?["CALCULATED_PRICE"]?.ToString() ?? string.Empty,
+                            MLProduct.MlGetProduct product = new()
+                            {
+                                PROD_ID = PROD_ID,
+                                Id = productRow["ID"] != DBNull.Value ? Convert.ToInt32(productRow["ID"]) : 0,
+                                CATEGORY_ID = productRow["CATEGORY_ID"]?.ToString() ?? string.Empty,
+                                CERTIFICATION = productRow["CERTIFICATION"] != DBNull.Value ? Convert.ToInt32(productRow["CERTIFICATION"]) : 0,
+                                STATUS = productRow["STATUS"] != DBNull.Value ? Convert.ToInt32(productRow["STATUS"]) : 0,
+                                Product_Name = productRow["Product_Name"]?.ToString() ?? string.Empty,
+                                Product_Description = productRow["PRODUCT_DESCRIPTION"]?.ToString() ?? string.Empty,
+                                RATING = productRow["RATING"]?.ToString() ?? string.Empty,
+                                SUB_CATEGORY_ID = productRow["SUB_CATEGORY_ID"]?.ToString() ?? string.Empty,
+                                IMAGES = images.Count > 0 ? images.First().Product_Images : string.Empty, // Set single image
+                                IMAGESLIST = images.Count > 0 ? images : null, // Set full list (nullable)
+                                BRAND = productRow["BRAND"]?.ToString() ?? string.Empty,
+                                sku = productRow["sku"]?.ToString() ?? string.Empty,
+                                UNIT = productRow["UNIT"]?.ToString() ?? string.Empty,
+                                TAGS_INPUT = productRow["TAGS_INPUT"] != DBNull.Value
+                                    ? productRow["TAGS_INPUT"].ToString().Split(',', StringSplitOptions.RemoveEmptyEntries)
+                                    : Array.Empty<string>(),
+                                HSN = productRow["HSN"]?.ToString() ?? string.Empty,
 
-                            PACKAGE_WEIGHT = logisticsRow != null ? Convert.ToInt32(logisticsRow["PACKAGE_WEIGHT"]) : 0,
-                            PACKAGE_SHAPE = logisticsRow?["PACKAGE_SHAPE"]?.ToString() ?? string.Empty,
-                            PACKAGE_LENGTH = logisticsRow?["PACKAGE_LENGTH"]?.ToString() ?? string.Empty,
-                            PACKAGE_WIDTH = logisticsRow?["PACKAGE_WIDTH"]?.ToString() ?? string.Empty,
-                            PACKAGE_HEIGHT = logisticsRow?["PACKAGE_HEIGHT"]?.ToString() ?? string.Empty,
-                            PACKAGE_DIAMETER = logisticsRow?["PACKAGE_DIAMETER"]?.ToString() ?? string.Empty,
-                            PACKAGE_TOTAL_VOLUME = logisticsRow?["PACKAGE_TOTAL_VOLUME"]?.ToString() ?? string.Empty,
-                        };
+                                // Pricing
+                                PRICING = pricingRow != null && pricingRow["PRICING"] != DBNull.Value
+                                    ? Convert.ToInt32(pricingRow["PRICING"])
+                                    : 0,
 
-                        products.Add(product);
+                                MAXIMUM_RETAIL_PRICE = pricingRow != null && pricingRow["MAXIMUM_RETAIL_PRICE"] != DBNull.Value
+                                    ? Convert.ToInt32(pricingRow["MAXIMUM_RETAIL_PRICE"])
+                                    : 0,
+
+                                SELLING_PRICE = pricingRow != null && pricingRow["SELLING_PRICE"] != DBNull.Value
+                                    ? Convert.ToInt32(pricingRow["SELLING_PRICE"])
+                                    : 0,
+
+                                MINIMUM_ORDER_QUANTITY = pricingRow != null && pricingRow["MINIMUM_ORDER_QUANTITY"] != DBNull.Value
+                                    ? Convert.ToInt32(pricingRow["MINIMUM_ORDER_QUANTITY"])
+                                    : 0,
+
+                                CURRENT_STOCK_QUANTITY = pricingRow != null && pricingRow["CURRENT_STOCK_QUANTITY"] != DBNull.Value
+                                    ? Convert.ToInt32(pricingRow["CURRENT_STOCK_QUANTITY"])
+                                    : 0,
+
+                                DISCOUNT_TYPE = pricingRow?["DISCOUNT_TYPE"]?.ToString() ?? string.Empty,
+                                DISCOUNT_AMOUNT = pricingRow?["DISCOUNT_AMOUNT"]?.ToString() ?? string.Empty,
+                                TAX_AMOUNT = pricingRow?["TAX_AMOUNT"]?.ToString() ?? string.Empty,
+                                TAX_CALCULATION = pricingRow?["TAX_CALCULATION"]?.ToString() ?? string.Empty,
+                                CALCULATED_PRICE = pricingRow?["CALCULATED_PRICE"]?.ToString() ?? string.Empty,
+
+                                // Logistics
+                                PACKAGE_WEIGHT = logisticsRow != null && logisticsRow["PACKAGE_WEIGHT"] != DBNull.Value
+                                    ? Convert.ToInt32(logisticsRow["PACKAGE_WEIGHT"])
+                                    : 0,
+
+                                PACKAGE_SHAPE = logisticsRow?["PACKAGE_SHAPE"]?.ToString() ?? string.Empty,
+                                PACKAGE_LENGTH = logisticsRow?["PACKAGE_LENGTH"]?.ToString() ?? string.Empty,
+                                PACKAGE_WIDTH = logisticsRow?["PACKAGE_WIDTH"]?.ToString() ?? string.Empty,
+                                PACKAGE_HEIGHT = logisticsRow?["PACKAGE_HEIGHT"]?.ToString() ?? string.Empty,
+                                PACKAGE_DIAMETER = logisticsRow?["PACKAGE_DIAMETER"]?.ToString() ?? string.Empty,
+                                PACKAGE_TOTAL_VOLUME = logisticsRow?["PACKAGE_TOTAL_VOLUME"]?.ToString() ?? string.Empty,
+                            };
+
+                            products.Add(product);
+                        }
                     }
                 }
             }
@@ -92,8 +224,6 @@ namespace ECOMAPP.DataLayer
 
             return products;
         }
-
-
 
         public DBReturnData InsertProduct(MlGetProduct data)
         {
@@ -118,7 +248,7 @@ namespace ECOMAPP.DataLayer
                     _DBAccess.AddParameters("@Product_Description", data.Product_Description ?? "");
                     _DBAccess.AddParameters("@SUB_CATEGORY_ID", data.SUB_CATEGORY_ID);
                     _DBAccess.AddParameters("@CATEGORY_ID", data.CATEGORY_ID);
-                    _DBAccess.AddParameters("@Images", data.Images ?? "");
+                    _DBAccess.AddParameters("@IMAGES", data.IMAGES ?? "");
                     _DBAccess.AddParameters("@BRAND", data.BRAND ?? "");
                     _DBAccess.AddParameters("@sku", data.sku ?? "");
                     _DBAccess.AddParameters("@UNIT", data.UNIT ?? "");
@@ -145,7 +275,7 @@ namespace ECOMAPP.DataLayer
                     _DBAccess.AddParameters("@PACKAGE_HEIGHT", data.PACKAGE_HEIGHT);
                     _DBAccess.AddParameters("@PACKAGE_DIAMETER", data.PACKAGE_DIAMETER);
                     _DBAccess.AddParameters("@PACKAGE_TOTAL_VOLUME", data.PACKAGE_TOTAL_VOLUME);
-
+                    _DBAccess.AddParameters("@VAREINTS_NAME", data.VAREINTS_NAME);
 
 
 
@@ -452,6 +582,7 @@ namespace ECOMAPP.DataLayer
                     {
                         if (Retval == "SUCCESS")
                         {
+
                             MLProduct.MLGetInhouseProduct InhouseProduct = new MLProduct.MLGetInhouseProduct()
                             {
 

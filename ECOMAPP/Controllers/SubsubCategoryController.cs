@@ -65,9 +65,12 @@ namespace ECOMAPP.Controllers
 
             try
             {
-                _MLSubsubcategory = _DLSubsubcategory.InsertSubsubCategory(_MLInsertsubsubcategory);
-                _DBReturnData.Code = 200;
-                _DBReturnData.Message = "";
+
+                _DBReturnData = _DLSubsubcategory.InsertSubsubCategory(_MLInsertsubsubcategory);
+                //if(_MLSubsubcategory.)
+
+                //_DBReturnData.Code = 200;
+                //_DBReturnData.Message = "SUCCESS";
                 _DBReturnData.Retval = "SUCCESS";
 
 
@@ -142,6 +145,49 @@ namespace ECOMAPP.Controllers
             }
             return new [] { _DBReturnData };
         }
+
+
+        [Route("GetSubSubCategoryBySubCategoryId")]
+        [HttpPost]
+        [JwtAuthorization(Roles = [Roles.Admin])]
+        public ActionResult<IEnumerable<DBReturnData>> GetSubSubCategoryBySubCategoryId(MLSubsubcategoryBySubCategoryId _MLSubsubcategoryBySubCategoryId)
+        {
+            DLSubsubcategory _DLSubsubcategory = new();
+            MLSubsubcategory _MLSubsubcategory = new();
+            DBReturnData _DBReturnData = new();
+            try
+            {
+                _MLSubsubcategory = _DLSubsubcategory.GetSubsubCategoryBySubCategoryId(_MLSubsubcategoryBySubCategoryId);
+
+                if (_MLSubsubcategory != null && _MLSubsubcategory.SubsubCategoryList.Count > 0) {
+                
+                _DBReturnData.Dataset = _MLSubsubcategory.SubsubCategoryList;
+                _DBReturnData.Code = 200;
+                _DBReturnData.Message = DBEnums.Status.SUCCESS.ToString();
+                _DBReturnData.Retval = DBEnums.Status.SUCCESS.ToString();
+                }
+                else
+                {
+
+                    _DBReturnData.Dataset = null;
+                    _DBReturnData.Code = 401;
+                    _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+                    _DBReturnData.Retval = DBEnums.Status.FAILURE.ToString();
+                }
+
+            }
+            catch (Exception ex)
+            {
+                _DBReturnData.Dataset = null;
+                _DBReturnData.Retval = "FAILED";
+                _DBReturnData.Message = "internal server error due to";
+                _DBReturnData.Code = 500;
+
+            }
+            return new[] { _DBReturnData };
+        }
+
+
     }
 
 

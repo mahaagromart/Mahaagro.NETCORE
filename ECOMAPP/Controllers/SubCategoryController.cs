@@ -69,7 +69,7 @@ namespace ECOMAPP.Controllers
             {
                 _MLSubcategory = _DLSubcategory.InsertSubCategory(_MLInsertSubcategory);
                 DBReturnData.Code = 200;
-                DBReturnData.Message = "";
+                DBReturnData.Message = "SUCCESS";
                 DBReturnData.Retval = "SUCCESS";
 
             }

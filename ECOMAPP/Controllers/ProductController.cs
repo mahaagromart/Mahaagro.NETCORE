@@ -18,26 +18,26 @@ namespace ECOMAPP.Controllers
 
         [Route("GetAllProducts")]
         [HttpGet]
-        [JwtAuthorization(Roles = [Roles.Admin])]
-        public ActionResult<DBReturnData> GetAllProducts()
+        public ActionResult<IEnumerable<DBReturnData>> GetAllProducts()
         {
             try
             {
                 MLProduct _MLProduct = new();
                 DLProduct _DLProduct = new();
+                DBReturnData _DBReturnData = new();
 
-                // Fetch products from DLProduct (data layer)
+
                 _MLProduct.ProductList = _DLProduct.GetAllProducts();
 
-                // Check if products exist
+
                 if (_MLProduct.ProductList.Any())
                 {
                     return Ok(new DBReturnData
                     {
                         Dataset = _MLProduct.ProductList,
-                        Code = 200,
-                        Message = "SUCCESS",
-                        Retval = "SUCCESS"
+                        Code = DBEnums.Codes.SUCCESS,
+                        Message = DBEnums.Status.SUCCESS.ToString(),
+                        Retval = DBEnums.Status.SUCCESS.ToString()
                     });
                 }
                 else
@@ -45,9 +45,9 @@ namespace ECOMAPP.Controllers
                     return NotFound(new DBReturnData
                     {
                         Dataset = null,
-                        Code = 404,
-                        Message = "No products found",
-                        Retval = "FAILED"
+                        Code = DBEnums.Codes.INTERNAL_SERVER_ERROR,
+                        Message = DBEnums.Status.FAILURE.ToString(),
+                        Retval = DBEnums.Status.FAILURE.ToString()
                     });
                 }
             }
@@ -59,9 +59,9 @@ namespace ECOMAPP.Controllers
                 return StatusCode(500, new DBReturnData
                 {
                     Dataset = null,
-                    Code = 500,
-                    Message = "Internal Server Error",
-                    Retval = "FAILED"
+                    Code = DBEnums.Codes.BAD_REQUEST,
+                    Message = DBEnums.Status.FAILURE.ToString(),
+                    Retval = DBEnums.Status.FAILURE.ToString()
                 });
             }
         }
@@ -78,90 +78,35 @@ namespace ECOMAPP.Controllers
             DataSet _DataSet = new();
             try
             {
-
                 _DBReturnData = _DLProduct.InsertProduct(_MlGetProduct);
-               // if (_MLProduct.)
-               if(_DBReturnData.Code == 200)
+
+                if (_DBReturnData.Code == DBEnums.Codes.SUCCESS)
                 {
                     _DBReturnData.Status = DBEnums.Status.SUCCESS;
                     _DBReturnData.Message = DBEnums.Status.SUCCESS.ToString();
+                    _DBReturnData.Retval = DBEnums.Status.SUCCESS.ToString();
                 }
                 else
                 {
                     _DBReturnData.Status = DBEnums.Status.FAILURE;
                     _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+                    _DBReturnData.Retval = DBEnums.Status.FAILURE.ToString();
 
                 }
+
+
             }
             catch (Exception ex)
             {
-                _DBReturnData.Code = 500;
-                _DBReturnData.Message = "Internal Server Error";
+                _DBReturnData.Code = DBEnums.Codes.BAD_REQUEST;
+                _DBReturnData.Message = DBEnums.Status.FAILURE.ToString() + ex.Message.ToString();
                 _DBReturnData.Retval = null;
             }
             return new[] { _DBReturnData };
 
         }
 
-        //[Route("InsertProduct")]
-        //[HttpPost]
-        //[JwtAuthorization(Roles = [Roles.Admin])]
-        //public ActionResult<IEnumerable<DBReturnData>> InsertProduct(MlGetProduct _MlGetProduct)
-        //{
-        //    MLProduct _MLProduct = new();
-        //    DLProduct _DLProduct = new();
-        //    DBReturnData _DBReturnData = new();
 
-        //    DataSet _DataSet = new();
-        //    try
-        //    {
-
-        //        _MLProduct = _DLProduct.InsertProduct(_MlGetProduct);
-        //        _DBReturnData.Code = 200;
-        //        _DBReturnData.Message = "SUCCESS";
-        //        _DBReturnData.Retval = "SUCCESS";
-
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _DBReturnData.Code = 500;
-        //        _DBReturnData.Message = "Internal Server Error";
-        //        _DBReturnData.Retval = null;
-        //    }
-        //    return new[] { _DBReturnData };
-
-        //}
-
-
-        //[Route("UpdateProduct")]
-        //[HttpPut]
-        //[JwtAuthorization(Roles = [Roles.Admin])]
-        //public ActionResult<IEnumerable<DBReturnData>> UpdateProduct(MlGetProduct _MlGetProduct)
-        //{
-        //    MLProduct _MLProduct = new();
-        //    DLProduct _DLProduct = new();
-        //    DBReturnData _DBReturnData = new();
-
-        //    DataSet _DataSet = new();
-        //    try
-        //    {
-
-        //        _MLProduct = _DLProduct.UpdateProduct(_MlGetProduct);
-        //        _DBReturnData.Code = 200;
-        //        _DBReturnData.Message = "SUCCESS";
-        //        _DBReturnData.Retval = "SUCCESS";
-
-                
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _DBReturnData.Code = 500;
-        //        _DBReturnData.Message = "Internal Server Error";
-        //        _DBReturnData.Retval = null;
-        //    }
-        //    return new[] { _DBReturnData };
-
-        //}
 
         [Route("DeleteProduct")]
         [HttpDelete]
@@ -176,18 +121,16 @@ namespace ECOMAPP.Controllers
             try
             {
 
-                    _MLProduct = _DLProduct.DeleteProduct(_MLDeleteProduct);
-                    _DBReturnData.Code = 200;
-                    _DBReturnData.Message = "SUCCESS";
-                    _DBReturnData.Retval = "SUCCESS";
+                _DBReturnData = _DLProduct.DeleteProduct(_MLDeleteProduct);
 
             }
             catch (Exception ex)
             {
 
-                _DBReturnData.Code = 500;
-                _DBReturnData.Message = "Internal Server Error";
-                _DBReturnData.Retval = null;
+                _DBReturnData.Dataset = null;
+                _DBReturnData.Code = DBEnums.Codes.BAD_REQUEST;
+                _DBReturnData.Message = DBEnums.Status.FAILURE.ToString() + ex.Message.ToString();
+                _DBReturnData.Retval = DBEnums.Status.FAILURE.ToString();
             }
 
 
@@ -201,27 +144,24 @@ namespace ECOMAPP.Controllers
         [JwtAuthorization(Roles = [Roles.Admin])]
         public ActionResult<IEnumerable<DBReturnData>> ProductToggleCertified(MLToggleCertified _MLToggleCertified)
         {
-            MLProduct _MLProduct = new();
             DLProduct _DLProduct = new();
             DBReturnData _DBReturnData = new();
 
-            DataSet _DataSet = new();
             try
             {
-                
-                _MLProduct = _DLProduct.ProductToggleCertified(_MLToggleCertified);
-                _DBReturnData.Code = 200;
-                _DBReturnData.Message = "SUCCESS";
-                _DBReturnData.Retval = "SUCCESS";
+
+                _DBReturnData = _DLProduct.ProductToggleCertified(_MLToggleCertified);
+
 
             }
             catch (Exception ex)
             {
 
 
-                _DBReturnData.Code = 500;
-                _DBReturnData.Message = "Internal Server Error";
-                _DBReturnData.Retval = null;
+                _DBReturnData.Dataset = null;
+                _DBReturnData.Code = DBEnums.Codes.BAD_REQUEST;
+                _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+                _DBReturnData.Retval = DBEnums.Status.FAILURE.ToString();
             }
 
             return new[] { _DBReturnData };
@@ -233,27 +173,18 @@ namespace ECOMAPP.Controllers
         [JwtAuthorization(Roles = [Roles.Admin])]
         public ActionResult<IEnumerable<DBReturnData>> ProductToggleStatus(MLToggleStatus _MLToggleStatus)
         {
-            MLProduct _MLProduct = new();
             DLProduct _DLProduct = new();
             DBReturnData _DBReturnData = new();
-
-            DataSet _DataSet = new();
             try
             {
-
-                    _MLProduct = _DLProduct.ProductToggleStatus(_MLToggleStatus);
-                _DBReturnData.Code = 200;
-                _DBReturnData.Message = "SUCCESS";
-                _DBReturnData.Retval = "SUCCESS";
-
+                _DBReturnData = _DLProduct.ProductToggleStatus(_MLToggleStatus);
             }
             catch (Exception ex)
             {
-
-
-                _DBReturnData.Code = 500;
-                _DBReturnData.Message = "Internal Server Error";
-                _DBReturnData.Retval = null;
+                _DBReturnData.Dataset = null;
+                _DBReturnData.Code = DBEnums.Codes.BAD_REQUEST;
+                _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+                _DBReturnData.Retval = DBEnums.Status.FAILURE.ToString();
             }
 
             return new[] { _DBReturnData };
@@ -262,7 +193,7 @@ namespace ECOMAPP.Controllers
 
 
 
-        
+
         #region InhouseProduct
 
 
@@ -274,7 +205,6 @@ namespace ECOMAPP.Controllers
             MLProduct _MLProduct = new();
             DLProduct _DLProduct = new();
             DBReturnData _DBReturnData = new();
-            DataSet _DataSet = new();
 
 
             try
@@ -283,17 +213,17 @@ namespace ECOMAPP.Controllers
                 if (_MLProduct.InhouseProductList.Count > 0)
                 {
                     _DBReturnData.Dataset = _MLProduct.InhouseProductList;
-                    _DBReturnData.Code = 200;
-                    _DBReturnData.Message = "SUCCESS";
-                    _DBReturnData.Retval = "SUCCESS";
+                    _DBReturnData.Code = DBEnums.Codes.SUCCESS;
+                    _DBReturnData.Message = DBEnums.Status.SUCCESS.ToString();
+                    _DBReturnData.Retval = DBEnums.Status.SUCCESS.ToString();
 
                 }
                 else
                 {
                     _DBReturnData.Dataset = null;
-                    _DBReturnData.Retval = "FAILED";
-                    _DBReturnData.Message = "internal server error due to";
-                    _DBReturnData.Code = 500;
+                    _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
+                    _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+                    _DBReturnData.Retval = DBEnums.Status.FAILURE.ToString();
                 }
 
 
@@ -303,9 +233,9 @@ namespace ECOMAPP.Controllers
             {
 
                 _DBReturnData.Dataset = null;
-                _DBReturnData.Code = 500;
-                _DBReturnData.Message = "Internal Server Error";
-                _DBReturnData.Retval = null;
+                _DBReturnData.Code = DBEnums.Codes.BAD_REQUEST;
+                _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+                _DBReturnData.Retval = DBEnums.Status.FAILURE.ToString();
             }
             return new[] { _DBReturnData };
 
@@ -316,57 +246,51 @@ namespace ECOMAPP.Controllers
         [JwtAuthorization(Roles = [Roles.Admin])]
         public ActionResult<IEnumerable<DBReturnData>> InsertInhouseProduct(MLInsertInhouseProduct _MLInsertInhouseProduct)
         {
-            MLProduct _MLProduct = new();
             DLProduct _DLProduct = new();
             DBReturnData _DBReturnData = new();
 
-            DataSet _DataSet = new();
             try
             {
- 
-                _MLProduct = _DLProduct.InsertInhouseProduct(_MLInsertInhouseProduct);
-                _DBReturnData.Code = 200;
-                _DBReturnData.Message = "SUCCESS";
-                _DBReturnData.Retval = "SUCCESS";
+
+                _DBReturnData = _DLProduct.InsertInhouseProduct(_MLInsertInhouseProduct);
+                _DBReturnData.Code = DBEnums.Codes.SUCCESS;
+                _DBReturnData.Message = DBEnums.Status.SUCCESS.ToString();
+                _DBReturnData.Retval = DBEnums.Status.SUCCESS.ToString();
 
             }
             catch (Exception ex)
             {
 
                 _DBReturnData.Dataset = null;
-                _DBReturnData.Code = 500;
-                _DBReturnData.Message = "Internal Server Error";
-                _DBReturnData.Retval = null;
+                _DBReturnData.Code = DBEnums.Codes.BAD_REQUEST;
+                _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+                _DBReturnData.Retval = DBEnums.Status.FAILURE.ToString();
             }
             return new[] { _DBReturnData };
 
         }
+
+
         [Route("UpdateInhouseProduct")]
         [HttpPut]
         [JwtAuthorization(Roles = [Roles.Admin])]
         public ActionResult<IEnumerable<DBReturnData>> UpdateInhouseProduct(MLUpdateInhouseProduct _MLUpdateInhouseProduct)
         {
-            MLProduct _MLProduct = new();
             DLProduct _DLProduct = new();
             DBReturnData _DBReturnData = new();
 
-            DataSet _DataSet = new();
             try
             {
-                _MLProduct = _DLProduct.UpdateInhouseProduct(_MLUpdateInhouseProduct);
-                _DBReturnData.Code = 200;
-                _DBReturnData.Message = "SUCCESS";
-                _DBReturnData.Retval = "SUCCESS";
-
+                _DBReturnData = _DLProduct.UpdateInhouseProduct(_MLUpdateInhouseProduct);
 
             }
             catch (Exception ex)
             {
 
                 _DBReturnData.Dataset = null;
-                _DBReturnData.Code = 500;
-                _DBReturnData.Message = "Internal Server Error";
-                _DBReturnData.Retval = null;
+                _DBReturnData.Code = DBEnums.Codes.BAD_REQUEST;
+                _DBReturnData.Message = DBEnums.Status.FAILURE.ToString() + ex.Message.ToString();
+                _DBReturnData.Retval = DBEnums.Status.FAILURE.ToString();
             }
             return new[] { _DBReturnData };
 
@@ -378,26 +302,23 @@ namespace ECOMAPP.Controllers
 
         public ActionResult<IEnumerable<DBReturnData>> DeleteInhouseProduct(MLDeleteInhouseProduct _MLDeleteInhouseProduct)
         {
-            MLProduct _MLProduct = new();
             DLProduct _DLProduct = new();
             DBReturnData _DBReturnData = new();
 
             DataSet _DataSet = new();
             try
-            { 
-                    _MLProduct = _DLProduct.DeleteInhouseProduct(_MLDeleteInhouseProduct);
-                    _DBReturnData.Code = 200;
-                    _DBReturnData.Message = "SUCCESS";
-                    _DBReturnData.Retval = "SUCCESS";
+            {
+                _DBReturnData = _DLProduct.DeleteInhouseProduct(_MLDeleteInhouseProduct);
 
             }
             catch (Exception ex)
             {
 
                 _DBReturnData.Dataset = null;
-                _DBReturnData.Code = 500;
-                _DBReturnData.Message = "Internal Server Error";
-                _DBReturnData.Retval = null;
+                _DBReturnData.Code = DBEnums.Codes.BAD_REQUEST;
+                _DBReturnData.Message = DBEnums.Status.FAILURE.ToString() + ex.Message.ToString();
+                _DBReturnData.Retval = DBEnums.Status.FAILURE.ToString();
+
             }
             return new[] { _DBReturnData };
 

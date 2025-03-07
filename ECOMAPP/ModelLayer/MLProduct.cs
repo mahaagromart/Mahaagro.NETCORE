@@ -17,17 +17,24 @@ namespace ECOMAPP.ModelLayer
 
         public class MlGetProduct
         {
-            public int? Id { get; set; } = 0;
+            public int? Id { get; set; }
+            public string? PROD_ID { get; set; }
             public string CATEGORY_ID { get; set; }
             public string SUB_CATEGORY_ID { get; set; }
             public string Product_Name { get; set; }
             public string Product_Description { get; set; }
-            public string Images { get; set; }
+            public string IMAGES { get; set; }
             public string? BRAND { get; set; }
             public string sku { get; set; }
             public string UNIT { get; set; }
             public string[] TAGS_INPUT { get; set; }
-            public string HSN { get; set; }
+            public string? HSN { get; set; }
+            public string VAREINTS_NAME { get; set; }
+
+            public int? CERTIFICATION { get; set; }
+            public int? STATUS { get; set; }
+
+            public string? RATING { get; set; }
 
             // Pricing
             public int PRICING { get; set; }
@@ -49,6 +56,23 @@ namespace ECOMAPP.ModelLayer
             public string? TAX_AMOUNT { get; set; }
             public string? TAX_CALCULATION { get; set; }
             public string? CALCULATED_PRICE { get; set; }
+
+            public string? MINIMUM_CALCULATED_PRICE { get; set; } 
+            public List<MLImages>? IMAGESLIST { get; set; }
+
+            public string? VARIENTNAME { get; set; }
+            public string MINIMUMCALCULATEDPRICE { get; set; }
+
+
+        }
+
+
+
+        public class MLImages
+        {
+            public int ID { get; set; }
+            public string Product_Images { get; set; }
+            public string PROD_ID { get; set; }
         }
 
         public class MLDeleteProduct
