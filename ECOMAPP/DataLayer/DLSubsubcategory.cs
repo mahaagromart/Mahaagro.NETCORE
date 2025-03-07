@@ -47,23 +47,23 @@ namespace ECOMAPP.DataLayer
                     }
                     else
                     {
-                        _DBReturnData.Code = 400;
-                        _DBReturnData.Message = "FAILED";
+                        _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
+                        _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
 
                     }
                 }
                 else
                 {
            
-                    _DBReturnData.Code = 404;
-                    _DBReturnData.Message = "No Subsubcategories found.";
+                    _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
+                    _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
                 }
             }
             catch(Exception ex)
             {
                 _DALBASE.ErrorLog("GetAllSubsubCategory", "DLSubsubcategory", ex.Message);
-                _DBReturnData.Code = 500;
-                _DBReturnData.Message = "Internal Server Error";
+                _DBReturnData.Code = DBEnums.Codes.BAD_REQUEST;
+                _DBReturnData.Message = DBEnums.Status.FAILURE.ToString() + ex.Message.ToString();
 
             }
             return _MLSubsubcategory.SubsubCategoryList;
@@ -87,7 +87,6 @@ namespace ECOMAPP.DataLayer
                     _DBAccess.AddParameters("@CATEGORY_NAME", Data.CATEGORY_NAME);
                     _DBAccess.AddParameters("@SUBCATEGORY_NAME", Data.SUBCATEGORY_NAME);
                     _DBAccess.AddParameters("@PRIORITY", Data.PRIORITY);
-                    //_DBAccess.AddParameters("@CATEGORY_ID", Data.CATEGORY_ID);
                     _Dataset = _DBAccess.DBExecute();
                     _DBAccess.Dispose();
 
@@ -99,14 +98,14 @@ namespace ECOMAPP.DataLayer
                     {
                         if (Row["RETVAL"]?.ToString() == "SUCCESS")
                         {
-                            _DBReturnData.Message = "SUCCESS";
-                            _DBReturnData.Code = 200;
+                            _DBReturnData.Message = DBEnums.Status.SUCCESS.ToString();
+                            _DBReturnData.Code = DBEnums.Codes.SUCCESS;
 
                         }
                         else
                         {
-                            _DBReturnData.Message = "FAILED";
-                            _DBReturnData.Code = 401;
+                            _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+                            _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
                         }
                     }
                 }
@@ -115,8 +114,8 @@ namespace ECOMAPP.DataLayer
             catch (Exception ex)
             {
                 _DALBASE.ErrorLog("InsertSubsubCategory", "DLSubsubcategory", ex.Message);
-                _DBReturnData.Code = 500;
-                _DBReturnData.Message = "Internal Server Error";
+                _DBReturnData.Code = DBEnums.Codes.BAD_REQUEST;
+                _DBReturnData.Message =DBEnums.Status.FAILURE.ToString() + ex.Message.ToString();
 
             }
             return _DBReturnData;
@@ -156,14 +155,14 @@ namespace ECOMAPP.DataLayer
                     {
                         if (Row["RETVAL"]?.ToString() == "SUCCESS")
                         {
-                            _DBReturnData.Message = "SUCCESS";
-                            _DBReturnData.Code = 200;
+                            _DBReturnData.Message = DBEnums.Status.SUCCESS.ToString();
+                            _DBReturnData.Code = DBEnums.Codes.SUCCESS;
 
                         }
                         else
                         {
-                            _DBReturnData.Message = "FAILED";
-                            _DBReturnData.Code = 401;
+                            _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+                            _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
                         }
                     }
                 }
@@ -172,8 +171,8 @@ namespace ECOMAPP.DataLayer
             catch (Exception ex)
             {
                 _DALBASE.ErrorLog("UpdateSubsubCategory", "DLSubsubcategory", ex.Message);
-                _DBReturnData.Code = 500;
-                _DBReturnData.Message = "Internal Server Error";
+                _DBReturnData.Code = DBEnums.Codes.BAD_REQUEST;
+                _DBReturnData.Message = DBEnums.Status.FAILURE.ToString() + ex.Message.ToString();
 
             }
             return _DBReturnData;
@@ -207,14 +206,14 @@ namespace ECOMAPP.DataLayer
                     {
                         if (Row["RETVAL"]?.ToString() == "SUCCESS")
                         {
-                            _DBReturnData.Message = "SUCCESS";
-                            _DBReturnData.Code = 200;
+                            _DBReturnData.Message = DBEnums.Status.SUCCESS.ToString();
+                            _DBReturnData.Code = DBEnums.Codes.SUCCESS;
 
                         }
                         else
                         {
-                            _DBReturnData.Message = "FAILED";
-                            _DBReturnData.Code = 401;
+                            _DBReturnData.Message =DBEnums.Status.FAILURE.ToString();
+                            _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
                         }
                     }
                 }
@@ -224,8 +223,8 @@ namespace ECOMAPP.DataLayer
             {
 
                 _DALBASE.ErrorLog("DeleteSubsubCategory", "DLSubsubcategory", ex.Message);
-                _DBReturnData.Code = 500;
-                _DBReturnData.Message = "Internal Server Error";
+                _DBReturnData.Code = DBEnums.Codes.BAD_REQUEST;
+                _DBReturnData.Message = DBEnums.Status.FAILURE.ToString() + ex.ToString();
             }
             return _DBReturnData;
 

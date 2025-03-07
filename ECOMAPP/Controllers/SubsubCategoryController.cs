@@ -27,16 +27,16 @@ namespace ECOMAPP.Controllers
                 if (_MLSubsubcategory.SubsubCategoryList.Count > 0)
                 {
                     _DBReturnData.Dataset = _MLSubsubcategory.SubsubCategoryList;
-                    _DBReturnData.Code = 200;
-                    _DBReturnData.Message = "";
-                    _DBReturnData.Retval = "SUCCESS";
+                    _DBReturnData.Code = DBEnums.Codes.SUCCESS;
+                    _DBReturnData.Message = DBEnums.Status.SUCCESS.ToString();
+                    _DBReturnData.Retval = DBEnums.Status.SUCCESS.ToString();
                 }
                 else
                 {
                     _DBReturnData.Dataset = null;
-                    _DBReturnData.Retval = "FAILED";
-                    _DBReturnData.Message = "internal server error due to";
-                    _DBReturnData.Code = 500;
+                    _DBReturnData.Retval = DBEnums.Status.FAILURE.ToString();
+                    _DBReturnData.Message =DBEnums.Status.FAILURE.ToString();
+                    _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
                 }
 
             }
@@ -44,9 +44,9 @@ namespace ECOMAPP.Controllers
             {
 
                 _DBReturnData.Dataset = null;
-                _DBReturnData.Code = 500;
-                _DBReturnData.Message = "Internal Server Error";
-                _DBReturnData.Retval = null;
+                _DBReturnData.Code = DBEnums.Codes.BAD_REQUEST;
+                _DBReturnData.Message = DBEnums.Status.FAILURE.ToString() + ex.Message.ToString();
+                _DBReturnData.Retval = DBEnums.Status.FAILURE.ToString();
             }
 
             return new[] { _DBReturnData };
@@ -70,9 +70,9 @@ namespace ECOMAPP.Controllers
             catch (Exception ex)
             {
                 _DBReturnData.Dataset = null;
-                _DBReturnData.Retval = "FAILED";
-                _DBReturnData.Message = "internal server error due to";
-                _DBReturnData.Code = 500;
+                _DBReturnData.Retval = DBEnums.Status.FAILURE.ToString();
+                _DBReturnData.Message = DBEnums.Status.FAILURE.ToString() + ex.Message.ToString();
+                _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
 
             }
             return new[] { _DBReturnData };
@@ -96,9 +96,9 @@ namespace ECOMAPP.Controllers
             catch (Exception ex)
             {
            
-                _DBReturnData.Retval = "FAILED";
-                _DBReturnData.Message = "internal server error due to";
-                _DBReturnData.Code = 500;
+                _DBReturnData.Retval = DBEnums.Status.FAILURE.ToString();
+                _DBReturnData.Message = DBEnums.Status.FAILURE.ToString() + ex.Message.ToString();
+                _DBReturnData.Code = DBEnums.Codes.BAD_REQUEST;
 
             }
             return new[] { _DBReturnData };
@@ -122,9 +122,9 @@ namespace ECOMAPP.Controllers
             catch (Exception ex)
             {
                 _DBReturnData.Dataset = null;
-                _DBReturnData.Retval = "FAILED";
-                _DBReturnData.Message = "internal server error due to";
-                _DBReturnData.Code = 500;
+                _DBReturnData.Retval = DBEnums.Status.FAILURE.ToString();
+                _DBReturnData.Message = DBEnums.Status.FAILURE.ToString() + ex.Message.ToString();
+                _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
 
             }
             return new [] { _DBReturnData };

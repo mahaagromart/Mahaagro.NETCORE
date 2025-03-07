@@ -42,8 +42,8 @@ namespace ECOMAPP.DataLayer
                     }
                     else
                     {
-                        _DBReturnData.Code = 400;
-                        _DBReturnData.Message = "FAILED";
+                        _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
+                        _DBReturnData.Message =DBEnums.Status.FAILURE.ToString();
 
 
                     }
@@ -52,14 +52,14 @@ namespace ECOMAPP.DataLayer
                 }
                 else
                 {
-                    _DBReturnData.Code = 404;
-                    _DBReturnData.Message = "No Testimonial found.";
+                    _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
+                    _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
                 }
             } catch (Exception ex)
             {
                 _DALBASE.ErrorLog("GetAllBrand", "DLBrand", ex.Message);
-                _DBReturnData.Code = 500;
-                _DBReturnData.Message = "Internal Server Error";
+                _DBReturnData.Code = DBEnums.Codes.BAD_REQUEST;
+                _DBReturnData.Message =DBEnums.Status.FAILURE.ToString();
             }
             return _MLBrand.BrandList;
 
@@ -86,13 +86,13 @@ namespace ECOMAPP.DataLayer
                     {
                         if (_DataRow["RETVAL"]?.ToString() == "SUCCESS")
                         {
-                            _DBReturnData.Message = "SUCCESS";
-                            _DBReturnData.Code = 200;
+                            _DBReturnData.Message = DBEnums.Status.SUCCESS.ToString();
+                            _DBReturnData.Code = DBEnums.Codes.SUCCESS;
                         }
                         else
                         {
-                            _DBReturnData.Message = "FAILED";
-                            _DBReturnData.Code = 401;
+                            _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+                            _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
 
                         }
                     }
@@ -101,8 +101,8 @@ namespace ECOMAPP.DataLayer
             }
             catch(Exception ex)
             {
-                _DBReturnData.Message = "NOT EXISTS";
-                _DBReturnData.Code = 400;
+                _DBReturnData.Message = DBEnums.Status.FAILURE.ToString() + ex.ToString();
+                _DBReturnData.Code = DBEnums.Codes.BAD_REQUEST;
 
             }
 
@@ -133,13 +133,13 @@ namespace ECOMAPP.DataLayer
                     {
                         if (_DataRow["RETVAL"]?.ToString() == "SUCCESS")
                         {
-                            _DBReturnData.Message = "SUCCESS";
-                            _DBReturnData.Code = 200;
+                            _DBReturnData.Message = DBEnums.Status.SUCCESS.ToString();
+                            _DBReturnData.Code = DBEnums.Codes.SUCCESS;
                         }
                         else
                         {
-                            _DBReturnData.Message = "FAILED";
-                            _DBReturnData.Code = 401;
+                            _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+                            _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
 
                         }
                     }
@@ -148,8 +148,8 @@ namespace ECOMAPP.DataLayer
             }
             catch (Exception ex)
             {
-                _DBReturnData.Message = "NOT EXISTS";
-                _DBReturnData.Code = 400;
+                _DBReturnData.Message = DBEnums.Status.FAILURE.ToString() + ex.ToString();
+                _DBReturnData.Code = DBEnums.Codes.BAD_REQUEST;
 
             }
 
@@ -172,6 +172,7 @@ namespace ECOMAPP.DataLayer
                     _DBAccess.DBProcedureName = "SP_CATEGORY";
                     _DBAccess.AddParameters("@Action", "DELETECATEGORY");
                     _DataSet = _DBAccess.DBExecute();
+                    _DBAccess.Dispose();
 
                 }
                 if (_DataSet != null && _DataSet.Tables.Count > 0)
@@ -181,13 +182,13 @@ namespace ECOMAPP.DataLayer
                     {
                         if (_DataRow["RETVAL"]?.ToString() == "SUCCESS")
                         {
-                            _DBReturnData.Message = "SUCCESS";
-                            _DBReturnData.Code = 200;
+                            _DBReturnData.Message = DBEnums.Status.SUCCESS.ToString();
+                            _DBReturnData.Code = DBEnums.Codes.SUCCESS;
                         }
                         else
                         {
-                            _DBReturnData.Message = "FAILED";
-                            _DBReturnData.Code = 401;
+                            _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+                            _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
 
                         }
                     }
@@ -196,8 +197,8 @@ namespace ECOMAPP.DataLayer
             }
             catch (Exception ex)
             {
-                _DBReturnData.Message = "NOT EXISTS";
-                _DBReturnData.Code = 400;
+                _DBReturnData.Message = DBEnums.Status.FAILURE.ToString() + ex.ToString();
+                _DBReturnData.Code = DBEnums.Codes.BAD_REQUEST;
 
             }
 

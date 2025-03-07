@@ -175,9 +175,10 @@ namespace ECOMAPP.DataLayer
 
 
         }
-        public MLCategoryDTO DeleteProductCategory(MlDeleteProductCategory data)
+        public DBReturnData DeleteProductCategory(MlDeleteProductCategory data)
         {
             MLCategoryDTO _MLCategoryDTO = new MLCategoryDTO();
+            DBReturnData _DBReturnData = new();
 
             try
             {
@@ -195,29 +196,29 @@ namespace ECOMAPP.DataLayer
                     string Retval = _DataSet.Tables[0].Rows[0]["RETVAL"]?.ToString() ?? "";
                     if (Retval == "SUCCESS")
                     {
-                        _MLCategoryDTO.Message = "SUCCESS";
-                        _MLCategoryDTO.Code = 200;
+                        _DBReturnData.Message =DBEnums.Status.SUCCESS.ToString();
+                        _DBReturnData.Code = DBEnums.Codes.SUCCESS;
                     }
                     else
                     {
-                        _MLCategoryDTO.Message = "FAILED";
-                        _MLCategoryDTO.Code = 401;
+                        _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+                        _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
                     }
                 }
                 else
                 {
-                    _MLCategoryDTO.Message = "No data returned from DB";
-                    _MLCategoryDTO.Code = 404;
+                    _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+                    _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
                 }
             }
             catch (Exception ex)
             {
                 DS.ErrorLog("DLCategory", "DeleteProductCategory", ex.ToString());
-                _MLCategoryDTO.Message = "Internal Server Error";
-                _MLCategoryDTO.Code = 500;
+                _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+                _DBReturnData.Code = DBEnums.Codes.BAD_REQUEST;
             }
 
-            return _MLCategoryDTO;
+            return _DBReturnData;
         }
 
 
