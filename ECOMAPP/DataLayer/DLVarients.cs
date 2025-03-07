@@ -15,48 +15,61 @@ namespace ECOMAPP.DataLayer
             DBReturnData _DBReturnData = new();
 
             DataSet _DataSet = new();
-
-            using (DBAccess _DBAccess = new())
+            try
             {
-                _DBAccess.DBProcedureName = "";
-                _DBAccess.AddParameters("@Action", "");
-                _DataSet = _DBAccess.DBExecute();
 
-
-            }
-            if(_DataSet != null && _DataSet.Tables.Count > 0)
-            {
-                DataTable _DataTable = new();
-                string Retval = _DataSet.Tables[1].Rows[0]["RETVAL"]?.ToString() ?? "";
-
-                foreach (DataRow Row in _DataTable.Rows)
+                using (DBAccess _DBAccess = new())
                 {
-                    if (Retval == "SUCCESS")
-                    {
-                        MLVarients.Varients Varients = new MLVarients.Varients()
-                        {
+                    _DBAccess.DBProcedureName = "";
+                    _DBAccess.AddParameters("@Action", "");
+                    _DataSet = _DBAccess.DBExecute();
 
-                        
-
-                          Id = Convert.IsDBNull(Row["Id"]) ? 0 : Convert.ToInt32(Row["Id"]),
-                          Product_Id = Row["Product_Id"]?.ToString() ?? string.Empty,
-                          Quantity = Convert.IsDBNull(Row["Quantity"]) ? 0 : Convert.ToInt32(Row["Quantity"]),
-                          ProductName = Row["ProductName"]?.ToString() ?? string.Empty,
-                          Images = Row["Images"]?.ToString() ?? string.Empty,
-                          Description = Row["Description"]?.ToString() ?? string.Empty,
-                          Ratings = Row["Ratings"]?.ToString() ?? string.Empty,
-                          Category_id = Row["Category_id"]?.ToString() ?? string.Empty,
-                          CreationDate = Row["CreationDate"]?.ToString() ?? string.Empty
-                        };
-                         _MLVarients.VarientsList.Add(Varients);
-                    }
-
-                    else
-                    {
-
-                    }
 
                 }
+                if (_DataSet != null && _DataSet.Tables.Count > 0)
+                {
+                    DataTable _DataTable = new();
+                    string Retval = _DataSet.Tables[1].Rows[0]["RETVAL"]?.ToString() ?? "";
+
+                    foreach (DataRow Row in _DataTable.Rows)
+                    {
+                        if (Retval == "SUCCESS")
+                        {
+                            MLVarients.Varients Varients = new MLVarients.Varients()
+                            {
+
+
+
+                                Id = Convert.IsDBNull(Row["Id"]) ? 0 : Convert.ToInt32(Row["Id"]),
+                                Product_Id = Row["Product_Id"]?.ToString() ?? string.Empty,
+                                Quantity = Convert.IsDBNull(Row["Quantity"]) ? 0 : Convert.ToInt32(Row["Quantity"]),
+                                ProductName = Row["ProductName"]?.ToString() ?? string.Empty,
+                                Images = Row["Images"]?.ToString() ?? string.Empty,
+                                Description = Row["Description"]?.ToString() ?? string.Empty,
+                                Ratings = Row["Ratings"]?.ToString() ?? string.Empty,
+                                Category_id = Row["Category_id"]?.ToString() ?? string.Empty,
+                                CreationDate = Row["CreationDate"]?.ToString() ?? string.Empty
+                            };
+                            _MLVarients.VarientsList.Add(Varients);
+                        }
+
+                        else
+                        {
+                            _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+                            _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
+
+                        }
+
+                    }
+                }
+
+            }
+            catch(Exception ex)
+            {
+                _DALBASE.ErrorLog("GetAllVarients", "DLVarients", ex.ToString());
+                _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+                _DBReturnData.Code = DBEnums.Codes.BAD_REQUEST;
+
             }
 
             return _MLVarients.VarientsList;
@@ -86,14 +99,14 @@ namespace ECOMAPP.DataLayer
                     {
                         if (_DataRow["RETVAL"]?.ToString() == "SUCCESS")
                         {
-                            _DBReturnData.Message = "SUCCESS";
-                            _DBReturnData.Code = 200;
+                            _DBReturnData.Message = DBEnums.Status.SUCCESS.ToString();
+                            _DBReturnData.Code = DBEnums.Codes.SUCCESS;
 
                         }
                         else
                         {
-                            _DBReturnData.Message = "FAILED";
-                            _DBReturnData.Code = 401;
+                            _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+                            _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
                         }
                     }
 
@@ -101,14 +114,14 @@ namespace ECOMAPP.DataLayer
                 }
                 else
                 {
-                    _DBReturnData.Message = "NOT EXISTS";
-                    _DBReturnData.Code = 400;
+                    _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+                    _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
                 }
             }catch(Exception ex)
             {
-                _DALBASE.ErrorLog("GetAllVarients", "DLProduct", ex.ToString());
-                _DBReturnData.Message = "Internal Server Error";
-                _DBReturnData.Code = 500;
+                _DALBASE.ErrorLog("InsertVarients", "DLVarients", ex.ToString());
+                _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+                _DBReturnData.Code = DBEnums.Codes.BAD_REQUEST;
             }
 
 
@@ -139,14 +152,14 @@ namespace ECOMAPP.DataLayer
                     {
                         if (_DataRow["RETVAL"]?.ToString() == "SUCCESS")
                         {
-                            _DBReturnData.Message = "SUCCESS";
-                            _DBReturnData.Code = 200;
+                            _DBReturnData.Message = DBEnums.Status.SUCCESS.ToString();
+                            _DBReturnData.Code = DBEnums.Codes.SUCCESS;
 
                         }
                         else
                         {
-                            _DBReturnData.Message = "FAILED";
-                            _DBReturnData.Code = 401;
+                            _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+                            _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
                         }
                     }
 
@@ -154,15 +167,15 @@ namespace ECOMAPP.DataLayer
                 }
                 else
                 {
-                    _DBReturnData.Message = "NOT EXISTS";
-                    _DBReturnData.Code = 400;
+                    _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+                    _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
                 }
             }
             catch (Exception ex)
             {
-                _DALBASE.ErrorLog("GetAllVarients", "DLProduct", ex.ToString());
-                _DBReturnData.Message = "Internal Server Error";
-                _DBReturnData.Code = 500;
+                _DALBASE.ErrorLog("UpdateVarients", "DLVarients", ex.Message.ToString());
+                _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+                _DBReturnData.Code = DBEnums.Codes.BAD_REQUEST;
             }
 
 
@@ -182,8 +195,8 @@ namespace ECOMAPP.DataLayer
                 {
                     _DBAccess.DBProcedureName = "";
                     _DBAccess.AddParameters("@Action", "");
-                    //_DBAccess.AddParameters("@id",Data.id);
                     _DataSet = _DBAccess.DBExecute();
+                    _DBAccess.Dispose();
 
                 }
                 if (_DataSet != null && _DataSet.Tables.Count > 0)
@@ -193,14 +206,14 @@ namespace ECOMAPP.DataLayer
                     {
                         if (_DataRow["RETVAL"]?.ToString() == "SUCCESS")
                         {
-                            _DBReturnData.Message = "SUCCESS";
-                            _DBReturnData.Code = 200;
+                            _DBReturnData.Message = DBEnums.Status.SUCCESS.ToString();
+                            _DBReturnData.Code = DBEnums.Codes.SUCCESS;
 
                         }
                         else
                         {
-                            _DBReturnData.Message = "FAILED";
-                            _DBReturnData.Code = 401;
+                            _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+                            _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
                         }
                     }
 
@@ -208,15 +221,15 @@ namespace ECOMAPP.DataLayer
                 }
                 else
                 {
-                    _DBReturnData.Message = "NOT EXISTS";
-                    _DBReturnData.Code = 400;
+                    _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+                    _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
                 }
             }
             catch (Exception ex)
             {
-                _DALBASE.ErrorLog("GetAllVarients", "DLProduct", ex.ToString());
-                _DBReturnData.Message = "Internal Server Error";
-                _DBReturnData.Code = 500;
+                _DALBASE.ErrorLog("DeleteVarients", "DLVarients", ex.ToString());
+                _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+                _DBReturnData.Code = DBEnums.Codes.BAD_REQUEST;
             }
 
 
