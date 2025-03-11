@@ -25,7 +25,7 @@ public class JwtAuthorizationAttribute : Attribute, IAuthorizationFilter
     public void OnAuthorization(AuthorizationFilterContext context)
     {
         try
-        {
+            {
             var authHeader = context.HttpContext.Request.Headers["Authorization"].FirstOrDefault();
             if (string.IsNullOrEmpty(authHeader) || !authHeader.StartsWith("Bearer "))
             {
