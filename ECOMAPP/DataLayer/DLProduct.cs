@@ -149,6 +149,10 @@ namespace ECOMAPP.DataLayer
                     _DBAccess.AddParameters("@PACKAGE_TOTAL_VOLUME", data.PACKAGE_TOTAL_VOLUME);
 
 
+                    //VAREITIES
+                    _DBAccess.AddParameters("@VAREINTS_NAME", data.VAREINTS_NAME);
+
+
 
 
                     _DataSet = _DBAccess.DBExecute();

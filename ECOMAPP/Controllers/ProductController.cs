@@ -78,10 +78,21 @@ namespace ECOMAPP.Controllers
             DataSet _DataSet = new();
             try
             {
+                  _DBReturnData = _DLProduct.InsertProduct(_MlGetProduct);
 
-                    _DBReturnData = _DLProduct.InsertProduct(_MlGetProduct);
+                if (_DBReturnData.Code == DBEnums.Codes.SUCCESS)
+                {
                     _DBReturnData.Status = DBEnums.Status.SUCCESS;
                     _DBReturnData.Message = DBEnums.Status.SUCCESS.ToString();
+                    _DBReturnData.Retval = DBEnums.Status.SUCCESS.ToString();
+                }
+                else
+                {
+                    _DBReturnData.Status = DBEnums.Status.FAILURE;
+                    _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+                    _DBReturnData.Retval = DBEnums.Status.FAILURE.ToString();
+
+                }
                
              
             }

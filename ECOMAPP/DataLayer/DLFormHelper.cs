@@ -16,7 +16,6 @@ namespace ECOMAPP.DataLayer
                 {
                     Db.DBProcedureName = "SP_TblCountriesCityState";
                     Db.AddParameters("@Action", "SelectCountries");
-                    Db.DBExecute();
                     dataSet = Db.DBExecute();
                     Db.Dispose();
                 }

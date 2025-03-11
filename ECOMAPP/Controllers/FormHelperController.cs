@@ -14,7 +14,7 @@ namespace ECOMAPP.Controllers
 
 
         [Route("GetAllCountry")]
-        [HttpPost]
+        [HttpGet]
         public ActionResult<MlFormHelper> GetAllCountry()
         {
             MlFormHelper MlFormHelper = new();

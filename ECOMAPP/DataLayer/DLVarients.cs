@@ -23,6 +23,7 @@ namespace ECOMAPP.DataLayer
                     _DBAccess.DBProcedureName = "";
                     _DBAccess.AddParameters("@Action", "");
                     _DataSet = _DBAccess.DBExecute();
+                    _DBAccess.Dispose();
 
 
                 }
@@ -90,6 +91,7 @@ namespace ECOMAPP.DataLayer
                     _DBAccess.DBProcedureName = "";
                     _DBAccess.AddParameters("@Action", "");
                     _DataSet = _DBAccess.DBExecute();
+                    _DBAccess.Dispose();
 
                 }
                 if (_DataSet != null && _DataSet.Tables.Count > 0)
@@ -143,6 +145,7 @@ namespace ECOMAPP.DataLayer
                     _DBAccess.DBProcedureName = "";
                     _DBAccess.AddParameters("@Action", "");
                     _DataSet = _DBAccess.DBExecute();
+                    _DBAccess.Dispose();
 
                 }
                 if (_DataSet != null && _DataSet.Tables.Count > 0)

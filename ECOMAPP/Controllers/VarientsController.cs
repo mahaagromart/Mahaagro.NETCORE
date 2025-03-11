@@ -23,7 +23,7 @@ namespace ECOMAPP.Controllers
             _MLVarients.VarientsList = _DLVarients.GetAllVarients();
             try
             {
-                _MLVarients.VarientsList = _DLVarients.GetAllVarients();
+               
                 if (_MLVarients.VarientsList.Count > 0)
                 {
                     _DBReturnData.Dataset = _MLVarients.VarientsList;

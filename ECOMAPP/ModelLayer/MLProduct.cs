@@ -49,6 +49,12 @@ namespace ECOMAPP.ModelLayer
             public string? TAX_AMOUNT { get; set; }
             public string? TAX_CALCULATION { get; set; }
             public string? CALCULATED_PRICE { get; set; }
+
+            //VAREITIES
+            public string? VAREINTS_NAME { get; set; }
+            public string ? PROD_ID { get; set; }
+
+
         }
 
         public class MLDeleteProduct
