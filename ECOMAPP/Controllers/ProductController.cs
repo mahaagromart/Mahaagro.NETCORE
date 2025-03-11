@@ -26,10 +26,10 @@ namespace ECOMAPP.Controllers
                 DLProduct _DLProduct = new();
                 DBReturnData _DBReturnData = new();
 
-               
+
                 _MLProduct.ProductList = _DLProduct.GetAllProducts();
 
-          
+
                 if (_MLProduct.ProductList.Any())
                 {
                     return Ok(new DBReturnData
@@ -68,7 +68,7 @@ namespace ECOMAPP.Controllers
 
         [Route("InsertProduct")]
         [HttpPost]
-        [JwtAuthorization(Roles = [Roles.Admin])]
+        [JwtAuthorization(Roles = [Roles.Admin , Roles.Vendor])]
         public ActionResult<IEnumerable<DBReturnData>> InsertProduct(MlGetProduct _MlGetProduct)
         {
             MLProduct _MLProduct = new();
@@ -78,22 +78,34 @@ namespace ECOMAPP.Controllers
             DataSet _DataSet = new();
             try
             {
+                _DBReturnData = _DLProduct.InsertProduct(_MlGetProduct);
 
-                    _DBReturnData = _DLProduct.InsertProduct(_MlGetProduct);
+                if (_DBReturnData.Code == DBEnums.Codes.SUCCESS)
+                {
                     _DBReturnData.Status = DBEnums.Status.SUCCESS;
                     _DBReturnData.Message = DBEnums.Status.SUCCESS.ToString();
-               
-             
+                    _DBReturnData.Retval = DBEnums.Status.SUCCESS.ToString();
+                }
+                else
+                {
+                    _DBReturnData.Status = DBEnums.Status.FAILURE;
+                    _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+                    _DBReturnData.Retval = DBEnums.Status.FAILURE.ToString();
+
+                }
+
+
             }
             catch (Exception ex)
             {
                 _DBReturnData.Code = DBEnums.Codes.BAD_REQUEST;
-                _DBReturnData.Message = DBEnums.Status.FAILURE.ToString() +ex.Message.ToString();
+                _DBReturnData.Message = DBEnums.Status.FAILURE.ToString() + ex.Message.ToString();
                 _DBReturnData.Retval = null;
             }
             return new[] { _DBReturnData };
 
         }
+
 
 
 
@@ -230,35 +242,8 @@ namespace ECOMAPP.Controllers
 
         }
 
-        [Route("InsertInhouseProduct")]
-        [HttpPost]
-        [JwtAuthorization(Roles = [Roles.Admin])]
-        public ActionResult<IEnumerable<DBReturnData>> InsertInhouseProduct(MLInsertInhouseProduct _MLInsertInhouseProduct)
-        {
-            DLProduct _DLProduct = new();
-            DBReturnData _DBReturnData = new();
-
-            try
-            {
-
-                _DBReturnData = _DLProduct.InsertInhouseProduct(_MLInsertInhouseProduct);
-                _DBReturnData.Code = DBEnums.Codes.SUCCESS;
-                _DBReturnData.Message =DBEnums.Status.SUCCESS.ToString();
-                _DBReturnData.Retval =DBEnums.Status.SUCCESS.ToString();
-
-            }
-            catch (Exception ex)
-            {
-
-                _DBReturnData.Dataset = null;
-                _DBReturnData.Code = DBEnums.Codes.BAD_REQUEST;
-                _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
-                _DBReturnData.Retval = DBEnums.Status.FAILURE.ToString();
-            }
-            return new[] { _DBReturnData };
-
-        }
-
+     
+  
 
         [Route("UpdateInhouseProduct")]
         [HttpPut]

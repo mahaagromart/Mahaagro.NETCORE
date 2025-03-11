@@ -17,24 +17,18 @@ namespace ECOMAPP.ModelLayer
 
         public class MlGetProduct
         {
-            public int? Id { get; set; }
-            public string? PROD_ID { get; set; }
-            public string CATEGORY_ID { get; set; }
-            public string SUB_CATEGORY_ID { get; set; }
-            public string Product_Name { get; set; }
-            public string Product_Description { get; set; }
-            public string IMAGES { get; set; }
+            public int? Id { get; set; } = 0;
+            public string CATEGORY_ID { get; set; } = string.Empty;
+            public string SUB_CATEGORY_ID { get; set; } = string.Empty;
+            public string? SUB_SUB_CATEGORY_ID { get; set; }
+            public string Product_Name { get; set; } = string.Empty;
+            public string Product_Description { get; set; } = string.Empty;
+            public string ThumbnailImage { get; set; } = string.Empty;
             public string? BRAND { get; set; }
-            public string sku { get; set; }
-            public string UNIT { get; set; }
-            public string[] TAGS_INPUT { get; set; }
-            public string? HSN { get; set; }
-            public string VAREINTS_NAME { get; set; }
-
-            public int? CERTIFICATION { get; set; }
-            public int? STATUS { get; set; }
-
-            public string? RATING { get; set; }
+            public string sku { get; set; } = string.Empty;
+            public string UNIT { get; set; } = string.Empty;
+            public string[] TAGS_INPUT { get; set; } = Array.Empty<string>();
+            public string HSN { get; set; } = string.Empty;
 
             // Pricing
             public int PRICING { get; set; }
@@ -42,10 +36,11 @@ namespace ECOMAPP.ModelLayer
             public int SELLING_PRICE { get; set; }
             public int MINIMUM_ORDER_QUANTITY { get; set; }
             public int CURRENT_STOCK_QUANTITY { get; set; }
+            public string? CALCULATED_MINIMUM_ORDER_PRICE { get; set; }
 
             // Logistics
             public int PACKAGE_WEIGHT { get; set; }
-            public string PACKAGE_SHAPE { get; set; }
+            public string PACKAGE_SHAPE { get; set; } = string.Empty;
             public string? PACKAGE_LENGTH { get; set; }
             public string? PACKAGE_WIDTH { get; set; }
             public string? PACKAGE_HEIGHT { get; set; }
@@ -57,37 +52,47 @@ namespace ECOMAPP.ModelLayer
             public string? TAX_CALCULATION { get; set; }
             public string? CALCULATED_PRICE { get; set; }
 
-            public string? MINIMUM_CALCULATED_PRICE { get; set; } 
-            public List<MLImages>? IMAGESLIST { get; set; }
-
-            public string? VARIENTNAME { get; set; }
-            public string MINIMUMCALCULATEDPRICE { get; set; }
-
-
+            // Varieties
+            public string? VAREINTS_NAME { get; set; }
+            public string? PROD_ID { get; set; }
+            public int? CERTIFICATION { get; set; }
+            public List<MLImages>? ImageGallery { get; set; } = new();
+            public string? IMAGES { get; set; }
+            public string? RATING { get; set; }
+            public int? STATUS { get; set; }
         }
-
-
 
         public class MLImages
         {
             public int ID { get; set; }
-            public string Product_Images { get; set; }
-            public string PROD_ID { get; set; }
+            public string Product_Images { get; set; } = string.Empty;
+            public string PROD_ID { get; set; } = string.Empty;
+        }
+
+        public class MLVarients
+        {
+
+            public int ID { get; set; }
+            public string? PROD_ID { get; set; }
+            public string? VarientName { get; set; }    
+            
+
+
         }
 
         public class MLDeleteProduct
         {
-            public string Product_id { get; set; }
+            public string Product_id { get; set; } = string.Empty;
         }
 
         public class MLToggleCertified
         {
-            public string Product_id { get; set; }
+            public string Product_id { get; set; } = string.Empty;
         }
 
         public class MLToggleStatus
         {
-            public string Product_id { get; set; }
+            public string Product_id { get; set; } = string.Empty;
         }
 
         #region Inhouse Product Management
@@ -95,21 +100,20 @@ namespace ECOMAPP.ModelLayer
         public class MLGetInhouseProduct
         {
             public int Id { get; set; }
-            public string Product_id { get; set; }
+            public string Product_id { get; set; } = string.Empty;
             public int Quantity { get; set; }
-            public string Product_Name { get; set; }
-            public string Image { get; set; }
-            public string Description { get; set; }
-            public string Rating { get; set; }
-            public string Category_id { get; set; }
-            public string CreationDate { get; set; }
+            public string Product_Name { get; set; } = string.Empty;
+            public string Image { get; set; } = string.Empty;
+            public string Description { get; set; } = string.Empty;
+            public string Rating { get; set; } = string.Empty;
+            public string Category_id { get; set; } = string.Empty;
+            public string CreationDate { get; set; } = string.Empty;
             public int SubSubcategory_id { get; set; }
-            public string UpdationDate { get; set; }
+            public string UpdationDate { get; set; } = string.Empty;
             public int Price { get; set; }
         }
 
         public class MLInsertInhouseProduct : MLGetInhouseProduct { }
-
         public class MLUpdateInhouseProduct : MLGetInhouseProduct { }
 
         public class MLDeleteInhouseProduct
@@ -119,6 +123,4 @@ namespace ECOMAPP.ModelLayer
 
         #endregion
     }
-
-
 }

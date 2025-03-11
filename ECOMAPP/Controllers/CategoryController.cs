@@ -19,7 +19,7 @@ namespace ECOMAPP.Controllers
 
         [Route("GetAllCategory")]
         [HttpGet]
-        [JwtAuthorization(Roles = [Roles.Admin])]
+
         //[JwtAuthorization(Roles = new[] { Roles.User, Roles.Vendor })]
         public JsonResult GetAllCategory()
         {
