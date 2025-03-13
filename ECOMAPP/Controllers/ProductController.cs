@@ -83,7 +83,7 @@ namespace ECOMAPP.Controllers
                 if (_DBReturnData.Code == DBEnums.Codes.SUCCESS)
                 {
                     _DBReturnData.Status = DBEnums.Status.SUCCESS;
-                    _DBReturnData.Message = DBEnums.Status.SUCCESS.ToString();
+
                     _DBReturnData.Retval = DBEnums.Status.SUCCESS.ToString();
                 }
                 else

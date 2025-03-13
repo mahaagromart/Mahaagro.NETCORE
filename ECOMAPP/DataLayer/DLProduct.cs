@@ -154,7 +154,7 @@ namespace ECOMAPP.DataLayer
                     _DBAccess.AddParameters("@UNIT", data.UNIT ?? "");
                     _DBAccess.AddParameters("@HSN", data.HSN ?? "");
                     _DBAccess.AddParameters("@TAGS_INPUT", tagsString);
-
+                    _DBAccess.AddParameters("@PROD_ID",data.PROD_ID);
                     //pricing
                     _DBAccess.AddParameters("@PRICING", data.PRICING);
                     _DBAccess.AddParameters("@MAXIMUM_RETAIL_PRICE", data.MAXIMUM_RETAIL_PRICE);
@@ -192,26 +192,27 @@ namespace ECOMAPP.DataLayer
                 }
                 if (_DataSet != null && _DataSet.Tables.Count > 0)
                 {
-
                     DataTable _DataTable = _DataSet.Tables[0];
-                    foreach (DataRow row in _DataTable.Rows)
+                    if (_DataTable.Rows.Count > 0)
                     {
-                        if (row["RETVAL"]?.ToString() == "SUCCESS")
+                        string retval = _DataTable.Rows[0]["RETVAL"].ToString();
+                        string prodId = _DataTable.Rows[0]["PROD_ID"].ToString();
+
+                        if (retval == "SUCCESS")
                         {
-                            _DBReturnData.Message = DBEnums.Status.SUCCESS.ToString();
+                            _DBReturnData.Message = prodId; 
                             _DBReturnData.Code = DBEnums.Codes.SUCCESS;
                         }
                         else
                         {
-                            _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+                            _DBReturnData.Message = "Failed to insert product";
                             _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
                         }
                     }
-
                 }
                 else
                 {
-                    _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+                    _DBReturnData.Message = "Failed to insert product.";
                     _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
                 }
 
