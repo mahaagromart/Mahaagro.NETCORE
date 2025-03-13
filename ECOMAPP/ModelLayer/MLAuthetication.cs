@@ -153,6 +153,8 @@
                 public string? CurrencyName { get; set; } = null;
                 public string? StateName { get; set; } = null;
                 public string? CityName { get; set; } = null;
+                public string? PhoneNumber { get; set; } = null;
+
             }
 
             public List<AuthenticationDTO.UserProfileEntites>? UserProfilesEntity { get; set; }

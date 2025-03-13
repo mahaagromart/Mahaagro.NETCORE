@@ -632,6 +632,7 @@ namespace ECOMAPP.DataLayer
                                     CurrencyName = Convert.ToString(row["CurrencyName"]),
                                     StateName = Convert.ToString(row["StateName"]),
                                     CityName = Convert.ToString(row["CityName"]),
+                                    PhoneNumber = Convert.ToString(row["PhoneNumber"])
                             });
                         }
                     }
