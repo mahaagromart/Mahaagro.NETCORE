@@ -25,6 +25,7 @@ namespace ECOMAPP.DataLayer
                             dBAccess.AddParameters("@BlockName",item.BannerType);
                             dBAccess.AddParameters("@DirectionLinkWeb",item.BannerUrl??"");
                             dBAccess.AddParameters("@DirectionLinkMobile","");
+                            dBAccess.AddParameters("@Description", item.Description??"");
                             dBAccess.AddParameters("@CampaingStart",item.StartDate ?? DateTime.UtcNow.ToString());
                             dBAccess.AddParameters("@CampaingEnd",item.EndDate ?? DateTime.UtcNow.ToString());
                             Results.Add(dBAccess.DBExecute());
@@ -97,7 +98,7 @@ namespace ECOMAPP.DataLayer
                                 {
                                     Id = Convert.ToInt32(dataRow["id"] ?? 0),
                                     BannerType = dataRow["BlockName"].ToString()??"Null", 
-                                    Description = "Banner Image", //TODO add column and retrive 3-10-2025 pavan
+                                    Description = dataRow["Description"].ToString()??"Shop Now on Mahaagromart", //TODO add column and retrive 3-10-2025 pavan
                                     Url = bannerUrl,
                                     isdelete = false
                                 });
@@ -143,8 +144,8 @@ namespace ECOMAPP.DataLayer
                                 rdata.Add(new MlGetAllBannerEntity
                                 {
                                     Id = Convert.ToInt32(dataRow["id"] ?? 0),
-                                    BannerType = dataRow["BlockName"].ToString()??"Null", 
-                                    Description = "Banner Image", //TODO add column and retrive 3-10-2025 pavan
+                                    BannerType = dataRow["BlockName"].ToString()??"Null",
+                                    Description = dataRow["Description"].ToString() ?? "Shop Now on Mahaagromart",
                                     Url = bannerUrl,
                                     isdelete = Convert.ToSByte(dataRow["isdelete"]) == 1 ? true : false
                                 });
