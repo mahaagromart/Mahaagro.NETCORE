@@ -616,6 +616,8 @@ namespace ECOMAPP.DataLayer
                     dBAccess.DBProcedureName = "SP_PRODUCTACTIONS";
                     dBAccess.AddParameters("@Action", "SELECTPRODUCTSBYCATEGORYID");
                     dBAccess.AddParameters("@CategoryId", mLGetProrductByCategoryId.Id);
+                    dBAccess.AddParameters("@PaginationStart",mLGetProrductByCategoryId.PaginatioStart);
+                    dBAccess.AddParameters("@PaginationEnd", mLGetProrductByCategoryId.PaginationEnd);
                     dataSet = dBAccess.DBExecute();
                     dBAccess.Dispose();
                 }
