@@ -66,6 +66,35 @@ namespace ECOMAPP.Controllers
             }
         }
 
+
+        [Route("GetProductByCategoryId")]
+        [HttpGet]
+        public ActionResult<IEnumerable<DBReturnData>> GetProductByCategoryId()
+        {
+            DBReturnData _DBReturnData = new();
+            DLProduct _DLProduct = new();
+
+            try
+            {
+
+
+            }
+            catch(Exception ex)
+            {
+
+            }
+
+
+            return new[] { _DBReturnData };
+
+        }
+
+
+
+
+
+
+
         [Route("InsertProduct")]
         [HttpPost]
         [JwtAuthorization(Roles = [Roles.Admin])]

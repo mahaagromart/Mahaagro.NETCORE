@@ -1,5 +1,6 @@
 ﻿using ECOMAPP.CommonRepository;
 using Microsoft.AspNetCore.Identity;
+using System.Diagnostics.Contracts;
 using System.Numerics;
 
 namespace ECOMAPP.ModelLayer
@@ -13,6 +14,7 @@ namespace ECOMAPP.ModelLayer
         }
 
         public List<MlGetProduct> ProductList { get; set; }
+        public List<MLGetProductByCategoryId> ProductByCategory { get; set; }
         public List<MLGetInhouseProduct> InhouseProductList { get; set; }
 
         public class MlGetProduct
@@ -22,7 +24,8 @@ namespace ECOMAPP.ModelLayer
             public string SUB_CATEGORY_ID { get; set; }
             public string Product_Name { get; set; }
             public string Product_Description { get; set; }
-            public string Images { get; set; }
+            //public string Images { get; set; }
+            public string[] PRODUCT_Images { get; set; } = Array.Empty<string>();
             public string? BRAND { get; set; }
             public string sku { get; set; }
             public string UNIT { get; set; }
@@ -71,6 +74,13 @@ namespace ECOMAPP.ModelLayer
         {
             public string Product_id { get; set; }
         }
+
+        public class MLGetProductByCategoryId
+        {
+            public int Category_id { get; set; }
+
+        }
+  
 
         #region Inhouse Product Management
 
