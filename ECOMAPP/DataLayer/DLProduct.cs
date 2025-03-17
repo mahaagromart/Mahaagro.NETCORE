@@ -10,7 +10,7 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace ECOMAPP.DataLayer
 {
-    public class DLProduct
+    public class DLProduct:DALBASE
     {
 
 
@@ -595,7 +595,80 @@ namespace ECOMAPP.DataLayer
             return _DBReturnData;
         }
 
+
+
+
+
         #endregion InhouseProduct
+
+
+
+
+        public List<ProductsList> GetProductBycategory(MLGetProrductByCategoryId mLGetProrductByCategoryId)
+        {
+            List<ProductsList> productsLists = new List<ProductsList>();
+            DataSet dataSet = new();
+
+            try
+            {
+                using (DBAccess dBAccess = new DBAccess())
+                {
+                    dBAccess.DBProcedureName = "SP_PRODUCTACTIONS";
+                    dBAccess.AddParameters("@Action", "SELECTPRODUCTSBYCATEGORYID");
+                    dBAccess.AddParameters("@CategoryId", mLGetProrductByCategoryId.Id);
+                    dataSet = dBAccess.DBExecute();
+                    dBAccess.Dispose();
+                }
+
+                if (dataSet.Tables[1].Rows[0]["RETVAL"].ToString() == "Success")
+                {
+                    var productsDict = new Dictionary<string, ProductsList>();
+
+                    foreach (DataRow row in dataSet.Tables[0].Rows)
+                    {
+                        string productId = row["PRODUCT_ID"].ToString();
+                        string productName = row["DEFAULTPRODUCTNAME"].ToString();
+                        string varientName = row["VARIENTNAME"].ToString();
+                        string price = row["MRP"].ToString();
+                        string imageUrl = row["IMAGEURL"].ToString();
+
+                        if (!productsDict.ContainsKey(productId))
+                        {
+                            productsDict[productId] = new ProductsList
+                            {
+                                ProductId = productId,
+                                VarientList = new List<VarientList>()
+                            };
+                        }
+
+                        var product = productsDict[productId];
+                        var varient = new VarientList
+                        {
+                            ProductName = productName??"",
+                            Price = price??"",
+                            Reviews = null, // Assuming reviews are not provided in the current dataset
+                            Images = new string[] { imageUrl??"" }
+                        };
+
+                        product.VarientList.Add(varient);
+                    }
+
+                    productsLists = productsDict.Values.ToList();
+                }
+            }
+
+            catch (Exception c)
+            {
+                ErrorLog("Get product", "Dlproducts", c.ToString());
+            }
+
+
+            return productsLists;
+        }
+
+
+
+
 
     }
 }
