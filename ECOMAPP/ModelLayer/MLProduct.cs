@@ -124,6 +124,9 @@ namespace ECOMAPP.ModelLayer
         public class MLGetProrductByCategoryId
         {
             public int Id { get; set; }
+            public int PaginatioStart { get; set; } = 0;
+            public int PaginationEnd { get; set; } = 50;
+
         }
 
 
