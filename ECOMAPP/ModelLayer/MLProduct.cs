@@ -74,8 +74,8 @@ namespace ECOMAPP.ModelLayer
 
             public int ID { get; set; }
             public string? PROD_ID { get; set; }
-            public string? VarientName { get; set; }    
-            
+            public string? VarientName { get; set; }
+
 
 
         }
@@ -120,6 +120,35 @@ namespace ECOMAPP.ModelLayer
         {
             public int Id { get; set; }
         }
+
+        public class MLGetProrductByCategoryId
+        {
+            public int Id { get; set; }
+        }
+
+
+        public class VarientList{
+            public string ProductName { get; set; }
+            public string Price { get; set; }
+            public string? Reviews { get; set; }
+            public string[]? Images { get; set; }
+
+        }
+
+
+        public class ProductsList
+        {
+            
+            public string ProductId { get; set; }
+            public List<VarientList> VarientList { get; set; }
+
+        }
+
+
+        public List<ProductsList> productsLists { get; set; }
+
+
+
 
         #endregion
     }

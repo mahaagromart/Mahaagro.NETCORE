@@ -45,7 +45,7 @@ namespace ECOMAPP.Controllers
                     return NotFound(new DBReturnData
                     {
                         Dataset = null,
-                        Code = DBEnums.Codes.INTERNAL_SERVER_ERROR,
+                        Code = DBEnums.Codes.NOT_FOUND,
                         Message = DBEnums.Status.FAILURE.ToString(),
                         Retval = DBEnums.Status.FAILURE.ToString()
                     });
@@ -273,7 +273,6 @@ namespace ECOMAPP.Controllers
         [Route("DeleteInhouseProduct")]
         [HttpDelete]
         [JwtAuthorization(Roles = [Roles.Admin])]
-
         public ActionResult<IEnumerable<DBReturnData>> DeleteInhouseProduct(MLDeleteInhouseProduct _MLDeleteInhouseProduct)
         {
             DLProduct _DLProduct = new();
@@ -299,6 +298,58 @@ namespace ECOMAPP.Controllers
         }
 
         #endregion InhouseProduct
+
+
+
+        #region GET PRoduct by categroyID
+        [Route("GetProductBycategory")]
+        [HttpPost]
+        public ActionResult<IEnumerable<DBReturnData>> GetProductBycategory(MLGetProrductByCategoryId mLGetProrductByCategoryId)
+        {
+            MLProduct _MLProduct = new();
+            DLProduct _DLProduct = new();
+            DBReturnData _DBReturnData = new();
+
+
+            try
+            {
+                _MLProduct.productsLists = _DLProduct.GetProductBycategory(mLGetProrductByCategoryId);
+                if (_MLProduct.productsLists.Count > 0)
+                {
+                    _DBReturnData.Dataset = _MLProduct.productsLists;
+                    _DBReturnData.Code = DBEnums.Codes.SUCCESS;
+                    _DBReturnData.Message = DBEnums.Status.SUCCESS.ToString();
+                    _DBReturnData.Retval = DBEnums.Status.SUCCESS.ToString();
+
+                }
+                else
+                {
+                    _DBReturnData.Dataset = null;
+                    _DBReturnData.Code = DBEnums.Codes.NOT_FOUND;
+                    _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+                    _DBReturnData.Retval = DBEnums.Status.FAILURE.ToString();
+                }
+
+
+
+            }
+            catch (Exception ex)
+            {
+
+                _DBReturnData.Dataset = null;
+                _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
+                _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+                _DBReturnData.Retval = DBEnums.Status.FAILURE.ToString();
+            }
+            return new[] { _DBReturnData };
+
+
+
+        }
+
+
+        #endregion
+
 
 
     }
