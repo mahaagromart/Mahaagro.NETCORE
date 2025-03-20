@@ -60,14 +60,69 @@ namespace ECOMAPP.ModelLayer
             public string? IMAGES { get; set; }
             public string? RATING { get; set; }
             public int? STATUS { get; set; }
+            public List<MlProductVariant>? Variants { get; internal set; }
+        }
+
+        public class MlGetProducts
+        {
+            public int? Id { get; set; } = 0;
+            public string? CATEGORY_ID { get; set; } = string.Empty;
+            public string? SUB_CATEGORY_ID { get; set; } = string.Empty;
+            public string? SUB_SUB_CATEGORY_ID { get; set; }
+            public string Product_Name { get; set; } = string.Empty;
+            public string Product_Description { get; set; } = string.Empty;
+            public string ThumbnailImage { get; set; } = string.Empty;
+            public string? BRAND { get; set; }
+            public string? UNIT { get; set; } = string.Empty;
+            public string[]? TAGS_INPUT { get; set; } = Array.Empty<string>();
+            public string? PROD_ID { get; set; }
+            public List<MlProductVariant>? Variants { get; internal set; }
+        }
+
+
+        public class MlProductVariant
+        {
+            public string? VARIENTS_ID { get; set; }
+            public string? Product_Name { get; set; }
+            public string? Varient_Name { get; set; }
+            public string? SKU { get; set; }
+            public string? HSN { get; set; }
+            public MlProductPricing Pricing { get; set; } = new MlProductPricing();
+            public MlProductLogistics Logistics { get; set; } = new MlProductLogistics();
+            public List<MLImages> ImageGallery { get; set; } = new List<MLImages>();
+        }
+        public class MlProductPricing
+        {
+            public string? PRICING { get; set; }
+            public string? MAXIMUM_RETAIL_PRICE { get; set; }
+            public string? SELLING_PRICE { get; set; }
+            public string? MINIMUM_ORDER_QUANTITY { get; set; }
+            public string? CURRENT_STOCK_QUANTITY { get; set; }
+            public string? DISCOUNT_TYPE { get; set; }
+            public string? DISCOUNT_AMOUNT { get; set; }
+            public string? TAX_AMOUNT { get; set; }
+            public string? TAX_CALCULATION { get; set; }
+            public string? CALCULATED_PRICE { get; set; }
+        }
+
+        public class MlProductLogistics
+        {
+            public string? PACKAGE_SHAPE { get; set; }
+            public string? PACKAGE_LENGTH { get; set; }
+            public string? PACKAGE_WIDTH { get; set; }
+            public string? PACKAGE_HEIGHT { get; set; }
+            public string? PACKAGE_WEIGHT { get; set; }
+            public string? PACKAGE_DIAMETER { get; set; }
+            public string? PACKAGE_TOTAL_VOLUME { get; set; }
         }
 
         public class MLImages
         {
-            public int ID { get; set; }
-            public string Product_Images { get; set; } = string.Empty;
-            public string PROD_ID { get; set; } = string.Empty;
+            public int? ID { get; set; }
+            public string? Product_Images { get; set; }
+            public string? PROD_ID { get; set; } = string.Empty;
         }
+
 
         public class MLVarients
         {
@@ -75,9 +130,6 @@ namespace ECOMAPP.ModelLayer
             public int ID { get; set; }
             public string? PROD_ID { get; set; }
             public string? VarientName { get; set; }
-
-
-
         }
 
         public class MLDeleteProduct

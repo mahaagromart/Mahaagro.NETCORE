@@ -15,10 +15,11 @@ namespace ECOMAPP.DataLayer
 
 
 
-        public List<MLProduct.MlGetProduct> GetAllProducts()
+        public DBReturnData GetAllProducts()
         {
-            List<MLProduct.MlGetProduct> products = new();
+            List<MlGetProducts> products = new();
             DALBASE _DALBASE = new();
+            DBReturnData _DbReturn = new(); // Ensure _DbReturn is properly initialized
 
             try
             {
@@ -28,88 +29,96 @@ namespace ECOMAPP.DataLayer
                     _DBAccess.AddParameters("@Action", "SELECTPRODUCTANDPRICELOGISTICES");
 
                     using DataSet _DataSet = _DBAccess.DBExecute();
+                    _DBAccess.Dispose();
 
-                    if (_DataSet == null || _DataSet.Tables.Count < 5)
-                        return products;
+                    if (_DataSet == null || _DataSet.Tables.Count == 0)
+                    {
+                        _DbReturn.Dataset = null;
+                        _DbReturn.Code = DBEnums.Codes.NOT_FOUND;
+                        _DbReturn.Message = "No products found";
+                        _DbReturn.Retval = "NOT_FOUND";
+                        return _DbReturn;
+                    }
 
                     DataTable productTable = _DataSet.Tables[0];
-                    DataTable pricingTable = _DataSet.Tables[1];
-                    DataTable logisticsTable = _DataSet.Tables[2];
-                    DataTable imagesTable = _DataSet.Tables[3];
-
-                    string retval = _DataSet.Tables[4].Rows[0]["RETVAL"]?.ToString() ?? "";
+                    string retval = _DataSet.Tables[1].Rows[0]["RETVAL"]?.ToString();
 
                     if (retval == "SUCCESS")
                     {
-                        foreach (DataRow productRow in productTable.Rows)
+                        var productGroups = productTable.AsEnumerable()
+                            .GroupBy(row => row["PROD_ID"].ToString());
+
+                        foreach (var productGroup in productGroups)
                         {
-                            string PROD_ID = productRow["PROD_ID"]?.ToString() ?? string.Empty;
+                            var firstProduct = productGroup.First();
+                            string PROD_ID = firstProduct["PROD_ID"]?.ToString() ?? string.Empty;
 
-                            DataRow pricingRow = pricingTable.AsEnumerable()
-                                .FirstOrDefault(row => row["PROD_ID"]?.ToString() == PROD_ID);
-
-                            DataRow logisticsRow = logisticsTable.AsEnumerable()
-                                .FirstOrDefault(row => row["PROD_ID"]?.ToString() == PROD_ID);
-
-                            List<MLImages> images = imagesTable.AsEnumerable()
-                                .Where(row => row["PROD_ID"]?.ToString() == PROD_ID)
-                                .OrderBy(row => Convert.ToInt32(row["ID"]))
-                                .Select(row => new MLImages
-                                {
-                                    ID = Convert.ToInt32(row["ID"]),
-                                    Product_Images = row["Product_Images"]?.ToString() ?? string.Empty,
-                                    PROD_ID = row["PROD_ID"]?.ToString() ?? string.Empty
-                                })
-                                .ToList();
-
-                            MLProduct.MlGetProduct product = new()
+                            MlGetProducts product = new()
                             {
                                 PROD_ID = PROD_ID,
-                                Id = productRow["ID"] != DBNull.Value ? Convert.ToInt32(productRow["ID"]) : 0,
-                                CATEGORY_ID = productRow["CATEGORY_ID"]?.ToString() ?? string.Empty,
-                                CERTIFICATION = productRow["CERTIFICATION"] != DBNull.Value ? Convert.ToInt32(productRow["CERTIFICATION"]) : 0,
-                                STATUS = productRow["STATUS"] != DBNull.Value ? Convert.ToInt32(productRow["STATUS"]) : 0,
-                                Product_Name = productRow["Product_Name"]?.ToString() ?? string.Empty,
-                                Product_Description = productRow["PRODUCT_DESCRIPTION"]?.ToString() ?? string.Empty,
-                                RATING = productRow["RATING"]?.ToString() ?? string.Empty,
-                                SUB_CATEGORY_ID = productRow["SUB_CATEGORY_ID"]?.ToString() ?? string.Empty,
-                                ThumbnailImage = images.Count > 0 ? images.First().Product_Images : string.Empty,
-                                ImageGallery = images.Count > 0 ? images : null,
-                                BRAND = productRow["BRAND"]?.ToString() ?? string.Empty,
-                                sku = productRow["sku"]?.ToString() ?? string.Empty,
-                                UNIT = productRow["UNIT"]?.ToString() ?? string.Empty,
-                                TAGS_INPUT = productRow["TAGS_INPUT"] != DBNull.Value
-                                    ? productRow["TAGS_INPUT"].ToString().Split(',', StringSplitOptions.RemoveEmptyEntries)
-                                    : Array.Empty<string>(),
-                                HSN = productRow["HSN"]?.ToString() ?? string.Empty,
-
-                                PRICING = pricingRow != null && pricingRow["PRICING"] != DBNull.Value
-                                    ? Convert.ToInt32(pricingRow["PRICING"])
-                                    : 0,
-
-                                MAXIMUM_RETAIL_PRICE = pricingRow != null && pricingRow["MAXIMUM_RETAIL_PRICE"] != DBNull.Value
-                                    ? Convert.ToInt32(pricingRow["MAXIMUM_RETAIL_PRICE"])
-                                    : 0,
-
-                                SELLING_PRICE = pricingRow != null && pricingRow["SELLING_PRICE"] != DBNull.Value
-                                    ? Convert.ToInt32(pricingRow["SELLING_PRICE"])
-                                    : 0,
-
-                                MINIMUM_ORDER_QUANTITY = pricingRow != null && pricingRow["MINIMUM_ORDER_QUANTITY"] != DBNull.Value
-                                    ? Convert.ToInt32(pricingRow["MINIMUM_ORDER_QUANTITY"])
-                                    : 0,
-
-                                CURRENT_STOCK_QUANTITY = pricingRow != null && pricingRow["CURRENT_STOCK_QUANTITY"] != DBNull.Value
-                                    ? Convert.ToInt32(pricingRow["CURRENT_STOCK_QUANTITY"])
-                                    : 0,
-
-                                DISCOUNT_TYPE = pricingRow?["DISCOUNT_TYPE"]?.ToString() ?? string.Empty,
-                                DISCOUNT_AMOUNT = pricingRow?["DISCOUNT_AMOUNT"]?.ToString() ?? string.Empty,
-                                TAX_AMOUNT = pricingRow?["TAX_AMOUNT"]?.ToString() ?? string.Empty,
-                                TAX_CALCULATION = pricingRow?["TAX_CALCULATION"]?.ToString() ?? string.Empty,
-                                CALCULATED_PRICE = pricingRow?["CALCULATED_PRICE"]?.ToString() ?? string.Empty,
+                                Product_Name = firstProduct["PRODUCT_NAME"]?.ToString() ?? string.Empty,
+                                Product_Description = firstProduct["PRODUCT_DESCRIPTION"]?.ToString() ?? string.Empty,
+                                BRAND = firstProduct["BRAND"]?.ToString() ?? string.Empty,
+                                UNIT = firstProduct["UNIT"]?.ToString() ?? string.Empty,
+                                CATEGORY_ID = firstProduct["CATEGORY_ID"].ToString() ?? string.Empty,
+                                SUB_CATEGORY_ID = firstProduct["SUB_CATEGORY_ID"].ToString() ?? string.Empty,
+                                SUB_SUB_CATEGORY_ID = firstProduct["SUB_SUB_CATEGORY_ID"].ToString() ?? string.Empty,
+                                Variants = new List<MlProductVariant>()
                             };
 
+                            var variantRows = productGroup.GroupBy(row => row["VARIENTS_ID"].ToString());
+
+                            foreach (var variantGroup in variantRows)
+                            {
+                                var firstVariant = variantGroup.First();
+                                string VARIENTS_ID = firstVariant["VARIENTS_ID"]?.ToString() ?? string.Empty;
+
+                                var variant = new MlProductVariant
+                                {
+                                    VARIENTS_ID = VARIENTS_ID,
+                                    Product_Name = firstVariant["VARIANTWISE_NAME"]?.ToString() ?? string.Empty,
+                                    Varient_Name = firstVariant["VAREINTS_NAME"]?.ToString() ?? string.Empty,
+                                    SKU = firstVariant["SKU"]?.ToString() ?? string.Empty,
+                                    HSN = firstVariant["HSN"]?.ToString() ?? string.Empty,
+
+                                    Pricing = new MlProductPricing
+                                    {
+                                        PRICING = firstVariant["PRICING"]?.ToString() ?? "0",
+                                        MAXIMUM_RETAIL_PRICE = firstVariant["MAXIMUM_RETAIL_PRICE"]?.ToString() ?? "0",
+                                        SELLING_PRICE = firstVariant["SELLING_PRICE"]?.ToString() ?? "0",
+                                        MINIMUM_ORDER_QUANTITY = firstVariant["MINIMUM_ORDER_QUANTITY"]?.ToString() ?? "0",
+                                        CURRENT_STOCK_QUANTITY = firstVariant["CURRENT_STOCK_QUANTITY"]?.ToString() ?? "0",
+                                        DISCOUNT_TYPE = firstVariant["DISCOUNT_TYPE"]?.ToString() ?? "0",
+                                        DISCOUNT_AMOUNT = firstVariant["DISCOUNT_AMOUNT"]?.ToString() ?? "0",
+                                        TAX_AMOUNT = firstVariant["TAX_AMOUNT"]?.ToString() ?? "0",
+                                        TAX_CALCULATION = firstVariant["TAX_CALCULATION"]?.ToString() ?? "0",
+                                        CALCULATED_PRICE = firstVariant["CALCULATED_PRICE"]?.ToString() ?? "0",
+                                    },
+
+                                    Logistics = new MlProductLogistics
+                                    {
+                                        PACKAGE_SHAPE = firstVariant["PACKAGE_SHAPE"]?.ToString() ?? string.Empty,
+                                        PACKAGE_LENGTH = firstVariant["PACKAGE_LENGTH"]?.ToString() ?? "0",
+                                        PACKAGE_WIDTH = firstVariant["PACKAGE_WIDTH"]?.ToString() ?? "0",
+                                        PACKAGE_HEIGHT = firstVariant["PACKAGE_HEIGHT"]?.ToString() ?? "0",
+                                        PACKAGE_WEIGHT = firstVariant["PACKAGE_WEIGHT"]?.ToString() ?? "0",
+                                        PACKAGE_DIAMETER = firstVariant["PACKAGE_DIAMETER"]?.ToString() ?? "0",
+                                        PACKAGE_TOTAL_VOLUME = firstVariant["PACKAGE_TOTAL_VOLUME"]?.ToString() ?? "0",
+                                    },
+
+                                    ImageGallery = variantGroup
+                                        .Select(row => new MLImages
+                                        {
+                                            Product_Images = row["PRODUCT_IMAGES"]?.ToString() ?? string.Empty
+                                        })
+                                        .Distinct()
+                                        .ToList()
+                                };
+
+                                product.Variants.Add(variant);
+                            }
+
+                            product.ThumbnailImage = product.Variants.FirstOrDefault()?.ImageGallery?.FirstOrDefault()?.Product_Images ?? string.Empty;
                             products.Add(product);
                         }
                     }
@@ -118,11 +127,19 @@ namespace ECOMAPP.DataLayer
             catch (Exception ex)
             {
                 _DALBASE.ErrorLog("GetAllProducts", "DLProduct", ex.ToString());
+                _DbReturn.Dataset = null;
+                _DbReturn.Code = DBEnums.Codes.BAD_REQUEST;
+                _DbReturn.Message = "Error fetching products";
+                _DbReturn.Retval = "FAILURE";
+                return _DbReturn;
             }
 
-            return products;
+            _DbReturn.Dataset = products;
+            _DbReturn.Code = DBEnums.Codes.SUCCESS;
+            _DbReturn.Message = "Products fetched successfully";
+            _DbReturn.Retval = "SUCCESS";
+            return _DbReturn;
         }
-    
 
         public DBReturnData InsertProduct(MlGetProduct data)
         {
@@ -672,120 +689,246 @@ namespace ECOMAPP.DataLayer
 
 
 
-        public List<ProductDescriptionList> GetCompletProductDescription(MLGetCompletProductDescription mLGetCompletProductDescription)
+        //public List<ProductDescriptionList> GetCompletProductDescription(MLGetCompletProductDescription mLGetCompletProductDescription)
+        //{
+        //    List<ProductDescriptionList> productDescriptionLists = new List<ProductDescriptionList>();
+        //    DataSet dataSet = new();
+
+        //    try
+        //    {
+        //        using (DBAccess dBAccess = new DBAccess())
+        //        {
+        //            dBAccess.DBProcedureName = "SP_PRODUCTACTIONS";
+        //            dBAccess.AddParameters("@Action", "GetCompletProductDescription");
+        //            dBAccess.AddParameters("@ProductId", mLGetCompletProductDescription.ProductId);
+        //            dataSet = dBAccess.DBExecute();
+        //            dBAccess.Dispose();
+        //        }
+
+        //        if (dataSet.Tables[1].Rows[0]["RETVAL"].ToString() == "Success")
+        //        {
+        //            var productsDict = new Dictionary<string, ProductDescriptionList>();
+
+        //            foreach (DataRow row in dataSet.Tables[0].Rows)
+        //            {
+        //                string ProductName = row["PRODUCT_NAME"].ToString();
+        //                string ProductDescription = row["PRODUCT_DESCRIPTION"].ToString();
+        //                string Brand = row["BRAND"].ToString();
+        //                string Unit = row["UNIT"].ToString();
+        //                string Price = row["MRP"].ToString();
+        //                string ProductId = row["PRODUCT_ID"].ToString();
+        //                string Reviews = "";
+        //                string Images = row["IMAGEURL"].ToString();
+        //                string VaientWiseName = row["VAIENTWISENAME"].ToString();
+        //                string DefaultProductName = row["DefaultProductName"].ToString();
+        //                string VarientName = row["VARIENTNAME"].ToString();
+        //                string VarientId = row["VARIENTID"].ToString();
+        //                string CalculatedPrice = row["CALCULATED_PRICE"].ToString();
+        //                string CurrentStockQuantity = row["CURRENT_STOCK_QUANTITY"].ToString();
+        //                string DiscountAmount = row["DISCOUNT_AMOUNT"].ToString();
+        //                string Pricing = row["PRICING"].ToString();
+        //                string SellingPrice = row["SELLING_PRICE"].ToString();
+        //                string Mrp = row["MRP"].ToString();
+        //                string ImageUrl = row["IMAGEURL"].ToString();
+        //                string packageShape = row["PACKAGE_SHAPE"].ToString();
+        //                string packageLength = row["PACKAGE_LENGTH"].ToString();
+        //                string packageWidth = row["PACKAGE_WIDTH"].ToString();
+        //                string packageHeight = row["PACKAGE_HEIGHT"].ToString();
+        //                string packageWeight = row["PACKAGE_WEIGHT"].ToString();
+        //                string packageDiameter = row["PACKAGE_DIAMETER"].ToString();
+        //                string packageTotalVolume = row["PACKAGE_TOTAL_VOLUME"].ToString();
+
+
+
+
+        //                if (!productsDict.ContainsKey(ProductId))
+        //                {
+        //                    productsDict[ProductId] = new ProductDescriptionList
+        //                    {
+        //                        ProductId = ProductId,
+        //                        VarientList = new List<CompleteVarientList>()
+        //                    };
+        //                }
+
+        //                var product = productsDict[ProductId];
+        //                var varient = new CompleteVarientList
+        //                {
+        //                    //ProductName = productName ?? "",
+        //                    //Price = price ?? "",
+        //                    //Reviews = null, // Assuming reviews are not provided in the current dataset
+        //                    //Images = new string[] { imageUrl ?? "" }
+
+        //                    ProductName = ProductName ?? "",
+        //                    Price = Price ?? "",
+        //                    Reviews = Reviews ?? "",
+        //                    Images = new string[] { ImageUrl ?? "" },
+        //                    ProductId = ProductId ?? "",
+        //                    ProductDescription = ProductDescription ?? "",
+        //                    Unit = Unit ?? "",
+        //                    Brand = Brand ?? "",
+        //                    VaientWiseName = VaientWiseName ?? "",
+        //                    DefaultProductName = DefaultProductName ?? "",
+        //                    VarientName = VarientName ?? "",
+        //                    VarientId = VarientId ?? "",
+        //                    CalculatedPrice = CalculatedPrice ?? "",
+        //                    CurrentStockQuantity = CurrentStockQuantity ?? "",
+        //                    DiscountAmount = DiscountAmount ?? "",
+        //                    Pricing = Pricing ?? "",
+        //                    SellingPrice = SellingPrice ?? "",
+        //                    Mrp = Mrp ?? "",
+        //                    ImageUrl = ImageUrl ?? "",
+        //                    PackageShape = packageShape ?? "",
+        //                    packageLength = packageLength ?? "",
+        //                    packageWidth =  packageWidth ?? "",
+        //                    packageHeight = packageWeight ?? "",
+        //                    packageWeight = packageWeight ?? "",
+        //                    packageDiameter = packageDiameter ?? "",
+        //                    packageTotalVolume = packageTotalVolume ?? ""
+
+        //                };
+
+        //                product.VarientList.Add(varient);
+        //            }
+
+        //            productDescriptionLists = productsDict.Values.ToList();
+        //        }
+        //    }
+
+        //    catch (Exception c)
+        //    {
+        //        ErrorLog("Get product", "Dlproducts", c.ToString());
+        //    }
+
+
+        //    return productDescriptionLists;
+        //}
+
+        public DBReturnData GetCompletProductDescription(MLGetCompletProductDescription mLGetCompletProductDescription)
         {
-            List<ProductDescriptionList> productDescriptionLists = new List<ProductDescriptionList>();
-            DataSet dataSet = new();
+            List<MlGetProducts> products = new();
+            DALBASE _DALBASE = new();
+            DBReturnData _DbReturn = new(); // Ensure _DbReturn is properly initialized
 
             try
             {
-                using (DBAccess dBAccess = new DBAccess())
+                using (DBAccess _DBAccess = new())
                 {
-                    dBAccess.DBProcedureName = "SP_PRODUCTACTIONS";
-                    dBAccess.AddParameters("@Action", "GetCompletProductDescription");
-                    dBAccess.AddParameters("@ProductId", mLGetCompletProductDescription.ProductId);
-                    dataSet = dBAccess.DBExecute();
-                    dBAccess.Dispose();
-                }
+                    _DBAccess.DBProcedureName = "SP_PRODUCTACTIONS";
+                    _DBAccess.AddParameters("@Action", "GetCompletProductDescription");
+                    _DBAccess.AddParameters("@ProductId", mLGetCompletProductDescription.ProductId);
 
-                if (dataSet.Tables[1].Rows[0]["RETVAL"].ToString() == "Success")
-                {
-                    var productsDict = new Dictionary<string, ProductDescriptionList>();
+                    using DataSet _DataSet = _DBAccess.DBExecute();
+                    _DBAccess.Dispose();
 
-                    foreach (DataRow row in dataSet.Tables[0].Rows)
+                    if (_DataSet == null || _DataSet.Tables.Count == 0)
                     {
-                        string ProductName = row["PRODUCT_NAME"].ToString();
-                        string ProductDescription = row["PRODUCT_DESCRIPTION"].ToString();
-                        string Brand = row["BRAND"].ToString();
-                        string Unit = row["UNIT"].ToString();
-                        string Price = row["MRP"].ToString();
-                        string ProductId = row["PRODUCT_ID"].ToString();
-                        string Reviews = "";
-                        string Images = row["IMAGEURL"].ToString();
-                        string VaientWiseName = row["VAIENTWISENAME"].ToString();
-                        string DefaultProductName = row["DefaultProductName"].ToString();
-                        string VarientName = row["VARIENTNAME"].ToString();
-                        string VarientId = row["VARIENTID"].ToString();
-                        string CalculatedPrice = row["CALCULATED_PRICE"].ToString();
-                        string CurrentStockQuantity = row["CURRENT_STOCK_QUANTITY"].ToString();
-                        string DiscountAmount = row["DISCOUNT_AMOUNT"].ToString();
-                        string Pricing = row["PRICING"].ToString();
-                        string SellingPrice = row["SELLING_PRICE"].ToString();
-                        string Mrp = row["MRP"].ToString();
-                        string ImageUrl = row["IMAGEURL"].ToString();
-                        string packageShape = row["PACKAGE_SHAPE"].ToString();
-                        string packageLength = row["PACKAGE_LENGTH"].ToString();
-                        string packageWidth = row["PACKAGE_WIDTH"].ToString();
-                        string packageHeight = row["PACKAGE_HEIGHT"].ToString();
-                        string packageWeight = row["PACKAGE_WEIGHT"].ToString();
-                        string packageDiameter = row["PACKAGE_DIAMETER"].ToString();
-                        string packageTotalVolume = row["PACKAGE_TOTAL_VOLUME"].ToString();
-
-
-
-
-                        if (!productsDict.ContainsKey(ProductId))
-                        {
-                            productsDict[ProductId] = new ProductDescriptionList
-                            {
-                                ProductId = ProductId,
-                                VarientList = new List<CompleteVarientList>()
-                            };
-                        }
-
-                        var product = productsDict[ProductId];
-                        var varient = new CompleteVarientList
-                        {
-                            //ProductName = productName ?? "",
-                            //Price = price ?? "",
-                            //Reviews = null, // Assuming reviews are not provided in the current dataset
-                            //Images = new string[] { imageUrl ?? "" }
-
-                            ProductName = ProductName ?? "",
-                            Price = Price ?? "",
-                            Reviews = Reviews ?? "",
-                            Images = new string[] { ImageUrl ?? "" },
-                            ProductId = ProductId ?? "",
-                            ProductDescription = ProductDescription ?? "",
-                            Unit = Unit ?? "",
-                            Brand = Brand ?? "",
-                            VaientWiseName = VaientWiseName ?? "",
-                            DefaultProductName = DefaultProductName ?? "",
-                            VarientName = VarientName ?? "",
-                            VarientId = VarientId ?? "",
-                            CalculatedPrice = CalculatedPrice ?? "",
-                            CurrentStockQuantity = CurrentStockQuantity ?? "",
-                            DiscountAmount = DiscountAmount ?? "",
-                            Pricing = Pricing ?? "",
-                            SellingPrice = SellingPrice ?? "",
-                            Mrp = Mrp ?? "",
-                            ImageUrl = ImageUrl ?? "",
-                            PackageShape = packageShape ?? "",
-                            packageLength = packageLength ?? "",
-                            packageWidth =  packageWidth ?? "",
-                            packageHeight = packageWeight ?? "",
-                            packageWeight = packageWeight ?? "",
-                            packageDiameter = packageDiameter ?? "",
-                            packageTotalVolume = packageTotalVolume ?? ""
-
-                        };
-
-                        product.VarientList.Add(varient);
+                        _DbReturn.Dataset = null;
+                        _DbReturn.Code = DBEnums.Codes.NOT_FOUND;
+                        _DbReturn.Message = "No product details found";
+                        _DbReturn.Retval = "NOT_FOUND";
+                        return _DbReturn;
                     }
 
-                    productDescriptionLists = productsDict.Values.ToList();
+                    DataTable productTable = _DataSet.Tables[0];
+                    string retval = _DataSet.Tables[1].Rows[0]["RETVAL"]?.ToString();
+
+                    if (retval == "SUCCESS")
+                    {
+                        var productGroups = productTable.AsEnumerable()
+                            .GroupBy(row => row["PROD_ID"].ToString());
+
+                        foreach (var productGroup in productGroups)
+                        {
+                            var firstProduct = productGroup.First();
+                            string PROD_ID = firstProduct["PROD_ID"]?.ToString() ?? string.Empty;
+
+                            MlGetProducts product = new()
+                            {
+                                PROD_ID = PROD_ID,
+                                Product_Name = firstProduct["PRODUCT_NAME"]?.ToString() ?? string.Empty,
+                                Product_Description = firstProduct["PRODUCT_DESCRIPTION"]?.ToString() ?? string.Empty,
+                                BRAND = firstProduct["BRAND"]?.ToString() ?? string.Empty,
+                                UNIT = firstProduct["UNIT"]?.ToString() ?? string.Empty,
+                                CATEGORY_ID = firstProduct["CATEGORY_ID"].ToString() ?? string.Empty,
+                                SUB_CATEGORY_ID = firstProduct["SUB_CATEGORY_ID"].ToString() ?? string.Empty,
+                                SUB_SUB_CATEGORY_ID = firstProduct["SUB_SUB_CATEGORY_ID"].ToString() ?? string.Empty,
+                                Variants = new List<MlProductVariant>()
+                            };
+
+                            var variantRows = productGroup.GroupBy(row => row["VARIENTS_ID"].ToString());
+
+                            foreach (var variantGroup in variantRows)
+                            {
+                                var firstVariant = variantGroup.First();
+                                string VARIENTS_ID = firstVariant["VARIENTS_ID"]?.ToString() ?? string.Empty;
+
+                                var variant = new MlProductVariant
+                                {
+                                    VARIENTS_ID = VARIENTS_ID,
+                                    Product_Name = firstVariant["VARIANTWISE_NAME"]?.ToString() ?? string.Empty,
+                                    Varient_Name = firstVariant["VAREINTS_NAME"]?.ToString() ?? string.Empty,
+                                    SKU = firstVariant["SKU"]?.ToString() ?? string.Empty,
+                                    HSN = firstVariant["HSN"]?.ToString() ?? string.Empty,
+
+                                    Pricing = new MlProductPricing
+                                    {
+                                        PRICING = firstVariant["PRICING"]?.ToString() ?? "0",
+                                        MAXIMUM_RETAIL_PRICE = firstVariant["MAXIMUM_RETAIL_PRICE"]?.ToString() ?? "0",
+                                        SELLING_PRICE = firstVariant["SELLING_PRICE"]?.ToString() ?? "0",
+                                        MINIMUM_ORDER_QUANTITY = firstVariant["MINIMUM_ORDER_QUANTITY"]?.ToString() ?? "0",
+                                        CURRENT_STOCK_QUANTITY = firstVariant["CURRENT_STOCK_QUANTITY"]?.ToString() ?? "0",
+                                        DISCOUNT_TYPE = firstVariant["DISCOUNT_TYPE"]?.ToString() ?? "0",
+                                        DISCOUNT_AMOUNT = firstVariant["DISCOUNT_AMOUNT"]?.ToString() ?? "0",
+                                        TAX_AMOUNT = firstVariant["TAX_AMOUNT"]?.ToString() ?? "0",
+                                        TAX_CALCULATION = firstVariant["TAX_CALCULATION"]?.ToString() ?? "0",
+                                        CALCULATED_PRICE = firstVariant["CALCULATED_PRICE"]?.ToString() ?? "0",
+                                    },
+
+                                    Logistics = new MlProductLogistics
+                                    {
+                                        PACKAGE_SHAPE = firstVariant["PACKAGE_SHAPE"]?.ToString() ?? string.Empty,
+                                        PACKAGE_LENGTH = firstVariant["PACKAGE_LENGTH"]?.ToString() ?? "0",
+                                        PACKAGE_WIDTH = firstVariant["PACKAGE_WIDTH"]?.ToString() ?? "0",
+                                        PACKAGE_HEIGHT = firstVariant["PACKAGE_HEIGHT"]?.ToString() ?? "0",
+                                        PACKAGE_WEIGHT = firstVariant["PACKAGE_WEIGHT"]?.ToString() ?? "0",
+                                        PACKAGE_DIAMETER = firstVariant["PACKAGE_DIAMETER"]?.ToString() ?? "0",
+                                        PACKAGE_TOTAL_VOLUME = firstVariant["PACKAGE_TOTAL_VOLUME"]?.ToString() ?? "0",
+                                    },
+
+                                    ImageGallery = variantGroup
+                                        .Select(row => new MLImages
+                                        {
+                                            Product_Images = row["PRODUCT_IMAGES"]?.ToString() ?? string.Empty
+                                        })
+                                        .Distinct()
+                                        .ToList()
+                                };
+
+                                product.Variants.Add(variant);
+                            }
+
+                            product.ThumbnailImage = product.Variants.FirstOrDefault()?.ImageGallery?.FirstOrDefault()?.Product_Images ?? string.Empty;
+                            products.Add(product);
+                        }
+                    }
                 }
             }
-
-            catch (Exception c)
+            catch (Exception ex)
             {
-                ErrorLog("Get product", "Dlproducts", c.ToString());
+                _DALBASE.ErrorLog("GetCompletProductDescription", "DLProduct", ex.ToString());
+                _DbReturn.Dataset = null;
+                _DbReturn.Code = DBEnums.Codes.BAD_REQUEST;
+                _DbReturn.Message = "Error fetching product details";
+                _DbReturn.Retval = "FAILURE";
+                return _DbReturn;
             }
 
-
-            return productDescriptionLists;
+            _DbReturn.Dataset = products;
+            _DbReturn.Code = DBEnums.Codes.SUCCESS;
+            _DbReturn.Message = "Product details fetched successfully";
+            _DbReturn.Retval = "SUCCESS";
+            return _DbReturn;
         }
-
 
 
 
