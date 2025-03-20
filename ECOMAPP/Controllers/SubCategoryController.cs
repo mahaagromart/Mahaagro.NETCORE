@@ -15,7 +15,6 @@ namespace ECOMAPP.Controllers
     {
         [Route("GetAllSubCategory")]
         [HttpGet]
-        [JwtAuthorization(Roles = [Roles.Admin])]
         public ActionResult<IEnumerable<DBReturnData>> GetAllSubCategory()
         {
             DLSubcategory _DLSubcategory = new();
@@ -59,7 +58,7 @@ namespace ECOMAPP.Controllers
         }
         [Route("InsertSubCategory")]
         [HttpPost]
-        [JwtAuthorization(Roles = [Roles.Admin])]
+        [JwtAuthorization(Roles = [Roles.Admin , Roles.Vendor])]
         public ActionResult<IEnumerable<DBReturnData>> InsertSubCategory(MLInsertSubcategory _MLInsertSubcategory)
         {
             DLSubcategory _DLSubcategory = new();
@@ -85,7 +84,7 @@ namespace ECOMAPP.Controllers
 
         [Route("UpdateSubCategory")]
         [HttpPut]
-        [JwtAuthorization(Roles = [Roles.Admin])]
+        [JwtAuthorization(Roles = [Roles.Admin , Roles.Vendor])]
         public ActionResult<IEnumerable<DBReturnData>> UpdateSubCategory(MLUpdateSubcategory _MLUpdateSubcategory)
         {
             DLSubcategory _DLSubcategory = new();
@@ -112,7 +111,7 @@ namespace ECOMAPP.Controllers
 
         [Route("DeleteSubCategory")]
         [HttpDelete]
-        [JwtAuthorization(Roles = [Roles.Admin])]
+        [JwtAuthorization(Roles = [Roles.Admin , Roles.Vendor])]
         public ActionResult<IEnumerable<DBReturnData>> DeleteSubCategory(MLDeleteSubCateggory _MLDeleteSubCateggory)
         {
        
@@ -120,7 +119,15 @@ namespace ECOMAPP.Controllers
             DBReturnData _DBReturnData = new();
             try
             {
-                _DBReturnData = _DLSubcategory.DeleteSubCategory(_MLDeleteSubCateggory);
+                    _DBReturnData = _DLSubcategory.DeleteSubCategory(_MLDeleteSubCateggory);
+                if (_DBReturnData.Message == "SUCCESS")
+               
+                {
+                    _DBReturnData.Code = DBEnums.Codes.SUCCESS;
+                    _DBReturnData.Message = DBEnums.Status.SUCCESS.ToString();
+                    _DBReturnData.Retval = DBEnums.Status.SUCCESS.ToString();
+
+                }
              
             }
             catch (Exception ex)
@@ -141,7 +148,7 @@ namespace ECOMAPP.Controllers
 
         [Route("GetSubCategoryThroughCategoryId")]
         [HttpPost]
-        [JwtAuthorization(Roles = [Roles.Admin])]
+        [JwtAuthorization(Roles = [Roles.Admin,Roles.Vendor])]
         public ActionResult<IEnumerable<DBReturnData>> GetSubCategoryThroughCategoryId([FromBody] MLGetThroughCategoryId _MLGetThroughCategoryId)
         {
             if (_MLGetThroughCategoryId == null || _MLGetThroughCategoryId.Category_id == 0)

@@ -18,8 +18,8 @@ namespace ECOMAPP.Controllers
 
 
         [Route("GetAllCategory")]
-        [HttpGet]
-        [JwtAuthorization(Roles = [Roles.Admin])]
+        [HttpPost]
+
         //[JwtAuthorization(Roles = new[] { Roles.User, Roles.Vendor })]
         public JsonResult GetAllCategory()
         {
@@ -120,7 +120,7 @@ namespace ECOMAPP.Controllers
             try
             {
                 _DBReturnData = objDlcat.DeleteProductCategory(_MlDeleteCategoryData);
-                if(ObjMLCategory.Code == 200)
+                if(_DBReturnData.Message == "SUCCESS")
                 {
                     _DBReturnData.Code = DBEnums.Codes.SUCCESS;
                     _DBReturnData.Message =DBEnums.Status.SUCCESS.ToString();

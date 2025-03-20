@@ -210,7 +210,7 @@ namespace ECOMAPP.DataLayer
                 using (DBAccess _DBAccess = new DBAccess())
                 {
                     _DBAccess.DBProcedureName = "SP_SUBCATEGORY";
-                    _DBAccess.AddParameters("@Action", "DELETESUBCATEGORY");
+                    _DBAccess.AddParameters("@ACTION", "DELETESUBCATEGORY");
                     _DBAccess.AddParameters("@id", Data.id);
                     _DataSet = _DBAccess.DBExecute();
                     _DBAccess.Dispose();

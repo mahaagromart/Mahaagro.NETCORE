@@ -13,7 +13,7 @@ namespace ECOMAPP.Controllers
     {
         [Route("GetAllAttribute")]
         [HttpGet]
-        [JwtAuthorization(Roles = [Roles.Admin])]
+    
         public ActionResult<IEnumerable<DBReturnData>> GetAllAttribute()
         {
             MLProductattribute _MLProductattribute = new();

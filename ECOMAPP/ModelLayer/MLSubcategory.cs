@@ -7,7 +7,7 @@
             public int id { get; set; }
             public string Category_Name { get; set; }
             public string CreationDate { get; set; }
-            public int Category_id { get; set; }
+            public int ? Category_id { get; set; }
             public int Priority { get; set; }
             public string Subcategory_Name { get; set; }
 

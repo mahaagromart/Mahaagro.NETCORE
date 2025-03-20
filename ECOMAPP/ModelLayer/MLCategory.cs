@@ -28,6 +28,8 @@ namespace ECOMAPP.ModelLayer
     {
 
         public string? Category_Name {get;set;} 
+
+        public int? priority { get; set; }
         public string? Image {get;set;} 
     }
 

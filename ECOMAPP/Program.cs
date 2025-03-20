@@ -1,6 +1,6 @@
-using System.Text.Json.Serialization;
-using FirebaseAdmin;
-using Google.Apis.Auth.OAuth2;
+
+﻿using System.Text.Json.Serialization;
+
 using Newtonsoft.Json;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,13 +12,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
 
-{
-    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
-    options.JsonSerializerOptions.MaxDepth = 64;
+    {
+        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
+        options.JsonSerializerOptions.MaxDepth = 64;
 
-});
-
-
+    });
 
 
 

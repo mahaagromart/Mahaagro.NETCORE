@@ -10,13 +10,15 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace ECOMAPP.DataLayer
 {
-    public class DLProduct
+    public class DLProduct : DALBASE
     {
+
+
+
         public List<MLProduct.MlGetProduct> GetAllProducts()
         {
             List<MLProduct.MlGetProduct> products = new();
             DALBASE _DALBASE = new();
-            DBReturnData _DBReturnData = new();
 
             try
             {
@@ -27,42 +29,52 @@ namespace ECOMAPP.DataLayer
 
                     using DataSet _DataSet = _DBAccess.DBExecute();
 
-
-                    if (_DataSet == null || _DataSet.Tables.Count < 3)
+                    if (_DataSet == null || _DataSet.Tables.Count < 5)
                         return products;
 
                     DataTable productTable = _DataSet.Tables[0];
                     DataTable pricingTable = _DataSet.Tables[1];
                     DataTable logisticsTable = _DataSet.Tables[2];
-                    DataTable Images = _DataSet.Tables[3];
+                    DataTable imagesTable = _DataSet.Tables[3];
 
+                    string retval = _DataSet.Tables[4].Rows[0]["RETVAL"]?.ToString() ?? "";
 
-                    if (_DataSet.Tables[4].Rows[0]["RETVAL"]?.ToString() == "SUCCESS")
+                    if (retval == "SUCCESS")
                     {
-                       
-
                         foreach (DataRow productRow in productTable.Rows)
                         {
-                            int productId = Convert.IsDBNull(productRow["Id"]) ? 0 : Convert.ToInt32(productRow["Id"]);
-
+                            string PROD_ID = productRow["PROD_ID"]?.ToString() ?? string.Empty;
 
                             DataRow pricingRow = pricingTable.AsEnumerable()
-                                .FirstOrDefault(row => Convert.ToInt32(row["Id"]) == productId);
+                                .FirstOrDefault(row => row["PROD_ID"]?.ToString() == PROD_ID);
 
                             DataRow logisticsRow = logisticsTable.AsEnumerable()
-                                .FirstOrDefault(row => Convert.ToInt32(row["Id"]) == productId);
+                                .FirstOrDefault(row => row["PROD_ID"]?.ToString() == PROD_ID);
+
+                            List<MLImages> images = imagesTable.AsEnumerable()
+                                .Where(row => row["PROD_ID"]?.ToString() == PROD_ID)
+                                .OrderBy(row => Convert.ToInt32(row["ID"]))
+                                .Select(row => new MLImages
+                                {
+                                    ID = Convert.ToInt32(row["ID"]),
+                                    Product_Images = row["Product_Images"]?.ToString() ?? string.Empty,
+                                    PROD_ID = row["PROD_ID"]?.ToString() ?? string.Empty
+                                })
+                                .ToList();
 
                             MLProduct.MlGetProduct product = new()
                             {
-                                Id = productId,
+                                PROD_ID = PROD_ID,
+                                Id = productRow["ID"] != DBNull.Value ? Convert.ToInt32(productRow["ID"]) : 0,
                                 CATEGORY_ID = productRow["CATEGORY_ID"]?.ToString() ?? string.Empty,
+                                CERTIFICATION = productRow["CERTIFICATION"] != DBNull.Value ? Convert.ToInt32(productRow["CERTIFICATION"]) : 0,
+                                STATUS = productRow["STATUS"] != DBNull.Value ? Convert.ToInt32(productRow["STATUS"]) : 0,
                                 Product_Name = productRow["Product_Name"]?.ToString() ?? string.Empty,
+                                Product_Description = productRow["PRODUCT_DESCRIPTION"]?.ToString() ?? string.Empty,
+                                RATING = productRow["RATING"]?.ToString() ?? string.Empty,
                                 SUB_CATEGORY_ID = productRow["SUB_CATEGORY_ID"]?.ToString() ?? string.Empty,
-                                //PRODUCT_Images = productRow["PRODUCT_Images"] != DBNull.Value
-                                //? productRow["PRODUCT_Images"].ToString().Split(',', StringSplitOptions.RemoveEmptyEntries)
-                                //: Array.Empty<string>(),
-                                //Images = productRow["Images"]?.ToString() ?? string.Empty,
-
+                                ThumbnailImage = images.Count > 0 ? images.First().Product_Images : string.Empty,
+                                ImageGallery = images.Count > 0 ? images : null,
                                 BRAND = productRow["BRAND"]?.ToString() ?? string.Empty,
                                 sku = productRow["sku"]?.ToString() ?? string.Empty,
                                 UNIT = productRow["UNIT"]?.ToString() ?? string.Empty,
@@ -71,25 +83,31 @@ namespace ECOMAPP.DataLayer
                                     : Array.Empty<string>(),
                                 HSN = productRow["HSN"]?.ToString() ?? string.Empty,
 
+                                PRICING = pricingRow != null && pricingRow["PRICING"] != DBNull.Value
+                                    ? Convert.ToInt32(pricingRow["PRICING"])
+                                    : 0,
 
-                                PRICING = pricingRow != null ? Convert.ToInt32(pricingRow["PRICING"]) : 0,
-                                MAXIMUM_RETAIL_PRICE = pricingRow != null ? Convert.ToInt32(pricingRow["MAXIMUM_RETAIL_PRICE"]) : 0,
-                                SELLING_PRICE = pricingRow != null ? Convert.ToInt32(pricingRow["SELLING_PRICE"]) : 0,
-                                MINIMUM_ORDER_QUANTITY = pricingRow != null ? Convert.ToInt32(pricingRow["MINIMUM_ORDER_QUANTITY"]) : 0,
-                                CURRENT_STOCK_QUANTITY = pricingRow != null ? Convert.ToInt32(pricingRow["CURRENT_STOCK_QUANTITY"]) : 0,
+                                MAXIMUM_RETAIL_PRICE = pricingRow != null && pricingRow["MAXIMUM_RETAIL_PRICE"] != DBNull.Value
+                                    ? Convert.ToInt32(pricingRow["MAXIMUM_RETAIL_PRICE"])
+                                    : 0,
+
+                                SELLING_PRICE = pricingRow != null && pricingRow["SELLING_PRICE"] != DBNull.Value
+                                    ? Convert.ToInt32(pricingRow["SELLING_PRICE"])
+                                    : 0,
+
+                                MINIMUM_ORDER_QUANTITY = pricingRow != null && pricingRow["MINIMUM_ORDER_QUANTITY"] != DBNull.Value
+                                    ? Convert.ToInt32(pricingRow["MINIMUM_ORDER_QUANTITY"])
+                                    : 0,
+
+                                CURRENT_STOCK_QUANTITY = pricingRow != null && pricingRow["CURRENT_STOCK_QUANTITY"] != DBNull.Value
+                                    ? Convert.ToInt32(pricingRow["CURRENT_STOCK_QUANTITY"])
+                                    : 0,
+
                                 DISCOUNT_TYPE = pricingRow?["DISCOUNT_TYPE"]?.ToString() ?? string.Empty,
                                 DISCOUNT_AMOUNT = pricingRow?["DISCOUNT_AMOUNT"]?.ToString() ?? string.Empty,
                                 TAX_AMOUNT = pricingRow?["TAX_AMOUNT"]?.ToString() ?? string.Empty,
                                 TAX_CALCULATION = pricingRow?["TAX_CALCULATION"]?.ToString() ?? string.Empty,
                                 CALCULATED_PRICE = pricingRow?["CALCULATED_PRICE"]?.ToString() ?? string.Empty,
-
-                                PACKAGE_WEIGHT = logisticsRow != null ? Convert.ToInt32(logisticsRow["PACKAGE_WEIGHT"]) : 0,
-                                PACKAGE_SHAPE = logisticsRow?["PACKAGE_SHAPE"]?.ToString() ?? string.Empty,
-                                PACKAGE_LENGTH = logisticsRow?["PACKAGE_LENGTH"]?.ToString() ?? string.Empty,
-                                PACKAGE_WIDTH = logisticsRow?["PACKAGE_WIDTH"]?.ToString() ?? string.Empty,
-                                PACKAGE_HEIGHT = logisticsRow?["PACKAGE_HEIGHT"]?.ToString() ?? string.Empty,
-                                PACKAGE_DIAMETER = logisticsRow?["PACKAGE_DIAMETER"]?.ToString() ?? string.Empty,
-                                PACKAGE_TOTAL_VOLUME = logisticsRow?["PACKAGE_TOTAL_VOLUME"]?.ToString() ?? string.Empty,
                             };
 
                             products.Add(product);
@@ -100,12 +118,10 @@ namespace ECOMAPP.DataLayer
             catch (Exception ex)
             {
                 _DALBASE.ErrorLog("GetAllProducts", "DLProduct", ex.ToString());
-
             }
 
             return products;
         }
-
 
 
         public DBReturnData InsertProduct(MlGetProduct data)
@@ -131,13 +147,14 @@ namespace ECOMAPP.DataLayer
                     _DBAccess.AddParameters("@Product_Description", data.Product_Description ?? "");
                     _DBAccess.AddParameters("@SUB_CATEGORY_ID", data.SUB_CATEGORY_ID);
                     _DBAccess.AddParameters("@CATEGORY_ID", data.CATEGORY_ID);
-                    //_DBAccess.AddParameters("@Images", data.Images ?? "");
+                    _DBAccess.AddParameters("@SUB_SUB_CATEGORY_ID", data.SUB_SUB_CATEGORY_ID);
+                    _DBAccess.AddParameters("@Images", data.ThumbnailImage ?? "");
                     _DBAccess.AddParameters("@BRAND", data.BRAND ?? "");
                     _DBAccess.AddParameters("@sku", data.sku ?? "");
                     _DBAccess.AddParameters("@UNIT", data.UNIT ?? "");
                     _DBAccess.AddParameters("@HSN", data.HSN ?? "");
                     _DBAccess.AddParameters("@TAGS_INPUT", tagsString);
-
+                    _DBAccess.AddParameters("@PROD_ID", data.PROD_ID);
                     //pricing
                     _DBAccess.AddParameters("@PRICING", data.PRICING);
                     _DBAccess.AddParameters("@MAXIMUM_RETAIL_PRICE", data.MAXIMUM_RETAIL_PRICE);
@@ -149,6 +166,8 @@ namespace ECOMAPP.DataLayer
                     _DBAccess.AddParameters("@TAX_AMOUNT", data.TAX_AMOUNT);
                     _DBAccess.AddParameters("@TAX_CALCULATION", data.TAX_CALCULATION);
                     _DBAccess.AddParameters("@CALCULATED_PRICE", data.CALCULATED_PRICE);
+                    _DBAccess.AddParameters("@CALCULATED_MINIMUM_ORDER_PRICE", data.CALCULATED_MINIMUM_ORDER_PRICE);
+
 
                     //logistices starts
                     _DBAccess.AddParameters("@PACKAGE_WEIGHT", data.PACKAGE_WEIGHT);
@@ -158,10 +177,6 @@ namespace ECOMAPP.DataLayer
                     _DBAccess.AddParameters("@PACKAGE_HEIGHT", data.PACKAGE_HEIGHT);
                     _DBAccess.AddParameters("@PACKAGE_DIAMETER", data.PACKAGE_DIAMETER);
                     _DBAccess.AddParameters("@PACKAGE_TOTAL_VOLUME", data.PACKAGE_TOTAL_VOLUME);
-
-
-                    //IMAGES
-                    //_DBAccess.AddParameters("@PRODUCT_Images", imagesString);
 
 
                     //VAREITIES
@@ -177,29 +192,27 @@ namespace ECOMAPP.DataLayer
                 }
                 if (_DataSet != null && _DataSet.Tables.Count > 0)
                 {
-
-                    DataTable _DataTable = _DataSet.Tables[1];
-                    foreach (DataRow row in _DataTable.Rows)
+                    DataTable _DataTable = _DataSet.Tables[0];
+                    if (_DataTable.Rows.Count > 0)
                     {
-                        if (row["RETVAL"]?.ToString() == "SUCCESS")
+                        string retval = _DataTable.Rows[0]["RETVAL"].ToString();
+                        string prodId = _DataTable.Rows[0]["PROD_ID"].ToString();
+
+                        if (retval == "SUCCESS")
                         {
-                            string PROD_ID = _DataSet.Tables[0].Rows[0]["PROD_ID"].ToString();
-                          
-                            _DBReturnData.Message = PROD_ID;
+                            _DBReturnData.Message = prodId;
                             _DBReturnData.Code = DBEnums.Codes.SUCCESS;
-                            _DBReturnData.Retval = DBEnums.Status.SUCCESS.ToString();
                         }
                         else
                         {
-                            _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+                            _DBReturnData.Message = "Failed to insert product";
                             _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
                         }
                     }
-
                 }
                 else
                 {
-                    _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+                    _DBReturnData.Message = "Failed to insert product.";
                     _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
                 }
 
@@ -207,19 +220,19 @@ namespace ECOMAPP.DataLayer
             }
             catch (Exception ex)
             {
-                  _DALBASE.ErrorLog("InsertProduct", "DLProduct", ex.ToString());
-                  _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
-                  _DBReturnData.Code = DBEnums.Codes.BAD_REQUEST;
+                _DALBASE.ErrorLog("InsertProduct", "DLProduct", ex.ToString());
+                _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+                _DBReturnData.Code = DBEnums.Codes.BAD_REQUEST;
 
             }
 
-       
+
             return _DBReturnData;
         }
 
 
 
-      
+
 
 
         public DBReturnData DeleteProduct(MLDeleteProduct data)
@@ -277,31 +290,9 @@ namespace ECOMAPP.DataLayer
 
 
 
-        public DBReturnData GetProductByCategoryId()
-        {
-            MLProduct _MLProduct = new();
-            DALBASE _DALBASE = new();
-            DBReturnData _DBReturnData = new();
-            try
-            {
-
-            }
-            catch(Exception ex)
-            {
-
-            }
-
-
-
-
-            return _DBReturnData;
-        }
-
-
-
         public DBReturnData ProductToggleCertified(MLToggleCertified data)
         {
-  
+
             DALBASE _DALBASE = new();
             DBReturnData _DBReturnData = new();
             DataSet _DataSet = new();
@@ -436,6 +427,7 @@ namespace ECOMAPP.DataLayer
                     {
                         if (Retval == "SUCCESS")
                         {
+
                             MLProduct.MLGetInhouseProduct InhouseProduct = new MLProduct.MLGetInhouseProduct()
                             {
 
@@ -485,69 +477,6 @@ namespace ECOMAPP.DataLayer
             return _MLProduct.InhouseProductList;
         }
 
-        public DBReturnData InsertInhouseProduct(MLInsertInhouseProduct data)
-        {
-            MLProduct _MLProduct = new();
-            DALBASE _DALBASE = new();
-            DBReturnData _DBReturnData = new();
-
-            DataSet _DataSet = new();
-            try
-            {
-                using (DBAccess _DBAccess = new())
-                {
-                    _DBAccess.DBProcedureName = "SP_PRODUCT";
-                    _DBAccess.AddParameters("@Action", "INSERTPRODUCT");
-                    _DBAccess.AddParameters("@Product_Name", data.Product_Name ?? "");
-                    _DBAccess.AddParameters("@Product_Name", data.Product_id ?? "");
-                    _DBAccess.AddParameters("@Quantity", data.Quantity);
-                    _DBAccess.AddParameters("@Image", data.Image ?? "");
-                    _DBAccess.AddParameters("@Description", data.Description ?? "");
-                    _DBAccess.AddParameters("@Rating", data.Rating ?? "");
-                    _DBAccess.AddParameters("@Category_id", data.Category_id ?? "");
-                    _DBAccess.AddParameters("@CreationDate", data.CreationDate ?? "");
-                    _DBAccess.AddParameters("@SubSubcategory_id", data.SubSubcategory_id);
-                    _DBAccess.AddParameters("@UpdationDate", data.UpdationDate ?? "");
-                    _DBAccess.AddParameters("@Price", data.Price);
-                    _DataSet = _DBAccess.DBExecute();
-                    _DataSet.Dispose();
-
-                }
-                if (_DataSet != null && _DataSet.Tables.Count > 0)
-                {
-                    DataTable _DataTable = new();
-                    foreach (DataRow row in _DataSet.Tables)
-                    {
-                        if (row["RETVAL"]?.ToString() == "SUCCESS")
-                        {
-
-                            _DBReturnData.Message = DBEnums.Status.SUCCESS.ToString();
-                            _DBReturnData.Code = DBEnums.Codes.SUCCESS;
-                        }
-                        else
-                        {
-                            _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
-                            _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
-                        }
-                    }
-                }
-                else
-                {
-                    _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
-                    _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
-                }
-
-            }
-            catch (Exception ex)
-            {
-                _DALBASE.ErrorLog("InsertInhouseProduct", "DLProduct", ex.ToString());
-                _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
-                _DBReturnData.Code = DBEnums.Codes.BAD_REQUEST;
-
-            }
-
-            return _DBReturnData;
-        }
 
         public DBReturnData UpdateInhouseProduct(MLUpdateInhouseProduct data)
         {
@@ -605,7 +534,7 @@ namespace ECOMAPP.DataLayer
             catch (Exception ex)
             {
                 _DALBASE.ErrorLog("UpdateInhouseProduct", "DLProduct", ex.ToString());
-                _DBReturnData.Message =DBEnums.Status.FAILURE.ToString() + ex.Message.ToString();
+                _DBReturnData.Message = DBEnums.Status.FAILURE.ToString() + ex.Message.ToString();
                 _DBReturnData.Code = DBEnums.Codes.BAD_REQUEST;
 
             }
@@ -643,7 +572,7 @@ namespace ECOMAPP.DataLayer
                         }
                         else
                         {
-                            _DBReturnData.Message =DBEnums.Status.FAILURE.ToString();
+                            _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
                             _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
                         }
                     }
@@ -666,7 +595,83 @@ namespace ECOMAPP.DataLayer
             return _DBReturnData;
         }
 
+
+
+
+
         #endregion InhouseProduct
+
+
+
+
+        public List<ProductsList> GetProductBycategory(MLGetProrductByCategoryId mLGetProrductByCategoryId)
+        {
+            List<ProductsList> productsLists = new List<ProductsList>();
+            DataSet dataSet = new();
+
+            try
+            {
+                using (DBAccess dBAccess = new DBAccess())
+                {
+                    dBAccess.DBProcedureName = "SP_PRODUCTACTIONS";
+                    dBAccess.AddParameters("@Action", "SELECTPRODUCTSBYCATEGORYID");
+                    dBAccess.AddParameters("@CategoryId", mLGetProrductByCategoryId.Id);
+                    dBAccess.AddParameters("@PaginationStart", mLGetProrductByCategoryId.PaginatioStart);
+                    dBAccess.AddParameters("@PaginationEnd", mLGetProrductByCategoryId.PaginationEnd);
+                    dataSet = dBAccess.DBExecute();
+                    dBAccess.Dispose();
+                }
+
+                if (dataSet.Tables[1].Rows[0]["RETVAL"].ToString() == "Success")
+                {
+                    var productsDict = new Dictionary<string, ProductsList>();
+
+                    foreach (DataRow row in dataSet.Tables[0].Rows)
+                    {
+                        string productId = row["PRODUCT_ID"].ToString();
+                        string productName = row["DEFAULTPRODUCTNAME"].ToString();
+                        string varientName = row["VARIENTNAME"].ToString();
+                        string price = row["MRP"].ToString();
+                        string imageUrl = row["IMAGEURL"].ToString();
+
+                        if (!productsDict.ContainsKey(productId))
+                        {
+                            productsDict[productId] = new ProductsList
+                            {
+                                ProductId = productId,
+                                VarientList = new List<VarientList>()
+                            };
+                        }
+
+                        var product = productsDict[productId];
+                        var varient = new VarientList
+                        {
+                            ProductName = productName ?? "",
+                            varientName= varientName ?? "",
+                            Price = price ?? "",
+                            Reviews = null, // Assuming reviews are not provided in the current dataset
+                            Images = new string[] { imageUrl ?? "" }
+                        };
+
+                        product.VarientList.Add(varient);
+                    }
+
+                    productsLists = productsDict.Values.ToList();
+                }
+            }
+
+            catch (Exception c)
+            {
+                ErrorLog("Get product", "Dlproducts", c.ToString());
+            }
+
+
+            return productsLists;
+        }
+
+
+
+
 
     }
 }

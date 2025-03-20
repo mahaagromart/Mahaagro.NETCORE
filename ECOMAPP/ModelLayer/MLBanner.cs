@@ -8,6 +8,7 @@ namespace ECOMAPP.ModelLayer
         {
             public string? StartDate { get; set; }
             public string? EndDate { get; set; }
+            public string? Description { get; set; }
             public required string BannerType { get; set; }
             public string? BannerUrl { get; set; }
             public required List<string?> BannerList { get; set; }

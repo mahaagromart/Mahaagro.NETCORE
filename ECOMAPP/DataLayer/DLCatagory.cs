@@ -82,6 +82,7 @@ namespace ECOMAPP.DataLayer
                     Db.AddParameters("@Action", "INSERTCATEGORY");
                     Db.AddParameters("@Category_Name",data.Category_Name??"");
                     Db.AddParameters("@Image",data.Image??"");
+                    Db.AddParameters("@Priority",data.priority);
                     ds = Db.DBExecute();
                     Db.Dispose();
                 }
@@ -115,7 +116,9 @@ namespace ECOMAPP.DataLayer
             }
             catch (Exception ex) 
             {
-            
+                DS.ErrorLog("DLCategory", "InsertProductCategory", ex.ToString());
+                objMLCategory.Message = "Internal Server Error";
+                objMLCategory.Code = 500;
             }
             return category;
 
@@ -189,6 +192,7 @@ namespace ECOMAPP.DataLayer
                     dB.AddParameters("@Action", "DELETECATEGORY");
                     dB.AddParameters("@Category_id", data.Category_id);
                     _DataSet = dB.DBExecute();
+                    dB.Dispose();
                 }
 
                 if (_DataSet != null && _DataSet.Tables.Count > 0 && _DataSet.Tables[0].Rows.Count > 0)

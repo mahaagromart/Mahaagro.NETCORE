@@ -1,4 +1,4 @@
-﻿ namespace ECOMAPP.CommonRepository
+﻿namespace ECOMAPP.CommonRepository
 {
     public class DBEnums
     {
@@ -27,6 +27,6 @@
        
 
 
-    
+
     }
 }
