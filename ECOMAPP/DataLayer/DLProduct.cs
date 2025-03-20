@@ -672,5 +672,127 @@ namespace ECOMAPP.DataLayer
 
 
 
+        public List<ProductDescriptionList> GetCompletProductDescription(MLGetCompletProductDescription mLGetCompletProductDescription)
+        {
+            List<ProductDescriptionList> productDescriptionLists = new List<ProductDescriptionList>();
+            DataSet dataSet = new();
+
+            try
+            {
+                using (DBAccess dBAccess = new DBAccess())
+                {
+                    dBAccess.DBProcedureName = "SP_PRODUCTACTIONS";
+                    dBAccess.AddParameters("@Action", "GetCompletProductDescription");
+                    dBAccess.AddParameters("@ProductId", mLGetCompletProductDescription.ProductId);
+                    dataSet = dBAccess.DBExecute();
+                    dBAccess.Dispose();
+                }
+
+                if (dataSet.Tables[1].Rows[0]["RETVAL"].ToString() == "Success")
+                {
+                    var productsDict = new Dictionary<string, ProductDescriptionList>();
+
+                    foreach (DataRow row in dataSet.Tables[0].Rows)
+                    {
+                        string ProductName = row["PRODUCT_NAME"].ToString();
+                        string ProductDescription = row["PRODUCT_DESCRIPTION"].ToString();
+                        string Brand = row["BRAND"].ToString();
+                        string Unit = row["UNIT"].ToString();
+                        string Price = row["MRP"].ToString();
+                        string ProductId = row["PRODUCT_ID"].ToString();
+                        string Reviews = "";
+                        string Images = row["IMAGEURL"].ToString();
+                        string VaientWiseName = row["VAIENTWISENAME"].ToString();
+                        string DefaultProductName = row["DefaultProductName"].ToString();
+                        string VarientName = row["VARIENTNAME"].ToString();
+                        string VarientId = row["VARIENTID"].ToString();
+                        string CalculatedPrice = row["CALCULATED_PRICE"].ToString();
+                        string CurrentStockQuantity = row["CURRENT_STOCK_QUANTITY"].ToString();
+                        string DiscountAmount = row["DISCOUNT_AMOUNT"].ToString();
+                        string Pricing = row["PRICING"].ToString();
+                        string SellingPrice = row["SELLING_PRICE"].ToString();
+                        string Mrp = row["MRP"].ToString();
+                        string ImageUrl = row["IMAGEURL"].ToString();
+                        string packageShape = row["PACKAGE_SHAPE"].ToString();
+                        string packageLength = row["PACKAGE_LENGTH"].ToString();
+                        string packageWidth = row["PACKAGE_WIDTH"].ToString();
+                        string packageHeight = row["PACKAGE_HEIGHT"].ToString();
+                        string packageWeight = row["PACKAGE_WEIGHT"].ToString();
+                        string packageDiameter = row["PACKAGE_DIAMETER"].ToString();
+                        string packageTotalVolume = row["PACKAGE_TOTAL_VOLUME"].ToString();
+
+
+
+
+                        if (!productsDict.ContainsKey(ProductId))
+                        {
+                            productsDict[ProductId] = new ProductDescriptionList
+                            {
+                                ProductId = ProductId,
+                                VarientList = new List<CompleteVarientList>()
+                            };
+                        }
+
+                        var product = productsDict[ProductId];
+                        var varient = new CompleteVarientList
+                        {
+                            //ProductName = productName ?? "",
+                            //Price = price ?? "",
+                            //Reviews = null, // Assuming reviews are not provided in the current dataset
+                            //Images = new string[] { imageUrl ?? "" }
+
+                            ProductName = ProductName ?? "",
+                            Price = Price ?? "",
+                            Reviews = Reviews ?? "",
+                            Images = new string[] { ImageUrl ?? "" },
+                            ProductId = ProductId ?? "",
+                            ProductDescription = ProductDescription ?? "",
+                            Unit = Unit ?? "",
+                            Brand = Brand ?? "",
+                            VaientWiseName = VaientWiseName ?? "",
+                            DefaultProductName = DefaultProductName ?? "",
+                            VarientName = VarientName ?? "",
+                            VarientId = VarientId ?? "",
+                            CalculatedPrice = CalculatedPrice ?? "",
+                            CurrentStockQuantity = CurrentStockQuantity ?? "",
+                            DiscountAmount = DiscountAmount ?? "",
+                            Pricing = Pricing ?? "",
+                            SellingPrice = SellingPrice ?? "",
+                            Mrp = Mrp ?? "",
+                            ImageUrl = ImageUrl ?? "",
+                            PackageShape = packageShape ?? "",
+                            packageLength = packageLength ?? "",
+                            packageWidth =  packageWidth ?? "",
+                            packageHeight = packageWeight ?? "",
+                            packageWeight = packageWeight ?? "",
+                            packageDiameter = packageDiameter ?? "",
+                            packageTotalVolume = packageTotalVolume ?? ""
+
+                        };
+
+                        product.VarientList.Add(varient);
+                    }
+
+                    productDescriptionLists = productsDict.Values.ToList();
+                }
+            }
+
+            catch (Exception c)
+            {
+                ErrorLog("Get product", "Dlproducts", c.ToString());
+            }
+
+
+            return productDescriptionLists;
+        }
+
+
+
+
+
+
+
+
+
     }
 }
