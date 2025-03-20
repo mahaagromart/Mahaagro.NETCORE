@@ -786,13 +786,5 @@ namespace ECOMAPP.DataLayer
             return productDescriptionLists;
         }
 
-
-
-
-
-
-
-
-
     }
 }
