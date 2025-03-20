@@ -18,53 +18,44 @@ namespace ECOMAPP.Controllers
 
         [Route("GetAllProducts")]
         [HttpGet]
-        public ActionResult<IEnumerable<DBReturnData>> GetAllProducts()
+        public ActionResult<DBReturnData> GetAllProducts()
         {
             try
             {
-                MLProduct _MLProduct = new();
                 DLProduct _DLProduct = new();
-                DBReturnData _DBReturnData = new();
+                DBReturnData _DBReturnData = _DLProduct.GetAllProducts();
 
-
-                _MLProduct.ProductList = _DLProduct.GetAllProducts();
-
-
-                if (_MLProduct.ProductList.Any())
+                if (_DBReturnData.Dataset != null)
                 {
-                    return Ok(new DBReturnData
-                    {
-                        Dataset = _MLProduct.ProductList,
-                        Code = DBEnums.Codes.SUCCESS,
-                        Message = DBEnums.Status.SUCCESS.ToString(),
-                        Retval = DBEnums.Status.SUCCESS.ToString()
-                    });
+                    _DBReturnData.Code = DBEnums.Codes.SUCCESS;
+                    _DBReturnData.Message = "SUCCESS";
+                    _DBReturnData.Retval = "SUCCESS";
+                    _DBReturnData.Status = DBEnums.Status.SUCCESS;
+                    return Ok(_DBReturnData);
                 }
                 else
                 {
-                    return NotFound(new DBReturnData
-                    {
-                        Dataset = null,
-                        Code = DBEnums.Codes.NOT_FOUND,
-                        Message = DBEnums.Status.FAILURE.ToString(),
-                        Retval = DBEnums.Status.FAILURE.ToString()
-                    });
+                    _DBReturnData.Code = DBEnums.Codes.NOT_FOUND;
+                    _DBReturnData.Message = "NOT_FOUND";
+                    _DBReturnData.Retval = "NOT_FOUND";
+                    _DBReturnData.Status = DBEnums.Status.FAILURE;
+                    return NotFound(_DBReturnData);
                 }
             }
             catch (Exception ex)
             {
-
                 new DALBASE().ErrorLog("GetAllProducts", "Controller", ex.ToString());
 
                 return StatusCode(500, new DBReturnData
                 {
                     Dataset = null,
                     Code = DBEnums.Codes.BAD_REQUEST,
-                    Message = DBEnums.Status.FAILURE.ToString(),
-                    Retval = DBEnums.Status.FAILURE.ToString()
+                    Message = "Internal Server Error",
+                    Retval = "FAILURE"
                 });
             }
         }
+
 
         [Route("InsertProduct")]
         [HttpPost]
@@ -353,51 +344,88 @@ namespace ECOMAPP.Controllers
 
         #region GET product complet info with productID
 
+        //[Route("GetCompletProductDescription")]
+        //[HttpPost]
+        //public ActionResult<IEnumerable<DBReturnData>> GetCompletProductDescription(MLGetCompletProductDescription mLGetCompletProductDescription)
+        //{
+        //    MLProduct _MLProduct = new();
+        //    DLProduct _DLProduct = new();
+        //    DBReturnData _DBReturnData = new();
+
+
+        //    try
+        //    {
+        //        _MLProduct.CompleteProductDescription = _DLProduct.GetCompletProductDescription(mLGetCompletProductDescription);
+        //        if (_MLProduct.CompleteProductDescription.Count > 0)
+        //        {
+        //            _DBReturnData.Dataset = _MLProduct.CompleteProductDescription;
+        //            _DBReturnData.Code = DBEnums.Codes.SUCCESS;
+        //            _DBReturnData.Message = DBEnums.Status.SUCCESS.ToString();
+        //            _DBReturnData.Retval = DBEnums.Status.SUCCESS.ToString();
+
+        //        }
+        //        else
+        //        {
+        //            _DBReturnData.Dataset = null;
+        //            _DBReturnData.Code = DBEnums.Codes.NOT_FOUND;
+        //            _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+        //            _DBReturnData.Retval = DBEnums.Status.FAILURE.ToString();
+        //        }
+
+
+
+        //    }
+        //    catch (Exception ex)
+        //    {
+
+        //        _DBReturnData.Dataset = null;
+        //        _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
+        //        _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+        //        _DBReturnData.Retval = DBEnums.Status.FAILURE.ToString();
+        //    }
+        //    return new[] { _DBReturnData };
+
+
+
+        //}
+
         [Route("GetCompletProductDescription")]
         [HttpPost]
-        public ActionResult<IEnumerable<DBReturnData>> GetCompletProductDescription(MLGetCompletProductDescription mLGetCompletProductDescription)
+        public ActionResult<DBReturnData> GetCompletProductDescription(MLGetCompletProductDescription mLGetCompletProductDescription)
         {
-            MLProduct _MLProduct = new();
             DLProduct _DLProduct = new();
             DBReturnData _DBReturnData = new();
 
-
             try
             {
-                _MLProduct.CompleteProductDescription = _DLProduct.GetCompletProductDescription(mLGetCompletProductDescription);
-                if (_MLProduct.CompleteProductDescription.Count > 0)
-                {
-                    _DBReturnData.Dataset = _MLProduct.CompleteProductDescription;
-                    _DBReturnData.Code = DBEnums.Codes.SUCCESS;
-                    _DBReturnData.Message = DBEnums.Status.SUCCESS.ToString();
-                    _DBReturnData.Retval = DBEnums.Status.SUCCESS.ToString();
+                _DBReturnData = _DLProduct.GetCompletProductDescription(mLGetCompletProductDescription);
 
+                if (_DBReturnData != null && _DBReturnData.Code == DBEnums.Codes.SUCCESS)
+                {
+                    return Ok(_DBReturnData);
                 }
                 else
                 {
-                    _DBReturnData.Dataset = null;
-                    _DBReturnData.Code = DBEnums.Codes.NOT_FOUND;
-                    _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
-                    _DBReturnData.Retval = DBEnums.Status.FAILURE.ToString();
+                    return NotFound(new DBReturnData
+                    {
+                        Dataset = null,
+                        Code = DBEnums.Codes.NOT_FOUND,
+                        Message = "No product details found",
+                        Retval = "NOT_FOUND"
+                    });
                 }
-
-
-
             }
             catch (Exception ex)
             {
-
-                _DBReturnData.Dataset = null;
-                _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
-                _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
-                _DBReturnData.Retval = DBEnums.Status.FAILURE.ToString();
+                return StatusCode(StatusCodes.Status500InternalServerError, new DBReturnData
+                {
+                    Dataset = null,
+                    Code = DBEnums.Codes.INTERNAL_SERVER_ERROR,
+                    Message = "An error occurred while fetching product details",
+                    Retval = "FAILURE"
+                });
             }
-            return new[] { _DBReturnData };
-
-
-
         }
-
 
 
 
