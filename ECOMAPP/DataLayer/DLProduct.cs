@@ -830,7 +830,7 @@ namespace ECOMAPP.DataLayer
                     }
 
                     DataTable productTable = _DataSet.Tables[0];
-                    string retval = _DataSet.Tables[1].Rows[0]["RETVAL"]?.ToString();
+                    string retval = _DataSet.Tables[^1].Rows[0]["RETVAL"]?.ToString(); // Using the last table for RETVAL
 
                     if (retval == "SUCCESS")
                     {
@@ -849,15 +849,15 @@ namespace ECOMAPP.DataLayer
                                 Product_Description = firstProduct["PRODUCT_DESCRIPTION"]?.ToString() ?? string.Empty,
                                 BRAND = firstProduct["BRAND"]?.ToString() ?? string.Empty,
                                 UNIT = firstProduct["UNIT"]?.ToString() ?? string.Empty,
-                                CATEGORY_ID = firstProduct["CATEGORY_ID"].ToString() ?? string.Empty,
-                                SUB_CATEGORY_ID = firstProduct["SUB_CATEGORY_ID"].ToString() ?? string.Empty,
-                                SUB_SUB_CATEGORY_ID = firstProduct["SUB_SUB_CATEGORY_ID"].ToString() ?? string.Empty,
+                                CATEGORY_ID = firstProduct["CATEGORY_ID"]?.ToString() ?? string.Empty,
+                                SUB_CATEGORY_ID = firstProduct["SUB_CATEGORY_ID"]?.ToString() ?? string.Empty,
+                                SUB_SUB_CATEGORY_ID = firstProduct["SUB_SUB_CATEGORY_ID"]?.ToString() ?? string.Empty,
                                 Variants = new List<MlProductVariant>()
                             };
 
-                            var variantRows = productGroup.GroupBy(row => row["VARIENTS_ID"].ToString());
+                            var variantGroups = productGroup.GroupBy(row => row["VARIENTS_ID"].ToString());
 
-                            foreach (var variantGroup in variantRows)
+                            foreach (var variantGroup in variantGroups)
                             {
                                 var firstVariant = variantGroup.First();
                                 string VARIENTS_ID = firstVariant["VARIENTS_ID"]?.ToString() ?? string.Empty;
@@ -895,11 +895,13 @@ namespace ECOMAPP.DataLayer
                                         PACKAGE_TOTAL_VOLUME = firstVariant["PACKAGE_TOTAL_VOLUME"]?.ToString() ?? "0",
                                     },
 
+                                    // Collect images for the variant
                                     ImageGallery = variantGroup
                                         .Select(row => new MLImages
                                         {
                                             Product_Images = row["PRODUCT_IMAGES"]?.ToString() ?? string.Empty
                                         })
+                                        .Where(img => !string.IsNullOrEmpty(img.Product_Images)) // Remove empty images
                                         .Distinct()
                                         .ToList()
                                 };
@@ -907,6 +909,7 @@ namespace ECOMAPP.DataLayer
                                 product.Variants.Add(variant);
                             }
 
+                            // Set product thumbnail from the first variant’s first image
                             product.ThumbnailImage = product.Variants.FirstOrDefault()?.ImageGallery?.FirstOrDefault()?.Product_Images ?? string.Empty;
                             products.Add(product);
                         }
@@ -929,6 +932,7 @@ namespace ECOMAPP.DataLayer
             _DbReturn.Retval = "SUCCESS";
             return _DbReturn;
         }
+
 
     }
 }
