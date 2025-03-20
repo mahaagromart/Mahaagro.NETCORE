@@ -128,7 +128,15 @@ namespace ECOMAPP.ModelLayer
             public int PaginationEnd { get; set; } = 50;
 
         }
+        
+        public class MLGetCompletProductDescription
+        {
+            public string ProductId { get; set; }
 
+
+        }
+
+        //------------------------------------------------------------------------------------
 
         public class VarientList{
             public string ProductName { get; set; }
@@ -150,8 +158,55 @@ namespace ECOMAPP.ModelLayer
 
         public List<ProductsList> productsLists { get; set; }
 
+        //------------------------------------------------------------------------------------
+
+        public class CompleteVarientList
+        {
+            //TODO: Add the properties AS YOULL NEED TO CREATE AND ADD THEM  
+            public string ProductName { get; set; }
+            public string Price { get; set; }
+            public string? Reviews { get; set; }
+            public string[]? Images { get; set; }
+            public string? ProductId { get; set; }
+            public string? ProductDescription { get; set; }
+            public string? Unit { get; set; }
+            public string? Brand { get; set; }
+            public string? VaientWiseName { get; set; }
+            public string? DefaultProductName { get; set; }
+            public string? VarientName { get; set; }
+            public string? VarientId { get; set; }
+            public string? CalculatedPrice { get; set; }
+            public string? CurrentStockQuantity { get; set; }
+            public string? DiscountAmount { get; set; }
+            public string? Pricing { get; set; }
+            public string? SellingPrice { get; set; }
+            public string? Mrp { get; set; }
+            public string? ImageUrl { get; set; }
+
+            public string? PackageShape { get; set; }
+            public string? packageLength { get; set; }
+            public string? packageWidth { get; set; }
+            public string? packageHeight { get; set; }
+            public string? packageWeight { get; set; }
+            public string? packageDiameter { get; set; }
+            public string? packageTotalVolume { get; set; }
 
 
+        }
+
+
+        public class ProductDescriptionList
+        {
+
+            public string ProductId { get; set; }
+            public List<CompleteVarientList> VarientList { get; set; }
+
+        }
+
+
+        public List<ProductDescriptionList> CompleteProductDescription { get; set; }
+
+        //------------------------------------------------------------------------------------
 
         #endregion
     }

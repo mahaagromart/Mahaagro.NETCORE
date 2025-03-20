@@ -351,6 +351,58 @@ namespace ECOMAPP.Controllers
         #endregion
 
 
+        #region GET product complet info with productID
+
+        [Route("GetCompletProductDescription")]
+        [HttpPost]
+        public ActionResult<IEnumerable<DBReturnData>> GetCompletProductDescription(MLGetCompletProductDescription mLGetCompletProductDescription)
+        {
+            MLProduct _MLProduct = new();
+            DLProduct _DLProduct = new();
+            DBReturnData _DBReturnData = new();
+
+
+            try
+            {
+                _MLProduct.CompleteProductDescription = _DLProduct.GetCompletProductDescription(mLGetCompletProductDescription);
+                if (_MLProduct.CompleteProductDescription.Count > 0)
+                {
+                    _DBReturnData.Dataset = _MLProduct.CompleteProductDescription;
+                    _DBReturnData.Code = DBEnums.Codes.SUCCESS;
+                    _DBReturnData.Message = DBEnums.Status.SUCCESS.ToString();
+                    _DBReturnData.Retval = DBEnums.Status.SUCCESS.ToString();
+
+                }
+                else
+                {
+                    _DBReturnData.Dataset = null;
+                    _DBReturnData.Code = DBEnums.Codes.NOT_FOUND;
+                    _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+                    _DBReturnData.Retval = DBEnums.Status.FAILURE.ToString();
+                }
+
+
+
+            }
+            catch (Exception ex)
+            {
+
+                _DBReturnData.Dataset = null;
+                _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
+                _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+                _DBReturnData.Retval = DBEnums.Status.FAILURE.ToString();
+            }
+            return new[] { _DBReturnData };
+
+
+
+        }
+
+
+
+
+        #endregion
+
 
     }
 }
