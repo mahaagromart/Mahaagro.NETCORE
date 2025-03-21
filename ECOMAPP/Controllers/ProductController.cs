@@ -143,6 +143,18 @@ namespace ECOMAPP.Controllers
             {
 
                 _DBReturnData = _DLProduct.ProductToggleCertified(_MLToggleCertified);
+                if (_DBReturnData.Message == "SUCCESS")
+                {
+                    _DBReturnData.Status = DBEnums.Status.SUCCESS;
+                    _DBReturnData.Code = DBEnums.Codes.SUCCESS;
+                    _DBReturnData.Retval = DBEnums.Status.SUCCESS.ToString();
+                }
+                else
+                {
+                    _DBReturnData.Status = DBEnums.Status.FAILURE;
+                    _DBReturnData.Code = DBEnums.Codes.NOT_FOUND;
+                    _DBReturnData.Retval = DBEnums.Status.FAILURE.ToString();
+                }
    
 
             }
