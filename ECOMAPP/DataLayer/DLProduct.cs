@@ -19,7 +19,7 @@ namespace ECOMAPP.DataLayer
         {
             List<MlGetProducts> products = new();
             DALBASE _DALBASE = new();
-            DBReturnData _DbReturn = new(); // Ensure _DbReturn is properly initialized
+            DBReturnData _DbReturn = new(); 
 
             try
             {
@@ -63,7 +63,11 @@ namespace ECOMAPP.DataLayer
                                 CATEGORY_ID = firstProduct["CATEGORY_ID"].ToString() ?? string.Empty,
                                 SUB_CATEGORY_ID = firstProduct["SUB_CATEGORY_ID"].ToString() ?? string.Empty,
                                 SUB_SUB_CATEGORY_ID = firstProduct["SUB_SUB_CATEGORY_ID"].ToString() ?? string.Empty,
+                                ADDED_BY = firstProduct["ADDED_BY"].ToString() ?? string.Empty,
+                                STATUS = firstProduct["STATUS"].ToString() ?? string.Empty,
+                                CERTIFICATION = firstProduct["CERTIFICATION"].ToString() ?? string.Empty,
                                 Variants = new List<MlProductVariant>()
+
                             };
 
                             var variantRows = productGroup.GroupBy(row => row["VARIENTS_ID"].ToString());
@@ -172,6 +176,7 @@ namespace ECOMAPP.DataLayer
                     _DBAccess.AddParameters("@HSN", data.HSN ?? "");
                     _DBAccess.AddParameters("@TAGS_INPUT", tagsString);
                     _DBAccess.AddParameters("@PROD_ID",data.PROD_ID);
+                    _DBAccess.AddParameters("@ADDED_BY", data.Added_By);
                     //pricing
                     _DBAccess.AddParameters("@PRICING", data.PRICING);
                     _DBAccess.AddParameters("@MAXIMUM_RETAIL_PRICE", data.MAXIMUM_RETAIL_PRICE);
@@ -334,18 +339,21 @@ namespace ECOMAPP.DataLayer
 
                             _DBReturnData.Message = DBEnums.Status.SUCCESS.ToString();
                             _DBReturnData.Code = DBEnums.Codes.SUCCESS;
+                            _DBReturnData.Retval = DBEnums.Status.SUCCESS.ToString();
                         }
                         else
                         {
                             _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
-                            _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
+                            _DBReturnData.Code = DBEnums.Codes.NOT_FOUND;
+                            _DBReturnData.Retval = DBEnums.Status.FAILURE.ToString();
                         }
                     }
                 }
                 else
                 {
                     _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
-                    _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
+                    _DBReturnData.Code = DBEnums.Codes.NOT_FOUND;
+                    _DBReturnData.Retval = DBEnums.Status.FAILURE.ToString();
                 }
 
             }
@@ -353,7 +361,7 @@ namespace ECOMAPP.DataLayer
             {
                 _DALBASE.ErrorLog("ProductToggleCertified", "DLProduct", ex.ToString());
                 _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
-                _DBReturnData.Code = DBEnums.Codes.BAD_REQUEST;
+                _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
 
             }
 
