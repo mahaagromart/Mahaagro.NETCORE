@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using System.IdentityModel.Tokens.Jwt;
 using ECOMAPP.CommonRepository;
 using ECOMAPP.DataLayer;
 using ECOMAPP.ModelLayer;
@@ -108,6 +109,17 @@ namespace ECOMAPP.Controllers
             DBReturnData _DBReturnData = new();
             DLCart _DLCart = new();
             DataSet _DataSet = new();
+
+            string? JwtToken = Request.Headers["Authorization"];
+      
+            
+            
+            
+            JwtToken = JwtToken["Bearer ".Length..].Trim();
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(JwtToken);
+            var tokenS = jsonToken as JwtSecurityToken;
+            var UserId = tokenS?.Claims.First(claim => claim.Type == "UserId").Value;
 
             try
             {
