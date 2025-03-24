@@ -57,9 +57,178 @@ namespace ECOMAPP.Controllers
         }
 
 
+
+        [Route("GetProductsByUserId")]
+        [HttpPost]
+        public ActionResult<DBReturnData> GetProductsByUserId(MLGetProductByUserId _MlGetProductByUserId)
+        {
+            try
+            {
+                DLProduct _DLProduct = new();
+                DBReturnData _DBReturnData = _DLProduct.GetProductsByUserId(_MlGetProductByUserId);
+
+                if (_DBReturnData.Dataset != null)
+                {
+                    _DBReturnData.Code = DBEnums.Codes.SUCCESS;
+                    _DBReturnData.Message = "SUCCESS";
+                    _DBReturnData.Retval = "SUCCESS";
+                    _DBReturnData.Status = DBEnums.Status.SUCCESS;
+                    return Ok(_DBReturnData);
+                }
+                else
+                {
+                    _DBReturnData.Code = DBEnums.Codes.NOT_FOUND;
+                    _DBReturnData.Message = "NOT_FOUND";
+                    _DBReturnData.Retval = "NOT_FOUND";
+                    _DBReturnData.Status = DBEnums.Status.FAILURE;
+                    return NotFound(_DBReturnData);
+                }
+            }
+            catch (Exception ex)
+            {
+                new DALBASE().ErrorLog("GetAllProducts", "Controller", ex.ToString());
+
+                return StatusCode(500, new DBReturnData
+                {
+                    Dataset = null,
+                    Code = DBEnums.Codes.BAD_REQUEST,
+                    Message = "Internal Server Error",
+                    Retval = "FAILURE"
+                });
+            }
+        }
+
+
+
+
+
+
+
+        [Route("GetAllNewProdcutRequest")]
+        [HttpGet]
+        public ActionResult<DBReturnData> GetAllNewProdcutRequest()
+        {
+            try
+            {
+                DLProduct _DLProduct = new();
+                DBReturnData _DBReturnData = _DLProduct.NewProductRequestBySeller();
+
+                if (_DBReturnData.Dataset != null)
+                {
+                    _DBReturnData.Code = DBEnums.Codes.SUCCESS;
+                    _DBReturnData.Message = "SUCCESS";
+                    _DBReturnData.Retval = "SUCCESS";
+                    _DBReturnData.Status = DBEnums.Status.SUCCESS;
+                    return Ok(_DBReturnData);
+                }
+                else
+                {
+                    _DBReturnData.Code = DBEnums.Codes.NOT_FOUND;
+                    _DBReturnData.Message = "NOT_FOUND";
+                    _DBReturnData.Retval = "NOT_FOUND";
+                    _DBReturnData.Status = DBEnums.Status.FAILURE;
+                    return NotFound(_DBReturnData);
+                }
+            }
+            catch (Exception ex)
+            {
+                new DALBASE().ErrorLog("GetAllProducts", "Controller", ex.ToString());
+
+                return StatusCode(500, new DBReturnData
+                {
+                    Dataset = null,
+                    Code = DBEnums.Codes.BAD_REQUEST,
+                    Message = "Internal Server Error",
+                    Retval = "FAILURE"
+                });
+            }
+        }
+
+        [Route("GetApprovedProducts")]
+        [HttpGet]
+        public ActionResult<DBReturnData> GetApprovedProducts()
+        {
+            try
+            {
+                DLProduct _DLProduct = new();
+                DBReturnData _DBReturnData = _DLProduct.ApprovedProducts();
+
+                if (_DBReturnData.Dataset != null)
+                {
+                    _DBReturnData.Code = DBEnums.Codes.SUCCESS;
+                    _DBReturnData.Message = "SUCCESS";
+                    _DBReturnData.Retval = "SUCCESS";
+                    _DBReturnData.Status = DBEnums.Status.SUCCESS;
+                    return Ok(_DBReturnData);
+                }
+                else
+                {
+                    _DBReturnData.Code = DBEnums.Codes.NOT_FOUND;
+                    _DBReturnData.Message = "NOT_FOUND";
+                    _DBReturnData.Retval = "NOT_FOUND";
+                    _DBReturnData.Status = DBEnums.Status.FAILURE;
+                    return NotFound(_DBReturnData);
+                }
+            }
+            catch (Exception ex)
+            {
+                new DALBASE().ErrorLog("GetAllProducts", "Controller", ex.ToString());
+
+                return StatusCode(500, new DBReturnData
+                {
+                    Dataset = null,
+                    Code = DBEnums.Codes.BAD_REQUEST,
+                    Message = "Internal Server Error",
+                    Retval = "FAILURE"
+                });
+            }
+        }
+
+        [Route("GetDeniedProducts")]
+        [HttpGet]
+        public ActionResult<DBReturnData> GetDeniedProducts()
+        {
+            try
+            {
+                DLProduct _DLProduct = new();
+                DBReturnData _DBReturnData = _DLProduct.DeniedProduct();
+
+                if (_DBReturnData.Dataset != null)
+                {
+                    _DBReturnData.Code = DBEnums.Codes.SUCCESS;
+                    _DBReturnData.Message = "SUCCESS";
+                    _DBReturnData.Retval = "SUCCESS";
+                    _DBReturnData.Status = DBEnums.Status.SUCCESS;
+                    return Ok(_DBReturnData);
+                }
+                else
+                {
+                    _DBReturnData.Code = DBEnums.Codes.NOT_FOUND;
+                    _DBReturnData.Message = "NOT_FOUND";
+                    _DBReturnData.Retval = "NOT_FOUND";
+                    _DBReturnData.Status = DBEnums.Status.FAILURE;
+                    return NotFound(_DBReturnData);
+                }
+            }
+            catch (Exception ex)
+            {
+                new DALBASE().ErrorLog("GetAllProducts", "Controller", ex.ToString());
+
+                return StatusCode(500, new DBReturnData
+                {
+                    Dataset = null,
+                    Code = DBEnums.Codes.BAD_REQUEST,
+                    Message = "Internal Server Error",
+                    Retval = "FAILURE"
+                });
+            }
+        }
+
+
+
         [Route("InsertProduct")]
         [HttpPost]
-        [JwtAuthorization(Roles = [Roles.Admin , Roles.Vendor])]
+        [JwtAuthorization(Roles = [Roles.Admin, Roles.Vendor])]
         public ActionResult<IEnumerable<DBReturnData>> InsertProduct(MlGetProduct _MlGetProduct)
         {
             MLProduct _MLProduct = new();
@@ -131,69 +300,69 @@ namespace ECOMAPP.Controllers
         }
 
 
-        [Route("ProductToggleCertified")]
-        [HttpPut]
-        [JwtAuthorization(Roles = [Roles.Admin])]
-        public ActionResult<IEnumerable<DBReturnData>> ProductToggleCertified(MLToggleCertified _MLToggleCertified)
-        {
-            DLProduct _DLProduct = new();
-            DBReturnData _DBReturnData = new();
+        //[Route("ProductToggleCertified")]
+        //[HttpPut]
+        //[JwtAuthorization(Roles = [Roles.Admin])]
+        //public ActionResult<IEnumerable<DBReturnData>> ProductToggleCertified(MLToggleCertified _MLToggleCertified)
+        //{
+        //    DLProduct _DLProduct = new();
+        //    DBReturnData _DBReturnData = new();
            
-            try
-            {
+        //    try
+        //    {
 
-                _DBReturnData = _DLProduct.ProductToggleCertified(_MLToggleCertified);
-                if (_DBReturnData.Message == "SUCCESS")
-                {
-                    _DBReturnData.Status = DBEnums.Status.SUCCESS;
-                    _DBReturnData.Code = DBEnums.Codes.SUCCESS;
-                    _DBReturnData.Retval = DBEnums.Status.SUCCESS.ToString();
-                }
-                else
-                {
-                    _DBReturnData.Status = DBEnums.Status.FAILURE;
-                    _DBReturnData.Code = DBEnums.Codes.NOT_FOUND;
-                    _DBReturnData.Retval = DBEnums.Status.FAILURE.ToString();
-                }
+        //        _DBReturnData = _DLProduct.ProductToggleCertified(_MLToggleCertified);
+        //        if (_DBReturnData.Message == "SUCCESS")
+        //        {
+        //            _DBReturnData.Status = DBEnums.Status.SUCCESS;
+        //            _DBReturnData.Code = DBEnums.Codes.SUCCESS;
+        //            _DBReturnData.Retval = DBEnums.Status.SUCCESS.ToString();
+        //        }
+        //        else
+        //        {
+        //            _DBReturnData.Status = DBEnums.Status.FAILURE;
+        //            _DBReturnData.Code = DBEnums.Codes.NOT_FOUND;
+        //            _DBReturnData.Retval = DBEnums.Status.FAILURE.ToString();
+        //        }
    
 
-            }
-            catch (Exception ex)
-            {
+        //    }
+        //    catch (Exception ex)
+        //    {
 
 
-                _DBReturnData.Dataset = null;
-                _DBReturnData.Code = DBEnums.Codes.BAD_REQUEST;
-                _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
-                _DBReturnData.Retval = DBEnums.Status.FAILURE.ToString();
-            }
+        //        _DBReturnData.Dataset = null;
+        //        _DBReturnData.Code = DBEnums.Codes.BAD_REQUEST;
+        //        _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+        //        _DBReturnData.Retval = DBEnums.Status.FAILURE.ToString();
+        //    }
 
-            return new[] { _DBReturnData };
+        //    return new[] { _DBReturnData };
 
-        }
+        //}
 
-        [Route("ProductToggleStatus")]
-        [HttpPut]
-        [JwtAuthorization(Roles = [Roles.Admin])]
-        public ActionResult<IEnumerable<DBReturnData>> ProductToggleStatus(MLToggleStatus _MLToggleStatus)
-        {
-            DLProduct _DLProduct = new();
-            DBReturnData _DBReturnData = new();
-            try
-            {
-                _DBReturnData = _DLProduct.ProductToggleStatus(_MLToggleStatus);
-            }
-            catch (Exception ex)
-            {
-                _DBReturnData.Dataset = null;
-                _DBReturnData.Code = DBEnums.Codes.BAD_REQUEST;
-                _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
-                _DBReturnData.Retval = DBEnums.Status.FAILURE.ToString();
-            }
+        //[Route("ProductToggleStatus")]
+        //[HttpPut]
+        //[JwtAuthorization(Roles = [Roles.Admin])]
+        //public ActionResult<IEnumerable<DBReturnData>> ProductToggleStatus(MLToggleStatus _MLToggleStatus)
+        //{
+        //    DLProduct _DLProduct = new();
+        //    DBReturnData _DBReturnData = new();
+        //    try
+        //    {
+        //        _DBReturnData = _DLProduct.ProductToggleStatus(_MLToggleStatus);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _DBReturnData.Dataset = null;
+        //        _DBReturnData.Code = DBEnums.Codes.BAD_REQUEST;
+        //        _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+        //        _DBReturnData.Retval = DBEnums.Status.FAILURE.ToString();
+        //    }
 
-            return new[] { _DBReturnData };
+        //    return new[] { _DBReturnData };
 
-        }
+        //}
 
 
 
@@ -245,8 +414,8 @@ namespace ECOMAPP.Controllers
 
         }
 
-     
-  
+
+
 
         [Route("UpdateInhouseProduct")]
         [HttpPut]
@@ -259,7 +428,7 @@ namespace ECOMAPP.Controllers
             try
             {
                 _DBReturnData = _DLProduct.UpdateInhouseProduct(_MLUpdateInhouseProduct);
-           
+
             }
             catch (Exception ex)
             {
@@ -284,15 +453,15 @@ namespace ECOMAPP.Controllers
             DataSet _DataSet = new();
             try
             {
-                 _DBReturnData = _DLProduct.DeleteInhouseProduct(_MLDeleteInhouseProduct);
-                 
+                _DBReturnData = _DLProduct.DeleteInhouseProduct(_MLDeleteInhouseProduct);
+
             }
             catch (Exception ex)
             {
 
                 _DBReturnData.Dataset = null;
                 _DBReturnData.Code = DBEnums.Codes.BAD_REQUEST;
-                _DBReturnData.Message = DBEnums.Status.FAILURE.ToString() +ex.Message.ToString();
+                _DBReturnData.Message = DBEnums.Status.FAILURE.ToString() + ex.Message.ToString();
                 _DBReturnData.Retval = DBEnums.Status.FAILURE.ToString();
 
             }
@@ -435,7 +604,87 @@ namespace ECOMAPP.Controllers
 
 
         #endregion
+        [Route("ProductToggleCertificate")]
+        [HttpPost]
+        [JwtAuthorization(Roles = [Roles.Admin])]
+        public ActionResult<DBReturnData> ProductToggleCertification(MlProductToggleCertification mlProductToggleCertification)
+        {
+            DLProduct _DLProduct = new();
+            DBReturnData _DBReturnData = new();
+            try
+            {
+
+                _DBReturnData = _DLProduct.ProductToggleCertification(mlProductToggleCertification);
 
 
+                if (_DBReturnData.Message == "SUCCESS")
+                {
+                    _DBReturnData.Status = DBEnums.Status.SUCCESS;
+                    _DBReturnData.Code = DBEnums.Codes.SUCCESS;
+                    _DBReturnData.Retval = DBEnums.Status.SUCCESS.ToString();
+                }
+                else
+                {
+                    _DBReturnData.Status = DBEnums.Status.FAILURE;
+                    _DBReturnData.Code = DBEnums.Codes.NOT_FOUND;
+                    _DBReturnData.Retval = DBEnums.Status.FAILURE.ToString();
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+
+
+                _DBReturnData.Dataset = null;
+                _DBReturnData.Code = DBEnums.Codes.BAD_REQUEST;
+                _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+                _DBReturnData.Retval = DBEnums.Status.FAILURE.ToString();
+            }
+
+            return _DBReturnData ;
+        }
+
+        [Route("ProductToggleStatus")]
+        [HttpPost]
+        [JwtAuthorization(Roles = [Roles.Admin])]
+        public ActionResult<DBReturnData> ProductToggleStatus(MlProductToggleCertification mlProductToggleCertification)
+        {
+            DLProduct _DLProduct = new();
+            DBReturnData _DBReturnData = new();
+            try
+            {
+
+                _DBReturnData = _DLProduct.ProductToggleStatus(mlProductToggleCertification);
+
+
+
+                if (_DBReturnData.Message == "SUCCESS")
+                {
+                    _DBReturnData.Status = DBEnums.Status.SUCCESS;
+                    _DBReturnData.Code = DBEnums.Codes.SUCCESS;
+                    _DBReturnData.Retval = DBEnums.Status.SUCCESS.ToString();
+                }
+                else
+                {
+                    _DBReturnData.Status = DBEnums.Status.FAILURE;
+                    _DBReturnData.Code = DBEnums.Codes.NOT_FOUND;
+                    _DBReturnData.Retval = DBEnums.Status.FAILURE.ToString();
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+
+
+                _DBReturnData.Dataset = null;
+                _DBReturnData.Code = DBEnums.Codes.BAD_REQUEST;
+                _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+                _DBReturnData.Retval = DBEnums.Status.FAILURE.ToString();
+            }
+
+            return _DBReturnData;
+        }
     }
 }

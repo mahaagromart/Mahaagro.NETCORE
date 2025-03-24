@@ -193,8 +193,10 @@ namespace ECOMAPP.DataLayer
                 using (DBAccess _DBAccess = new())
                 {
                     _DBAccess.DBProcedureName = "SP_SUBSUBCATEGORY";
-                    _DBAccess.AddParameters("@Action", "INSERTSUBSUBCATEGORY");
+                    _DBAccess.AddParameters("@Action", "DELETESUBSUBCATEGORY");
                     _DBAccess.AddParameters("@id", Data.id);
+                    _Dataset = _DBAccess.DBExecute();
+                    _DBAccess.Dispose();
 
 
 

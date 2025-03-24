@@ -12,7 +12,10 @@
             public string Description { get; set; }
             public string Ratings { get; set; }
             public string Category_id { get; set; }
+
             public string CreationDate { get; set; }
+
+            public List<string> varietiesList= new List<string>();
 
         }
         public class MLInsertVarients
@@ -26,6 +29,9 @@
             public string Ratings { get; set; }
             public string Category_id { get; set; }
             public string CreationDate { get; set; }
+
+            public List<string> Varieties = new List<string>();
+
 
         }
         public class MLUpdateVarients

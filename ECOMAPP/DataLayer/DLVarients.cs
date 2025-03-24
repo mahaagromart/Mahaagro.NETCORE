@@ -23,12 +23,13 @@ namespace ECOMAPP.DataLayer
                     _DBAccess.DBProcedureName = "";
                     _DBAccess.AddParameters("@Action", "");
                     _DataSet = _DBAccess.DBExecute();
+                    _DBAccess.Dispose();
 
 
                 }
                 if (_DataSet != null && _DataSet.Tables.Count > 0)
                 {
-                    DataTable _DataTable = new();
+                    DataTable _DataTable = _DataSet.Tables[0];
                     string Retval = _DataSet.Tables[1].Rows[0]["RETVAL"]?.ToString() ?? "";
 
                     foreach (DataRow Row in _DataTable.Rows)
@@ -90,6 +91,7 @@ namespace ECOMAPP.DataLayer
                     _DBAccess.DBProcedureName = "";
                     _DBAccess.AddParameters("@Action", "");
                     _DataSet = _DBAccess.DBExecute();
+                    _DBAccess.Dispose();
 
                 }
                 if (_DataSet != null && _DataSet.Tables.Count > 0)
@@ -143,6 +145,7 @@ namespace ECOMAPP.DataLayer
                     _DBAccess.DBProcedureName = "";
                     _DBAccess.AddParameters("@Action", "");
                     _DataSet = _DBAccess.DBExecute();
+                    _DBAccess.Dispose();
 
                 }
                 if (_DataSet != null && _DataSet.Tables.Count > 0)

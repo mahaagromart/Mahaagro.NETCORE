@@ -117,6 +117,20 @@ namespace ECOMAPP.Controllers
             try
             {
                 _DBReturnData = _DLSubsubcategory.DeleteSubsubCategory(_MLDeletesubsubcategory);
+                if (_DBReturnData.Message == "SUCCESS")
+                {
+                    _DBReturnData.Retval = DBEnums.Status.SUCCESS.ToString();
+                    _DBReturnData.Message = DBEnums.Status.SUCCESS.ToString();
+                    _DBReturnData.Code = DBEnums.Codes.SUCCESS;
+
+                }
+                else
+                {
+                    _DBReturnData.Retval = DBEnums.Status.FAILURE.ToString();
+                    _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+                    _DBReturnData.Code = DBEnums.Codes.NOT_FOUND;
+
+                }
 
 
             }
@@ -125,7 +139,7 @@ namespace ECOMAPP.Controllers
                 _DBReturnData.Dataset = null;
                 _DBReturnData.Retval = DBEnums.Status.FAILURE.ToString();
                 _DBReturnData.Message = DBEnums.Status.FAILURE.ToString() + ex.Message.ToString();
-                _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
+                _DBReturnData.Code = DBEnums.Codes.BAD_REQUEST;
 
             }
             return new[] { _DBReturnData };

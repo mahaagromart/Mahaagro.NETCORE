@@ -10,16 +10,146 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace ECOMAPP.DataLayer
 {
-    public class DLProduct:DALBASE
+    public class DLProduct : DALBASE
     {
 
 
+
+
+        //public DBReturnData GetAllProducts()
+        //{
+        //    List<MlGetProducts> products = new();
+        //    DALBASE _DALBASE = new();
+        //    DBReturnData _DbReturn = new(); 
+
+        //    try
+        //    {
+        //        using (DBAccess _DBAccess = new())
+        //        {
+        //            _DBAccess.DBProcedureName = "SP_PRODUCT";
+        //            _DBAccess.AddParameters("@Action", "SELECTPRODUCTANDPRICELOGISTICES");
+
+        //            using DataSet _DataSet = _DBAccess.DBExecute();
+        //            _DBAccess.Dispose();
+
+        //            if (_DataSet == null || _DataSet.Tables.Count == 0)
+        //            {
+        //                _DbReturn.Dataset = null;
+        //                _DbReturn.Code = DBEnums.Codes.NOT_FOUND;
+        //                _DbReturn.Message = "No products found";
+        //                _DbReturn.Retval = "NOT_FOUND";
+        //                return _DbReturn;
+        //            }
+
+        //            DataTable productTable = _DataSet.Tables[0];
+        //            string retval = _DataSet.Tables[1].Rows[0]["RETVAL"]?.ToString();
+
+        //            if (retval == "SUCCESS")
+        //            {
+        //                var productGroups = productTable.AsEnumerable()
+        //                    .GroupBy(row => row["PROD_ID"].ToString());
+
+        //                foreach (var productGroup in productGroups)
+        //                {
+        //                    var firstProduct = productGroup.First();
+        //                    string PROD_ID = firstProduct["PROD_ID"]?.ToString() ?? string.Empty;
+
+        //                    MlGetProducts product = new()
+        //                    {
+        //                        PROD_ID = PROD_ID,
+        //                        Product_Name = firstProduct["PRODUCT_NAME"]?.ToString() ?? string.Empty,
+        //                        Product_Description = firstProduct["PRODUCT_DESCRIPTION"]?.ToString() ?? string.Empty,
+        //                        BRAND = firstProduct["BRAND"]?.ToString() ?? string.Empty,
+        //                        UNIT = firstProduct["UNIT"]?.ToString() ?? string.Empty,
+        //                        CATEGORY_ID = firstProduct["CATEGORY_ID"].ToString() ?? string.Empty,
+        //                        SUB_CATEGORY_ID = firstProduct["SUB_CATEGORY_ID"].ToString() ?? string.Empty,
+        //                        SUB_SUB_CATEGORY_ID = firstProduct["SUB_SUB_CATEGORY_ID"].ToString() ?? string.Empty,
+        //                        ADDED_BY = firstProduct["ADDED_BY"].ToString() ?? string.Empty,
+        //                        Variants = new List<MlProductVariant>()
+
+        //                    };
+
+        //                    var variantRows = productGroup.GroupBy(row => row["VARIENTS_ID"].ToString());
+
+        //                    foreach (var variantGroup in variantRows)
+        //                    {
+        //                        var firstVariant = variantGroup.First();
+        //                        string VARIENTS_ID = firstVariant["VARIENTS_ID"]?.ToString() ?? string.Empty;
+
+        //                        var variant = new MlProductVariant
+        //                        {
+        //                            VARIENTS_ID = VARIENTS_ID,
+        //                            Product_Name = firstVariant["VARIANTWISE_NAME"]?.ToString() ?? string.Empty,
+        //                            Varient_Name = firstVariant["VAREINTS_NAME"]?.ToString() ?? string.Empty,
+        //                            SKU = firstVariant["SKU"]?.ToString() ?? string.Empty,
+        //                            HSN = firstVariant["HSN"]?.ToString() ?? string.Empty,
+        //                            STATUS = firstProduct["STATUS"].ToString() ?? string.Empty,
+        //                            CERTIFICATION = firstProduct["CERTIFICATION"].ToString() ?? string.Empty,
+        //                            Pricing = new MlProductPricing
+        //                            {
+        //                                PRICING = firstVariant["PRICING"]?.ToString() ?? "0",
+        //                                MAXIMUM_RETAIL_PRICE = firstVariant["MAXIMUM_RETAIL_PRICE"]?.ToString() ?? "0",
+        //                                SELLING_PRICE = firstVariant["SELLING_PRICE"]?.ToString() ?? "0",
+        //                                MINIMUM_ORDER_QUANTITY = firstVariant["MINIMUM_ORDER_QUANTITY"]?.ToString() ?? "0",
+        //                                CURRENT_STOCK_QUANTITY = firstVariant["CURRENT_STOCK_QUANTITY"]?.ToString() ?? "0",
+        //                                DISCOUNT_TYPE = firstVariant["DISCOUNT_TYPE"]?.ToString() ?? "0",
+        //                                DISCOUNT_AMOUNT = firstVariant["DISCOUNT_AMOUNT"]?.ToString() ?? "0",
+        //                                TAX_AMOUNT = firstVariant["TAX_AMOUNT"]?.ToString() ?? "0",
+        //                                TAX_CALCULATION = firstVariant["TAX_CALCULATION"]?.ToString() ?? "0",
+        //                                CALCULATED_PRICE = firstVariant["CALCULATED_PRICE"]?.ToString() ?? "0",
+        //                            },
+
+        //                            Logistics = new MlProductLogistics
+        //                            {
+        //                                PACKAGE_SHAPE = firstVariant["PACKAGE_SHAPE"]?.ToString() ?? string.Empty,
+        //                                PACKAGE_LENGTH = firstVariant["PACKAGE_LENGTH"]?.ToString() ?? "0",
+        //                                PACKAGE_WIDTH = firstVariant["PACKAGE_WIDTH"]?.ToString() ?? "0",
+        //                                PACKAGE_HEIGHT = firstVariant["PACKAGE_HEIGHT"]?.ToString() ?? "0",
+        //                                PACKAGE_WEIGHT = firstVariant["PACKAGE_WEIGHT"]?.ToString() ?? "0",
+        //                                PACKAGE_DIAMETER = firstVariant["PACKAGE_DIAMETER"]?.ToString() ?? "0",
+        //                                PACKAGE_TOTAL_VOLUME = firstVariant["PACKAGE_TOTAL_VOLUME"]?.ToString() ?? "0",
+        //                            },
+
+        //                            ImageGallery = variantGroup
+        //                                .Select(row => new MLImages
+        //                                {
+        //                                    Product_Images = row["PRODUCT_IMAGES"]?.ToString() ?? string.Empty
+        //                                })
+        //                                .Distinct()
+        //                                .ToList()
+        //                        };
+
+        //                        product.Variants.Add(variant);
+        //                    }
+
+        //                    product.ThumbnailImage = product.Variants.FirstOrDefault()?.ImageGallery?.FirstOrDefault()?.Product_Images ?? string.Empty;
+        //                    products.Add(product);
+        //                }
+        //            }
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _DALBASE.ErrorLog("GetAllProducts", "DLProduct", ex.ToString());
+        //        _DbReturn.Dataset = null;
+        //        _DbReturn.Code = DBEnums.Codes.BAD_REQUEST;
+        //        _DbReturn.Message = "Error fetching products";
+        //        _DbReturn.Retval = "FAILURE";
+        //        return _DbReturn;
+        //    }
+
+        //    _DbReturn.Dataset = products;
+        //    _DbReturn.Code = DBEnums.Codes.SUCCESS;
+        //    _DbReturn.Message = "Products fetched successfully";
+        //    _DbReturn.Retval = "SUCCESS";
+        //    return _DbReturn;
+        //}
 
         public DBReturnData GetAllProducts()
         {
             List<MlGetProducts> products = new();
             DALBASE _DALBASE = new();
-            DBReturnData _DbReturn = new(); 
+            DBReturnData _DbReturn = new();
 
             try
             {
@@ -64,10 +194,7 @@ namespace ECOMAPP.DataLayer
                                 SUB_CATEGORY_ID = firstProduct["SUB_CATEGORY_ID"].ToString() ?? string.Empty,
                                 SUB_SUB_CATEGORY_ID = firstProduct["SUB_SUB_CATEGORY_ID"].ToString() ?? string.Empty,
                                 ADDED_BY = firstProduct["ADDED_BY"].ToString() ?? string.Empty,
-                                STATUS = firstProduct["STATUS"].ToString() ?? string.Empty,
-                                CERTIFICATION = firstProduct["CERTIFICATION"].ToString() ?? string.Empty,
                                 Variants = new List<MlProductVariant>()
-
                             };
 
                             var variantRows = productGroup.GroupBy(row => row["VARIENTS_ID"].ToString());
@@ -84,6 +211,10 @@ namespace ECOMAPP.DataLayer
                                     Varient_Name = firstVariant["VAREINTS_NAME"]?.ToString() ?? string.Empty,
                                     SKU = firstVariant["SKU"]?.ToString() ?? string.Empty,
                                     HSN = firstVariant["HSN"]?.ToString() ?? string.Empty,
+
+                                    // ✅ Corrected these two properties
+                                    STATUS = firstVariant["STATUS"]?.ToString() ?? string.Empty,
+                                    CERTIFICATION = firstVariant["CERTIFICATION"]?.ToString() ?? string.Empty,
 
                                     Pricing = new MlProductPricing
                                     {
@@ -145,6 +276,543 @@ namespace ECOMAPP.DataLayer
             return _DbReturn;
         }
 
+
+
+        public DBReturnData GetProductsByUserId(MLGetProductByUserId data)
+        {
+            List<MlGetProducts> products = new();
+            DALBASE _DALBASE = new();
+            DBReturnData _DbReturn = new();
+
+            try
+            {
+                using (DBAccess _DBAccess = new())
+                {
+                    _DBAccess.DBProcedureName = "SP_PRODUCT";
+                    _DBAccess.AddParameters("@Action", "SELECTPRODUCTBYUSERID");
+                    _DBAccess.AddParameters("@USER_ID", data.UserId);
+
+                    using DataSet _DataSet = _DBAccess.DBExecute();
+                    _DBAccess.Dispose();
+
+                    if (_DataSet == null || _DataSet.Tables.Count == 0)
+                    {
+                        _DbReturn.Dataset = null;
+                        _DbReturn.Code = DBEnums.Codes.NOT_FOUND;
+                        _DbReturn.Message = "No products found";
+                        _DbReturn.Retval = "NOT_FOUND";
+                        return _DbReturn;
+                    }
+
+                    DataTable productTable = _DataSet.Tables[0];
+                    string retval = _DataSet.Tables[1].Rows[0]["RETVAL"]?.ToString();
+
+                    if (retval == "SUCCESS")
+                    {
+                        var productGroups = productTable.AsEnumerable()
+                            .GroupBy(row => row["PROD_ID"].ToString());
+
+                        foreach (var productGroup in productGroups)
+                        {
+                            var firstProduct = productGroup.First();
+                            string PROD_ID = firstProduct["PROD_ID"]?.ToString() ?? string.Empty;
+
+                            MlGetProducts product = new()
+                            {
+                                PROD_ID = PROD_ID,
+                                Product_Name = firstProduct["PRODUCT_NAME"]?.ToString() ?? string.Empty,
+                                Product_Description = firstProduct["PRODUCT_DESCRIPTION"]?.ToString() ?? string.Empty,
+                                BRAND = firstProduct["BRAND"]?.ToString() ?? string.Empty,
+                                UNIT = firstProduct["UNIT"]?.ToString() ?? string.Empty,
+                                CATEGORY_ID = firstProduct["CATEGORY_ID"].ToString() ?? string.Empty,
+                                SUB_CATEGORY_ID = firstProduct["SUB_CATEGORY_ID"].ToString() ?? string.Empty,
+                                SUB_SUB_CATEGORY_ID = firstProduct["SUB_SUB_CATEGORY_ID"].ToString() ?? string.Empty,
+                                ADDED_BY = firstProduct["ADDED_BY"].ToString() ?? string.Empty,
+                                Variants = new List<MlProductVariant>()
+                            };
+
+                            var variantRows = productGroup.GroupBy(row => row["VARIENTS_ID"].ToString());
+
+                            foreach (var variantGroup in variantRows)
+                            {
+                                var firstVariant = variantGroup.First();
+                                string VARIENTS_ID = firstVariant["VARIENTS_ID"]?.ToString() ?? string.Empty;
+
+                                var variant = new MlProductVariant
+                                {
+                                    VARIENTS_ID = VARIENTS_ID,
+                                    Product_Name = firstVariant["VARIANTWISE_NAME"]?.ToString() ?? string.Empty,
+                                    Varient_Name = firstVariant["VAREINTS_NAME"]?.ToString() ?? string.Empty,
+                                    SKU = firstVariant["SKU"]?.ToString() ?? string.Empty,
+                                    HSN = firstVariant["HSN"]?.ToString() ?? string.Empty,
+
+                                    // ✅ Corrected these two properties
+                                    STATUS = firstVariant["STATUS"]?.ToString() ?? string.Empty,
+                                    CERTIFICATION = firstVariant["CERTIFICATION"]?.ToString() ?? string.Empty,
+
+                                    Pricing = new MlProductPricing
+                                    {
+                                        PRICING = firstVariant["PRICING"]?.ToString() ?? "0",
+                                        MAXIMUM_RETAIL_PRICE = firstVariant["MAXIMUM_RETAIL_PRICE"]?.ToString() ?? "0",
+                                        SELLING_PRICE = firstVariant["SELLING_PRICE"]?.ToString() ?? "0",
+                                        MINIMUM_ORDER_QUANTITY = firstVariant["MINIMUM_ORDER_QUANTITY"]?.ToString() ?? "0",
+                                        CURRENT_STOCK_QUANTITY = firstVariant["CURRENT_STOCK_QUANTITY"]?.ToString() ?? "0",
+                                        DISCOUNT_TYPE = firstVariant["DISCOUNT_TYPE"]?.ToString() ?? "0",
+                                        DISCOUNT_AMOUNT = firstVariant["DISCOUNT_AMOUNT"]?.ToString() ?? "0",
+                                        TAX_AMOUNT = firstVariant["TAX_AMOUNT"]?.ToString() ?? "0",
+                                        TAX_CALCULATION = firstVariant["TAX_CALCULATION"]?.ToString() ?? "0",
+                                        CALCULATED_PRICE = firstVariant["CALCULATED_PRICE"]?.ToString() ?? "0",
+                                    },
+
+                                    Logistics = new MlProductLogistics
+                                    {
+                                        PACKAGE_SHAPE = firstVariant["PACKAGE_SHAPE"]?.ToString() ?? string.Empty,
+                                        PACKAGE_LENGTH = firstVariant["PACKAGE_LENGTH"]?.ToString() ?? "0",
+                                        PACKAGE_WIDTH = firstVariant["PACKAGE_WIDTH"]?.ToString() ?? "0",
+                                        PACKAGE_HEIGHT = firstVariant["PACKAGE_HEIGHT"]?.ToString() ?? "0",
+                                        PACKAGE_WEIGHT = firstVariant["PACKAGE_WEIGHT"]?.ToString() ?? "0",
+                                        PACKAGE_DIAMETER = firstVariant["PACKAGE_DIAMETER"]?.ToString() ?? "0",
+                                        PACKAGE_TOTAL_VOLUME = firstVariant["PACKAGE_TOTAL_VOLUME"]?.ToString() ?? "0",
+                                    },
+
+                                    ImageGallery = variantGroup
+                                        .Select(row => new MLImages
+                                        {
+                                            Product_Images = row["PRODUCT_IMAGES"]?.ToString() ?? string.Empty
+                                        })
+                                        .Distinct()
+                                        .ToList()
+                                };
+
+                                product.Variants.Add(variant);
+                            }
+
+                            product.ThumbnailImage = product.Variants.FirstOrDefault()?.ImageGallery?.FirstOrDefault()?.Product_Images ?? string.Empty;
+                            products.Add(product);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _DALBASE.ErrorLog("GetAllProducts", "DLProduct", ex.ToString());
+                _DbReturn.Dataset = null;
+                _DbReturn.Code = DBEnums.Codes.BAD_REQUEST;
+                _DbReturn.Message = "Error fetching products";
+                _DbReturn.Retval = "FAILURE";
+                return _DbReturn;
+            }
+
+            _DbReturn.Dataset = products;
+            _DbReturn.Code = DBEnums.Codes.SUCCESS;
+            _DbReturn.Message = "Products fetched successfully";
+            _DbReturn.Retval = "SUCCESS";
+            return _DbReturn;
+        }
+
+
+
+
+
+
+        public DBReturnData NewProductRequestBySeller()
+        {
+            List<MlGetProducts> products = new();
+            DALBASE _DALBASE = new();
+            DBReturnData _DbReturn = new();
+
+            try
+            {
+                using (DBAccess _DBAccess = new())
+                {
+                    _DBAccess.DBProcedureName = "SP_PRODUCT";
+                    _DBAccess.AddParameters("@Action", "SELECTNEWPRODUCTREQUEST");
+
+                    using DataSet _DataSet = _DBAccess.DBExecute();
+                    _DBAccess.Dispose();
+
+                    if (_DataSet == null || _DataSet.Tables.Count == 0)
+                    {
+                        _DbReturn.Dataset = null;
+                        _DbReturn.Code = DBEnums.Codes.NOT_FOUND;
+                        _DbReturn.Message = "No products found";
+                        _DbReturn.Retval = "NOT_FOUND";
+                        return _DbReturn;
+                    }
+
+                    DataTable productTable = _DataSet.Tables[0];
+                    string retval = _DataSet.Tables[1].Rows[0]["RETVAL"]?.ToString();
+
+                    if (retval == "SUCCESS")
+                    {
+                        var productGroups = productTable.AsEnumerable()
+                            .GroupBy(row => row["PROD_ID"].ToString());
+
+                        foreach (var productGroup in productGroups)
+                        {
+                            var firstProduct = productGroup.First();
+                            string PROD_ID = firstProduct["PROD_ID"]?.ToString() ?? string.Empty;
+
+                            MlGetProducts product = new()
+                            {
+                                PROD_ID = PROD_ID,
+                                Product_Name = firstProduct["PRODUCT_NAME"]?.ToString() ?? string.Empty,
+                                Product_Description = firstProduct["PRODUCT_DESCRIPTION"]?.ToString() ?? string.Empty,
+                                BRAND = firstProduct["BRAND"]?.ToString() ?? string.Empty,
+                                UNIT = firstProduct["UNIT"]?.ToString() ?? string.Empty,
+                                CATEGORY_ID = firstProduct["CATEGORY_ID"].ToString() ?? string.Empty,
+                                SUB_CATEGORY_ID = firstProduct["SUB_CATEGORY_ID"].ToString() ?? string.Empty,
+                                SUB_SUB_CATEGORY_ID = firstProduct["SUB_SUB_CATEGORY_ID"].ToString() ?? string.Empty,
+                                ADDED_BY = firstProduct["ADDED_BY"].ToString() ?? string.Empty,
+                                Variants = new List<MlProductVariant>()
+                            };
+
+                            var variantRows = productGroup.GroupBy(row => row["VARIENTS_ID"].ToString());
+
+                            foreach (var variantGroup in variantRows)
+                            {
+                                var firstVariant = variantGroup.First();
+                                string VARIENTS_ID = firstVariant["VARIENTS_ID"]?.ToString() ?? string.Empty;
+
+                                var variant = new MlProductVariant
+                                {
+                                    VARIENTS_ID = VARIENTS_ID,
+                                    Product_Name = firstVariant["VARIANTWISE_NAME"]?.ToString() ?? string.Empty,
+                                    Varient_Name = firstVariant["VAREINTS_NAME"]?.ToString() ?? string.Empty,
+                                    SKU = firstVariant["SKU"]?.ToString() ?? string.Empty,
+                                    HSN = firstVariant["HSN"]?.ToString() ?? string.Empty,
+
+                                    // ✅ Corrected these two properties
+                                    STATUS = firstVariant["STATUS"]?.ToString() ?? string.Empty,
+                                    CERTIFICATION = firstVariant["CERTIFICATION"]?.ToString() ?? string.Empty,
+
+                                    Pricing = new MlProductPricing
+                                    {
+                                        PRICING = firstVariant["PRICING"]?.ToString() ?? "0",
+                                        MAXIMUM_RETAIL_PRICE = firstVariant["MAXIMUM_RETAIL_PRICE"]?.ToString() ?? "0",
+                                        SELLING_PRICE = firstVariant["SELLING_PRICE"]?.ToString() ?? "0",
+                                        MINIMUM_ORDER_QUANTITY = firstVariant["MINIMUM_ORDER_QUANTITY"]?.ToString() ?? "0",
+                                        CURRENT_STOCK_QUANTITY = firstVariant["CURRENT_STOCK_QUANTITY"]?.ToString() ?? "0",
+                                        DISCOUNT_TYPE = firstVariant["DISCOUNT_TYPE"]?.ToString() ?? "0",
+                                        DISCOUNT_AMOUNT = firstVariant["DISCOUNT_AMOUNT"]?.ToString() ?? "0",
+                                        TAX_AMOUNT = firstVariant["TAX_AMOUNT"]?.ToString() ?? "0",
+                                        TAX_CALCULATION = firstVariant["TAX_CALCULATION"]?.ToString() ?? "0",
+                                        CALCULATED_PRICE = firstVariant["CALCULATED_PRICE"]?.ToString() ?? "0",
+                                    },
+
+                                    Logistics = new MlProductLogistics
+                                    {
+                                        PACKAGE_SHAPE = firstVariant["PACKAGE_SHAPE"]?.ToString() ?? string.Empty,
+                                        PACKAGE_LENGTH = firstVariant["PACKAGE_LENGTH"]?.ToString() ?? "0",
+                                        PACKAGE_WIDTH = firstVariant["PACKAGE_WIDTH"]?.ToString() ?? "0",
+                                        PACKAGE_HEIGHT = firstVariant["PACKAGE_HEIGHT"]?.ToString() ?? "0",
+                                        PACKAGE_WEIGHT = firstVariant["PACKAGE_WEIGHT"]?.ToString() ?? "0",
+                                        PACKAGE_DIAMETER = firstVariant["PACKAGE_DIAMETER"]?.ToString() ?? "0",
+                                        PACKAGE_TOTAL_VOLUME = firstVariant["PACKAGE_TOTAL_VOLUME"]?.ToString() ?? "0",
+                                    },
+
+                                    ImageGallery = variantGroup
+                                        .Select(row => new MLImages
+                                        {
+                                            Product_Images = row["PRODUCT_IMAGES"]?.ToString() ?? string.Empty
+                                        })
+                                        .Distinct()
+                                        .ToList()
+                                };
+
+                                product.Variants.Add(variant);
+                            }
+
+                            product.ThumbnailImage = product.Variants.FirstOrDefault()?.ImageGallery?.FirstOrDefault()?.Product_Images ?? string.Empty;
+                            products.Add(product);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _DALBASE.ErrorLog("GetAllProducts", "DLProduct", ex.ToString());
+                _DbReturn.Dataset = null;
+                _DbReturn.Code = DBEnums.Codes.BAD_REQUEST;
+                _DbReturn.Message = "Error fetching products";
+                _DbReturn.Retval = "FAILURE";
+                return _DbReturn;
+            }
+
+            _DbReturn.Dataset = products;
+            _DbReturn.Code = DBEnums.Codes.SUCCESS;
+            _DbReturn.Message = "Products fetched successfully";
+            _DbReturn.Retval = "SUCCESS";
+            return _DbReturn;
+        }
+
+        public DBReturnData ApprovedProducts()
+        {
+            List<MlGetProducts> products = new();
+            DALBASE _DALBASE = new();
+            DBReturnData _DbReturn = new();
+
+            try
+            {
+                using (DBAccess _DBAccess = new())
+                {
+                    _DBAccess.DBProcedureName = "SP_PRODUCT";
+                    _DBAccess.AddParameters("@Action", "SELECTAPPROVEDPRODUCTREQUEST");
+
+                    using DataSet _DataSet = _DBAccess.DBExecute();
+                    _DBAccess.Dispose();
+
+                    if (_DataSet == null || _DataSet.Tables.Count == 0)
+                    {
+                        _DbReturn.Dataset = null;
+                        _DbReturn.Code = DBEnums.Codes.NOT_FOUND;
+                        _DbReturn.Message = "No products found";
+                        _DbReturn.Retval = "NOT_FOUND";
+                        return _DbReturn;
+                    }
+
+                    DataTable productTable = _DataSet.Tables[0];
+                    string retval = _DataSet.Tables[1].Rows[0]["RETVAL"]?.ToString();
+
+                    if (retval == "SUCCESS")
+                    {
+                        var productGroups = productTable.AsEnumerable()
+                            .GroupBy(row => row["PROD_ID"].ToString());
+
+                        foreach (var productGroup in productGroups)
+                        {
+                            var firstProduct = productGroup.First();
+                            string PROD_ID = firstProduct["PROD_ID"]?.ToString() ?? string.Empty;
+
+                            MlGetProducts product = new()
+                            {
+                                PROD_ID = PROD_ID,
+                                Product_Name = firstProduct["PRODUCT_NAME"]?.ToString() ?? string.Empty,
+                                Product_Description = firstProduct["PRODUCT_DESCRIPTION"]?.ToString() ?? string.Empty,
+                                BRAND = firstProduct["BRAND"]?.ToString() ?? string.Empty,
+                                UNIT = firstProduct["UNIT"]?.ToString() ?? string.Empty,
+                                CATEGORY_ID = firstProduct["CATEGORY_ID"].ToString() ?? string.Empty,
+                                SUB_CATEGORY_ID = firstProduct["SUB_CATEGORY_ID"].ToString() ?? string.Empty,
+                                SUB_SUB_CATEGORY_ID = firstProduct["SUB_SUB_CATEGORY_ID"].ToString() ?? string.Empty,
+                                ADDED_BY = firstProduct["ADDED_BY"].ToString() ?? string.Empty,
+                                Variants = new List<MlProductVariant>()
+                            };
+
+                            var variantRows = productGroup.GroupBy(row => row["VARIENTS_ID"].ToString());
+
+                            foreach (var variantGroup in variantRows)
+                            {
+                                var firstVariant = variantGroup.First();
+                                string VARIENTS_ID = firstVariant["VARIENTS_ID"]?.ToString() ?? string.Empty;
+
+                                var variant = new MlProductVariant
+                                {
+                                    VARIENTS_ID = VARIENTS_ID,
+                                    Product_Name = firstVariant["VARIANTWISE_NAME"]?.ToString() ?? string.Empty,
+                                    Varient_Name = firstVariant["VAREINTS_NAME"]?.ToString() ?? string.Empty,
+                                    SKU = firstVariant["SKU"]?.ToString() ?? string.Empty,
+                                    HSN = firstVariant["HSN"]?.ToString() ?? string.Empty,
+
+                                    // ✅ Corrected these two properties
+                                    STATUS = firstVariant["STATUS"]?.ToString() ?? string.Empty,
+                                    CERTIFICATION = firstVariant["CERTIFICATION"]?.ToString() ?? string.Empty,
+
+                                    Pricing = new MlProductPricing
+                                    {
+                                        PRICING = firstVariant["PRICING"]?.ToString() ?? "0",
+                                        MAXIMUM_RETAIL_PRICE = firstVariant["MAXIMUM_RETAIL_PRICE"]?.ToString() ?? "0",
+                                        SELLING_PRICE = firstVariant["SELLING_PRICE"]?.ToString() ?? "0",
+                                        MINIMUM_ORDER_QUANTITY = firstVariant["MINIMUM_ORDER_QUANTITY"]?.ToString() ?? "0",
+                                        CURRENT_STOCK_QUANTITY = firstVariant["CURRENT_STOCK_QUANTITY"]?.ToString() ?? "0",
+                                        DISCOUNT_TYPE = firstVariant["DISCOUNT_TYPE"]?.ToString() ?? "0",
+                                        DISCOUNT_AMOUNT = firstVariant["DISCOUNT_AMOUNT"]?.ToString() ?? "0",
+                                        TAX_AMOUNT = firstVariant["TAX_AMOUNT"]?.ToString() ?? "0",
+                                        TAX_CALCULATION = firstVariant["TAX_CALCULATION"]?.ToString() ?? "0",
+                                        CALCULATED_PRICE = firstVariant["CALCULATED_PRICE"]?.ToString() ?? "0",
+                                    },
+
+                                    Logistics = new MlProductLogistics
+                                    {
+                                        PACKAGE_SHAPE = firstVariant["PACKAGE_SHAPE"]?.ToString() ?? string.Empty,
+                                        PACKAGE_LENGTH = firstVariant["PACKAGE_LENGTH"]?.ToString() ?? "0",
+                                        PACKAGE_WIDTH = firstVariant["PACKAGE_WIDTH"]?.ToString() ?? "0",
+                                        PACKAGE_HEIGHT = firstVariant["PACKAGE_HEIGHT"]?.ToString() ?? "0",
+                                        PACKAGE_WEIGHT = firstVariant["PACKAGE_WEIGHT"]?.ToString() ?? "0",
+                                        PACKAGE_DIAMETER = firstVariant["PACKAGE_DIAMETER"]?.ToString() ?? "0",
+                                        PACKAGE_TOTAL_VOLUME = firstVariant["PACKAGE_TOTAL_VOLUME"]?.ToString() ?? "0",
+                                    },
+
+                                    ImageGallery = variantGroup
+                                        .Select(row => new MLImages
+                                        {
+                                            Product_Images = row["PRODUCT_IMAGES"]?.ToString() ?? string.Empty
+                                        })
+                                        .Distinct()
+                                        .ToList()
+                                };
+
+                                product.Variants.Add(variant);
+                            }
+
+                            product.ThumbnailImage = product.Variants.FirstOrDefault()?.ImageGallery?.FirstOrDefault()?.Product_Images ?? string.Empty;
+                            products.Add(product);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _DALBASE.ErrorLog("GetAllProducts", "DLProduct", ex.ToString());
+                _DbReturn.Dataset = null;
+                _DbReturn.Code = DBEnums.Codes.BAD_REQUEST;
+                _DbReturn.Message = "Error fetching products";
+                _DbReturn.Retval = "FAILURE";
+                return _DbReturn;
+            }
+
+            _DbReturn.Dataset = products;
+            _DbReturn.Code = DBEnums.Codes.SUCCESS;
+            _DbReturn.Message = "Products fetched successfully";
+            _DbReturn.Retval = "SUCCESS";
+            return _DbReturn;
+        }
+
+        public DBReturnData DeniedProduct()
+        {
+            List<MlGetProducts> products = new();
+            DALBASE _DALBASE = new();
+            DBReturnData _DbReturn = new();
+
+            try
+            {
+                using (DBAccess _DBAccess = new())
+                {
+                    _DBAccess.DBProcedureName = "SP_PRODUCT";
+                    _DBAccess.AddParameters("@Action", "SELECTDENIEDPRODUCTREQUEST");
+
+                    using DataSet _DataSet = _DBAccess.DBExecute();
+                    _DBAccess.Dispose();
+
+                    if (_DataSet == null || _DataSet.Tables.Count == 0)
+                    {
+                        _DbReturn.Dataset = null;
+                        _DbReturn.Code = DBEnums.Codes.NOT_FOUND;
+                        _DbReturn.Message = "No products found";
+                        _DbReturn.Retval = "NOT_FOUND";
+                        return _DbReturn;
+                    }
+
+                    DataTable productTable = _DataSet.Tables[0];
+                    string retval = _DataSet.Tables[1].Rows[0]["RETVAL"]?.ToString();
+
+                    if (retval == "SUCCESS")
+                    {
+                        var productGroups = productTable.AsEnumerable()
+                            .GroupBy(row => row["PROD_ID"].ToString());
+
+                        foreach (var productGroup in productGroups)
+                        {
+                            var firstProduct = productGroup.First();
+                            string PROD_ID = firstProduct["PROD_ID"]?.ToString() ?? string.Empty;
+
+                            MlGetProducts product = new()
+                            {
+                                PROD_ID = PROD_ID,
+                                Product_Name = firstProduct["PRODUCT_NAME"]?.ToString() ?? string.Empty,
+                                Product_Description = firstProduct["PRODUCT_DESCRIPTION"]?.ToString() ?? string.Empty,
+                                BRAND = firstProduct["BRAND"]?.ToString() ?? string.Empty,
+                                UNIT = firstProduct["UNIT"]?.ToString() ?? string.Empty,
+                                CATEGORY_ID = firstProduct["CATEGORY_ID"].ToString() ?? string.Empty,
+                                SUB_CATEGORY_ID = firstProduct["SUB_CATEGORY_ID"].ToString() ?? string.Empty,
+                                SUB_SUB_CATEGORY_ID = firstProduct["SUB_SUB_CATEGORY_ID"].ToString() ?? string.Empty,
+                                ADDED_BY = firstProduct["ADDED_BY"].ToString() ?? string.Empty,
+                                Variants = new List<MlProductVariant>()
+                            };
+
+                            var variantRows = productGroup.GroupBy(row => row["VARIENTS_ID"].ToString());
+
+                            foreach (var variantGroup in variantRows)
+                            {
+                                var firstVariant = variantGroup.First();
+                                string VARIENTS_ID = firstVariant["VARIENTS_ID"]?.ToString() ?? string.Empty;
+
+                                var variant = new MlProductVariant
+                                {
+                                    VARIENTS_ID = VARIENTS_ID,
+                                    Product_Name = firstVariant["VARIANTWISE_NAME"]?.ToString() ?? string.Empty,
+                                    Varient_Name = firstVariant["VAREINTS_NAME"]?.ToString() ?? string.Empty,
+                                    SKU = firstVariant["SKU"]?.ToString() ?? string.Empty,
+                                    HSN = firstVariant["HSN"]?.ToString() ?? string.Empty,
+
+                                    // ✅ Corrected these two properties
+                                    STATUS = firstVariant["STATUS"]?.ToString() ?? string.Empty,
+                                    CERTIFICATION = firstVariant["CERTIFICATION"]?.ToString() ?? string.Empty,
+
+                                    Pricing = new MlProductPricing
+                                    {
+                                        PRICING = firstVariant["PRICING"]?.ToString() ?? "0",
+                                        MAXIMUM_RETAIL_PRICE = firstVariant["MAXIMUM_RETAIL_PRICE"]?.ToString() ?? "0",
+                                        SELLING_PRICE = firstVariant["SELLING_PRICE"]?.ToString() ?? "0",
+                                        MINIMUM_ORDER_QUANTITY = firstVariant["MINIMUM_ORDER_QUANTITY"]?.ToString() ?? "0",
+                                        CURRENT_STOCK_QUANTITY = firstVariant["CURRENT_STOCK_QUANTITY"]?.ToString() ?? "0",
+                                        DISCOUNT_TYPE = firstVariant["DISCOUNT_TYPE"]?.ToString() ?? "0",
+                                        DISCOUNT_AMOUNT = firstVariant["DISCOUNT_AMOUNT"]?.ToString() ?? "0",
+                                        TAX_AMOUNT = firstVariant["TAX_AMOUNT"]?.ToString() ?? "0",
+                                        TAX_CALCULATION = firstVariant["TAX_CALCULATION"]?.ToString() ?? "0",
+                                        CALCULATED_PRICE = firstVariant["CALCULATED_PRICE"]?.ToString() ?? "0",
+                                    },
+
+                                    Logistics = new MlProductLogistics
+                                    {
+                                        PACKAGE_SHAPE = firstVariant["PACKAGE_SHAPE"]?.ToString() ?? string.Empty,
+                                        PACKAGE_LENGTH = firstVariant["PACKAGE_LENGTH"]?.ToString() ?? "0",
+                                        PACKAGE_WIDTH = firstVariant["PACKAGE_WIDTH"]?.ToString() ?? "0",
+                                        PACKAGE_HEIGHT = firstVariant["PACKAGE_HEIGHT"]?.ToString() ?? "0",
+                                        PACKAGE_WEIGHT = firstVariant["PACKAGE_WEIGHT"]?.ToString() ?? "0",
+                                        PACKAGE_DIAMETER = firstVariant["PACKAGE_DIAMETER"]?.ToString() ?? "0",
+                                        PACKAGE_TOTAL_VOLUME = firstVariant["PACKAGE_TOTAL_VOLUME"]?.ToString() ?? "0",
+                                    },
+
+                                    ImageGallery = variantGroup
+                                        .Select(row => new MLImages
+                                        {
+                                            Product_Images = row["PRODUCT_IMAGES"]?.ToString() ?? string.Empty
+                                        })
+                                        .Distinct()
+                                        .ToList()
+                                };
+
+                                product.Variants.Add(variant);
+                            }
+
+                            product.ThumbnailImage = product.Variants.FirstOrDefault()?.ImageGallery?.FirstOrDefault()?.Product_Images ?? string.Empty;
+                            products.Add(product);
+                        }
+                        _DbReturn.Message = "Products fetched successfully";
+                    }
+                    else if(retval == "NO DATA FOUND")
+                    {
+                        _DbReturn.Message = "Products Not Found";
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+                _DALBASE.ErrorLog("GetAllProducts", "DLProduct", ex.ToString());
+                _DbReturn.Dataset = null;
+                _DbReturn.Code = DBEnums.Codes.BAD_REQUEST;
+                _DbReturn.Message = "Error fetching products";
+                _DbReturn.Retval = "FAILURE";
+                return _DbReturn;
+            }
+
+            _DbReturn.Dataset = products;
+            _DbReturn.Code = DBEnums.Codes.SUCCESS;
+            _DbReturn.Retval = "SUCCESS";
+            return _DbReturn;
+        }
+
         public DBReturnData InsertProduct(MlGetProduct data)
         {
             MLProduct _MLProduct = new();
@@ -177,6 +845,8 @@ namespace ECOMAPP.DataLayer
                     _DBAccess.AddParameters("@TAGS_INPUT", tagsString);
                     _DBAccess.AddParameters("@PROD_ID",data.PROD_ID);
                     _DBAccess.AddParameters("@ADDED_BY", data.Added_By);
+                    _DBAccess.AddParameters("@USER_ID", data.UserId);
+
                     //pricing
                     _DBAccess.AddParameters("@PRICING", data.PRICING);
                     _DBAccess.AddParameters("@MAXIMUM_RETAIL_PRICE", data.MAXIMUM_RETAIL_PRICE);
@@ -222,7 +892,7 @@ namespace ECOMAPP.DataLayer
 
                         if (retval == "SUCCESS")
                         {
-                            _DBReturnData.Message = prodId; 
+                            _DBReturnData.Message = prodId;
                             _DBReturnData.Code = DBEnums.Codes.SUCCESS;
                         }
                         else
@@ -253,7 +923,7 @@ namespace ECOMAPP.DataLayer
         }
 
 
-    
+
 
 
 
@@ -312,115 +982,115 @@ namespace ECOMAPP.DataLayer
 
 
 
-        public DBReturnData ProductToggleCertified(MLToggleCertified data)
-        {
+        //public DBReturnData ProductToggleCertified(MLToggleCertified data)
+        //{
   
-            DALBASE _DALBASE = new();
-            DBReturnData _DBReturnData = new();
-            DataSet _DataSet = new();
-            try
-            {
-                using (DBAccess _DBAccess = new())
-                {
-                    _DBAccess.DBProcedureName = "SP_PRODUCT";
-                    _DBAccess.AddParameters("@Action", "INSERTPRODUCT");
-                    _DBAccess.AddParameters("@Product_Name", data.Product_id ?? "");
-                    _DataSet = _DBAccess.DBExecute();
-                    _DataSet.Dispose();
+        //    DALBASE _DALBASE = new();
+        //    DBReturnData _DBReturnData = new();
+        //    DataSet _DataSet = new();
+        //    try
+        //    {
+        //        using (DBAccess _DBAccess = new())
+        //        {
+        //            _DBAccess.DBProcedureName = "SP_PRODUCT";
+        //            _DBAccess.AddParameters("@Action", "INSERTPRODUCT");
+        //            _DBAccess.AddParameters("@Product_Name", data.Product_id ?? "");
+        //            _DataSet = _DBAccess.DBExecute();
+        //            _DataSet.Dispose();
 
-                }
-                if (_DataSet != null && _DataSet.Tables.Count > 0)
-                {
-                    DataTable _DataTable = new();
-                    foreach (DataRow row in _DataSet.Tables)
-                    {
-                        if (row["RETVAL"]?.ToString() == "SUCCESS")
-                        {
+        //        }
+        //        if (_DataSet != null && _DataSet.Tables.Count > 0)
+        //        {
+        //            DataTable _DataTable = new();
+        //            foreach (DataRow row in _DataSet.Tables)
+        //            {
+        //                if (row["RETVAL"]?.ToString() == "SUCCESS")
+        //                {
 
-                            _DBReturnData.Message = DBEnums.Status.SUCCESS.ToString();
-                            _DBReturnData.Code = DBEnums.Codes.SUCCESS;
-                            _DBReturnData.Retval = DBEnums.Status.SUCCESS.ToString();
-                        }
-                        else
-                        {
-                            _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
-                            _DBReturnData.Code = DBEnums.Codes.NOT_FOUND;
-                            _DBReturnData.Retval = DBEnums.Status.FAILURE.ToString();
-                        }
-                    }
-                }
-                else
-                {
-                    _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
-                    _DBReturnData.Code = DBEnums.Codes.NOT_FOUND;
-                    _DBReturnData.Retval = DBEnums.Status.FAILURE.ToString();
-                }
+        //                    _DBReturnData.Message = DBEnums.Status.SUCCESS.ToString();
+        //                    _DBReturnData.Code = DBEnums.Codes.SUCCESS;
+        //                    _DBReturnData.Retval = DBEnums.Status.SUCCESS.ToString();
+        //                }
+        //                else
+        //                {
+        //                    _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+        //                    _DBReturnData.Code = DBEnums.Codes.NOT_FOUND;
+        //                    _DBReturnData.Retval = DBEnums.Status.FAILURE.ToString();
+        //                }
+        //            }
+        //        }
+        //        else
+        //        {
+        //            _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+        //            _DBReturnData.Code = DBEnums.Codes.NOT_FOUND;
+        //            _DBReturnData.Retval = DBEnums.Status.FAILURE.ToString();
+        //        }
 
-            }
-            catch (Exception ex)
-            {
-                _DALBASE.ErrorLog("ProductToggleCertified", "DLProduct", ex.ToString());
-                _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
-                _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _DALBASE.ErrorLog("ProductToggleCertified", "DLProduct", ex.ToString());
+        //        _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+        //        _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
 
-            }
+        //    }
 
-            return _DBReturnData;
-        }
+        //    return _DBReturnData;
+        //}
 
-        public DBReturnData ProductToggleStatus(MLToggleStatus data)
-        {
-            MLProduct _MLProduct = new();
-            DALBASE _DALBASE = new();
-            DBReturnData _DBReturnData = new();
+        //public DBReturnData ProductToggleStatus(MLToggleStatus data)
+        //{
+        //    MLProduct _MLProduct = new();
+        //    DALBASE _DALBASE = new();
+        //    DBReturnData _DBReturnData = new();
 
-            DataSet _DataSet = new();
-            try
-            {
-                using (DBAccess _DBAccess = new())
-                {
-                    _DBAccess.DBProcedureName = "SP_PRODUCT";
-                    _DBAccess.AddParameters("@Action", "INSERTPRODUCT");
-                    _DBAccess.AddParameters("@Product_Name", data.Product_id ?? "");
-                    _DataSet = _DBAccess.DBExecute();
-                    _DataSet.Dispose();
+        //    DataSet _DataSet = new();
+        //    try
+        //    {
+        //        using (DBAccess _DBAccess = new())
+        //        {
+        //            _DBAccess.DBProcedureName = "SP_PRODUCT";
+        //            _DBAccess.AddParameters("@Action", "INSERTPRODUCT");
+        //            _DBAccess.AddParameters("@Product_Name", data.Product_id ?? "");
+        //            _DataSet = _DBAccess.DBExecute();
+        //            _DataSet.Dispose();
 
-                }
-                if (_DataSet != null && _DataSet.Tables.Count > 0)
-                {
-                    DataTable _DataTable = new();
-                    foreach (DataRow row in _DataSet.Tables)
-                    {
-                        if (row["RETVAL"]?.ToString() == "SUCCESS")
-                        {
+        //        }
+        //        if (_DataSet != null && _DataSet.Tables.Count > 0)
+        //        {
+        //            DataTable _DataTable = new();
+        //            foreach (DataRow row in _DataSet.Tables)
+        //            {
+        //                if (row["RETVAL"]?.ToString() == "SUCCESS")
+        //                {
 
-                            _DBReturnData.Message = DBEnums.Status.SUCCESS.ToString();
-                            _DBReturnData.Code = DBEnums.Codes.SUCCESS;
-                        }
-                        else
-                        {
-                            _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
-                            _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
-                        }
-                    }
-                }
-                else
-                {
-                    _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
-                    _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
-                }
+        //                    _DBReturnData.Message = DBEnums.Status.SUCCESS.ToString();
+        //                    _DBReturnData.Code = DBEnums.Codes.SUCCESS;
+        //                }
+        //                else
+        //                {
+        //                    _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+        //                    _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
+        //                }
+        //            }
+        //        }
+        //        else
+        //        {
+        //            _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+        //            _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
+        //        }
 
-            }
-            catch (Exception ex)
-            {
-                _DALBASE.ErrorLog("ProductToggleStatus", "DLProduct", ex.ToString());
-                _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
-                _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _DALBASE.ErrorLog("ProductToggleStatus", "DLProduct", ex.ToString());
+        //        _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+        //        _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
 
-            }
+        //    }
 
-            return _DBReturnData;
-        }
+        //    return _DBReturnData;
+        //}
 
 
 
@@ -502,7 +1172,7 @@ namespace ECOMAPP.DataLayer
             return _MLProduct.InhouseProductList;
         }
 
-     
+
         public DBReturnData UpdateInhouseProduct(MLUpdateInhouseProduct data)
         {
             MLProduct _MLProduct = new();
@@ -559,7 +1229,7 @@ namespace ECOMAPP.DataLayer
             catch (Exception ex)
             {
                 _DALBASE.ErrorLog("UpdateInhouseProduct", "DLProduct", ex.ToString());
-                _DBReturnData.Message =DBEnums.Status.FAILURE.ToString() + ex.Message.ToString();
+                _DBReturnData.Message = DBEnums.Status.FAILURE.ToString() + ex.Message.ToString();
                 _DBReturnData.Code = DBEnums.Codes.BAD_REQUEST;
 
             }
@@ -597,7 +1267,7 @@ namespace ECOMAPP.DataLayer
                         }
                         else
                         {
-                            _DBReturnData.Message =DBEnums.Status.FAILURE.ToString();
+                            _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
                             _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
                         }
                     }
@@ -959,7 +1629,7 @@ namespace ECOMAPP.DataLayer
                     _DBAccess.AddParameters("@ProductId", mLGetCompletProductDescription.ProductId);
 
                     using DataSet _DataSet = _DBAccess.DBExecute();
-                    _DBAccess.Dispose();
+                   _DBAccess.Dispose();
 
                     if (_DataSet == null || _DataSet.Tables.Count == 0)
                     {
@@ -1072,6 +1742,116 @@ namespace ECOMAPP.DataLayer
             _DbReturn.Message = "Product details fetched successfully";
             _DbReturn.Retval = "SUCCESS";
             return _DbReturn;
+        }
+
+
+        public DBReturnData ProductToggleCertification(MlProductToggleCertification mlProductToggleCertification)
+        {
+
+
+            DALBASE _DALBASE = new();
+            DBReturnData _DBReturnData = new();
+
+            try
+            {
+                using (DBAccess _DBAccess = new())
+                {
+                    _DBAccess.DBProcedureName = "SP_PRODUCT";
+                    _DBAccess.AddParameters("@Action", "CHANGECERTIFICATION");
+                    _DBAccess.AddParameters("@VID", mlProductToggleCertification.VARIENT_ID);
+
+                    using DataSet _DataSet = _DBAccess.DBExecute();
+                    _DBAccess.Dispose();
+
+                    string Retval = _DataSet.Tables[0].Rows[0]["RETVAL"]?.ToString();
+
+                    if (Retval == "SUCCESS")
+                    {
+
+                        _DBReturnData.Message = DBEnums.Status.SUCCESS.ToString();
+                        _DBReturnData.Code = DBEnums.Codes.SUCCESS;
+                    }
+                    else
+                    {
+
+                        _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+                        _DBReturnData.Code = DBEnums.Codes.NOT_FOUND;
+
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+                _DALBASE.ErrorLog("GetCompletProductDescription", "DLProduct", ex.ToString());
+                _DBReturnData.Dataset = null;
+                _DBReturnData.Code = DBEnums.Codes.BAD_REQUEST;
+                _DBReturnData.Message = "Error changing certification details";
+                _DBReturnData.Retval = "FAILURE";
+                return _DBReturnData;
+            }
+            _DBReturnData.Code = DBEnums.Codes.SUCCESS;
+
+
+
+            return _DBReturnData;
+
+
+        }
+
+
+        public DBReturnData ProductToggleStatus(MlProductToggleCertification mlProductToggleCertification)
+        {
+
+
+            DALBASE _DALBASE = new();
+            DBReturnData _DBReturnData = new();
+
+            try
+            {
+                using (DBAccess _DBAccess = new())
+                {
+                    _DBAccess.DBProcedureName = "SP_PRODUCT";
+                    _DBAccess.AddParameters("@Action", "CHANGESTATUS");
+                    _DBAccess.AddParameters("@VID", mlProductToggleCertification.VARIENT_ID);
+
+                    using DataSet _DataSet = _DBAccess.DBExecute();
+                    _DBAccess.Dispose();
+
+                    string Retval = _DataSet.Tables[0].Rows[0]["RETVAL"]?.ToString();
+
+                    if (Retval == "SUCCESS")
+                    {
+                     
+                        _DBReturnData.Message = DBEnums.Status.SUCCESS.ToString();
+                        _DBReturnData.Code = DBEnums.Codes.SUCCESS;
+                    }
+                    else
+                    {
+                     
+                        _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+                        _DBReturnData.Code = DBEnums.Codes.NOT_FOUND;
+
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+                _DALBASE.ErrorLog("GetCompletProductDescription", "DLProduct", ex.ToString());
+                _DBReturnData.Dataset = null;
+                _DBReturnData.Code = DBEnums.Codes.BAD_REQUEST;
+                _DBReturnData.Message = "Error changing certification details";
+                _DBReturnData.Retval = "FAILURE";
+                return _DBReturnData;
+            }
+            _DBReturnData.Code = DBEnums.Codes.SUCCESS;
+
+
+
+            return _DBReturnData;
+
+
         }
 
 
