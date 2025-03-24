@@ -951,7 +951,7 @@ namespace ECOMAPP.DataLayer
                     _DBAccess.AddParameters("@ProductId", mLGetCompletProductDescription.ProductId);
 
                     using DataSet _DataSet = _DBAccess.DBExecute();
-                    _DBAccess.Dispose();
+                   _DBAccess.Dispose();
 
                     if (_DataSet == null || _DataSet.Tables.Count == 0)
                     {
