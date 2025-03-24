@@ -1,6 +1,7 @@
 ﻿using ECOMAPP.CommonRepository;
 using Microsoft.AspNetCore.Identity;
 using System.Numerics;
+using System.Runtime.CompilerServices;
 
 namespace ECOMAPP.ModelLayer
 {
@@ -29,7 +30,7 @@ namespace ECOMAPP.ModelLayer
             public string UNIT { get; set; } = string.Empty;
             public string[] TAGS_INPUT { get; set; } = Array.Empty<string>();
             public string HSN { get; set; } = string.Empty;
-
+            public string? UserId { get; set; } = string.Empty;
             public string? Added_By { get; set; } = string.Empty;
 
             // Pricing
@@ -81,10 +82,15 @@ namespace ECOMAPP.ModelLayer
             public string? PROD_ID { get; set; }
             public string? ADDED_BY { get; set; }
 
-            public string? STATUS { get; set; }
-            public string? CERTIFICATION { get; set; }
 
             public List<MlProductVariant>? Variants { get; internal set; }
+        }
+
+
+
+        public class MLGetProductByUserId
+        {
+            public string? UserId { get; set; } = string.Empty;
         }
 
 
@@ -95,7 +101,11 @@ namespace ECOMAPP.ModelLayer
             public string? Varient_Name { get; set; }
             public string? SKU { get; set; }
             public string? HSN { get; set; }
+
+            public string? STATUS { get; set; }
+            public string? CERTIFICATION { get; set; }
             public string? isDelete { get; set; }
+            
 
             public MlProductPricing Pricing { get; set; } = new MlProductPricing();
             public MlProductLogistics Logistics { get; set; } = new MlProductLogistics();
@@ -265,6 +275,11 @@ namespace ECOMAPP.ModelLayer
 
         }
 
+
+        public class MlProductToggleCertification
+        {
+            public string? VARIENT_ID { get; set; }
+        }
 
         public List<ProductDescriptionList> CompleteProductDescription { get; set; }
 
