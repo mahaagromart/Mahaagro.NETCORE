@@ -3,31 +3,42 @@ using System.IdentityModel.Tokens.Jwt;
 using ECOMAPP.CommonRepository;
 using ECOMAPP.DataLayer;
 using ECOMAPP.ModelLayer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using static ECOMAPP.MiddleWare.AppEnums;
+using static ECOMAPP.ModelLayer.MLCart;
 
 namespace ECOMAPP.Controllers
 {
+    [Route("[controller]")]
+    [ApiController]
     public class CartController : Controller
     {
 
 
 
         [Route("GetCartData")]
-        [HttpGet]
+        [HttpPost]
+        [JwtAuthorization(Roles =  [Roles.User, Roles.OrderManager,Roles.ReprotAnalysis,Roles.Admin])]
         public ActionResult<IEnumerable<DBReturnData>> GetCartData()
         {
             DBReturnData _DBReturnData = new();
             DLCart _DLCart = new();
             MLCart _MLCart = new();
 
+            string? JwtToken = Request.Headers["Authorization"];
+            JwtToken = JwtToken["Bearer ".Length..].Trim();
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(JwtToken);
+            var tokenS = jsonToken as JwtSecurityToken;
+            var UserId = tokenS?.Claims.First(claim => claim.Type == "UserId").Value;
 
             try
             {
-                _MLCart.CartDataList = _DLCart.GetCartData();
-                if (_MLCart.CartDataList != null && _MLCart.CartDataList.Count > 0)
-
+                _MLCart.ProductsCart = _DLCart.GetCartData(UserId??"");
+                if (_MLCart.ProductsCart != null && _MLCart.ProductsCart.Count > 0)
                 {
-                    _DBReturnData.Dataset = _MLCart.CartDataList;
+                    _DBReturnData.Dataset = _MLCart.ProductsCart;
                     _DBReturnData.Status = DBEnums.Status.SUCCESS;
                     _DBReturnData.Message = DBEnums.Status.SUCCESS.ToString();
                     _DBReturnData.Retval = DBEnums.Status.SUCCESS.ToString();
@@ -61,15 +72,24 @@ namespace ECOMAPP.Controllers
 
         [Route("InsertCartData")]
         [HttpPost]
-        public ActionResult<IEnumerable<DBReturnData>> InsertCartData()
+        [JwtAuthorization(Roles = [Roles.User, Roles.OrderManager, Roles.ReprotAnalysis, Roles.Admin])]
+        public ActionResult<IEnumerable<DBReturnData>> InsertCartData([FromBody] MLInsertCart mLInsertCart)
         {
             DBReturnData _DBReturnData = new();
             DLCart _DLCart = new();
             DataSet _DataSet = new();
 
+            string? JwtToken = Request.Headers["Authorization"];
+            JwtToken = JwtToken["Bearer ".Length..].Trim();
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(JwtToken);
+            var tokenS = jsonToken as JwtSecurityToken;
+            var UserId = tokenS?.Claims.First(claim => claim.Type == "UserId").Value;
+
+
             try
             {
-                _DBReturnData = _DLCart.InsertCartData();
+                _DBReturnData = _DLCart.InsertCartData(mLInsertCart,UserId);
                 if (_DBReturnData.Code == DBEnums.Codes.SUCCESS)
                 {
                     _DBReturnData.Retval=DBEnums.Status.SUCCESS.ToString();
@@ -110,11 +130,7 @@ namespace ECOMAPP.Controllers
             DLCart _DLCart = new();
             DataSet _DataSet = new();
 
-            string? JwtToken = Request.Headers["Authorization"];
-      
-            
-            
-            
+            string? JwtToken = Request.Headers["Authorization"];  
             JwtToken = JwtToken["Bearer ".Length..].Trim();
             var handler = new JwtSecurityTokenHandler();
             var jsonToken = handler.ReadToken(JwtToken);
