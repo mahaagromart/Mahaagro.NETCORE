@@ -22,7 +22,11 @@
             INTERNAL_SERVER_ERROR = 500,
             NOT_IMPLEMENTED = 501,
             BAD_GATEWAY = 502,
-            SERVICE_UNAVAILABLE = 503
+            SERVICE_UNAVAILABLE = 503,
+            ORDER_NOT_CREATED = 1001,
+            ORDER_CREATED = 1002,
+            ORDER_NOT_VERIFIED = 1003,
+            ORDER_VERIFIED = 1004,
         }
        
 
