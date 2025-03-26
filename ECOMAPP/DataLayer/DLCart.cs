@@ -40,9 +40,7 @@ namespace ECOMAPP.DataLayer
                                     ProductId = row["PROD_ID"].ToString(),
                                     Quantity = row["Quantity"] != DBNull.Value ? Convert.ToInt32(row["Quantity"]) : (int?)null,
                                     VarientsId = row["VARIENTS_ID"].ToString(),
-                                    ProductImages = row["PRODUCT_IMAGES"] != DBNull.Value
-                                        ? row["PRODUCT_IMAGES"].ToString().Split(',').ToList()
-                                        : new List<string>(),
+                                    ProductImages = row["PRODUCT_IMAGES"] != DBNull.Value? row["PRODUCT_IMAGES"].ToString().Split(',').ToList(): new List<string>(),
                                     PackageDiameter = row["PACKAGE_DIAMETER"].ToString(),
                                     PackageHeight = row["PACKAGE_HEIGHT"].ToString(),
                                     PackageLength = row["PACKAGE_LENGTH"].ToString(),
