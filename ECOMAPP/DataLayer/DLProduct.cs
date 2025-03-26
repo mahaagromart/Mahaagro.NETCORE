@@ -194,6 +194,9 @@ namespace ECOMAPP.DataLayer
                                 SUB_CATEGORY_ID = firstProduct["SUB_CATEGORY_ID"].ToString() ?? string.Empty,
                                 SUB_SUB_CATEGORY_ID = firstProduct["SUB_SUB_CATEGORY_ID"].ToString() ?? string.Empty,
                                 ADDED_BY = firstProduct["ADDED_BY"].ToString() ?? string.Empty,
+                                TAGS_INPUT = firstProduct["TAGS_INPUT"] != null
+                                ? firstProduct["TAGS_INPUT"].ToString().Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                                : Array.Empty<string>(),                                                                                                                                                                                                                                                                              
                                 Variants = new List<MlProductVariant>()
                             };
 
@@ -211,8 +214,6 @@ namespace ECOMAPP.DataLayer
                                     Varient_Name = firstVariant["VAREINTS_NAME"]?.ToString() ?? string.Empty,
                                     SKU = firstVariant["SKU"]?.ToString() ?? string.Empty,
                                     HSN = firstVariant["HSN"]?.ToString() ?? string.Empty,
-
-                                    // ✅ Corrected these two properties
                                     STATUS = firstVariant["STATUS"]?.ToString() ?? string.Empty,
                                     CERTIFICATION = firstVariant["CERTIFICATION"]?.ToString() ?? string.Empty,
 
