@@ -1,6 +1,5 @@
-
-﻿using System.Text.Json.Serialization;
-
+using System.Text.Json.Serialization;
+using ECOMAPP.DataLayer;
 using Newtonsoft.Json;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -33,7 +32,7 @@ builder.Services.AddCors(options =>
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
+builder.Services.AddScoped<DLOrder>();
 var app = builder.Build();
 
 app.UseCors("AllowAllOrigins");

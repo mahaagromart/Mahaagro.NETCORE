@@ -8,7 +8,7 @@
         public DBEnums.Codes Code { get; set; }
         public string Retval { get; set; }
 
-
+        public string OrderId { get; set; }
 
     }
 }
