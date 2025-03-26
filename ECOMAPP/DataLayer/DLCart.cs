@@ -130,6 +130,13 @@ namespace ECOMAPP.DataLayer
 
 
                 }
+                else if(RetVal == "Alerady In Cart")
+                {
+                    _DBReturnData.Status = DBEnums.Status.FAILURE;
+                    _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+                    _DBReturnData.Retval = DBEnums.Status.FAILURE.ToString();
+                    _DBReturnData.Code = DBEnums.Codes.CONFLICT;
+                }
                 else
                 {
                     _DBReturnData.Status = DBEnums.Status.FAILURE;
@@ -158,7 +165,7 @@ namespace ECOMAPP.DataLayer
 
 
 
-        public DBReturnData UpdateCartData()
+        public DBReturnData UpdateCartData(MLInsertCart _MLInsertCart, string? UserID)
         {
             DBReturnData _DBReturnData = new();
             DataSet _DataSet = new();
@@ -169,8 +176,12 @@ namespace ECOMAPP.DataLayer
             {
                 using (DBAccess _DBAccess = new())
                 {
-                    _DBAccess.DBProcedureName = "";
-                    _DBAccess.AddParameters("", "");
+                    _DBAccess.DBProcedureName = "[SP_CART]";
+                    _DBAccess.AddParameters("@Action", "UPDATECART");
+                    _DBAccess.AddParameters("@PROD_ID", _MLInsertCart.PROD_ID);
+                    _DBAccess.AddParameters("@VARIENTS_ID", _MLInsertCart.VARIENTS_ID);
+                    _DBAccess.AddParameters("@Quantity", _MLInsertCart.Quantity);
+                    _DBAccess.AddParameters("@USERID", UserID ?? "");
                     _DataSet = _DBAccess.DBExecute();
                     _DBAccess.Dispose();
                 }
@@ -185,6 +196,13 @@ namespace ECOMAPP.DataLayer
                     _DBReturnData.Code = DBEnums.Codes.SUCCESS;
 
 
+
+                } else if (RetVal == "Item Not Exists")
+                {
+                    _DBReturnData.Status = DBEnums.Status.FAILURE;
+                    _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+                    _DBReturnData.Retval = DBEnums.Status.FAILURE.ToString();
+                    _DBReturnData.Code = DBEnums.Codes.CONFLICT;
 
                 }
                 else
