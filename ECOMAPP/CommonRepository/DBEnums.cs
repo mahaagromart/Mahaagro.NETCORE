@@ -28,7 +28,7 @@
             ORDER_NOT_VERIFIED = 1003,
             ORDER_VERIFIED = 1004,
         }
-        //public enum Code { s, d }
+       
 
 
 

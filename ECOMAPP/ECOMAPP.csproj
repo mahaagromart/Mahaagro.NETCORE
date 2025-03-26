@@ -7,13 +7,18 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="bin\**" />
     <Compile Remove="CommonRepository\NewFolder\**" />
+    <Content Remove="bin\**" />
     <Content Remove="CommonRepository\NewFolder\**" />
+    <EmbeddedResource Remove="bin\**" />
     <EmbeddedResource Remove="CommonRepository\NewFolder\**" />
+    <None Remove="bin\**" />
     <None Remove="CommonRepository\NewFolder\**" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="FirebaseAdmin" Version="3.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.3.0" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="6.0.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />

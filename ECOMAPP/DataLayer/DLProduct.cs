@@ -10,7 +10,7 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace ECOMAPP.DataLayer
 {
-    public class DLProduct:DALBASE
+    public class DLProduct : DALBASE
     {
 
 
@@ -893,7 +893,7 @@ namespace ECOMAPP.DataLayer
 
                         if (retval == "SUCCESS")
                         {
-                            _DBReturnData.Message = prodId; 
+                            _DBReturnData.Message = prodId;
                             _DBReturnData.Code = DBEnums.Codes.SUCCESS;
                         }
                         else
@@ -924,7 +924,7 @@ namespace ECOMAPP.DataLayer
         }
 
 
-    
+
 
 
 
@@ -1173,7 +1173,7 @@ namespace ECOMAPP.DataLayer
             return _MLProduct.InhouseProductList;
         }
 
-     
+
         public DBReturnData UpdateInhouseProduct(MLUpdateInhouseProduct data)
         {
             MLProduct _MLProduct = new();
@@ -1230,7 +1230,7 @@ namespace ECOMAPP.DataLayer
             catch (Exception ex)
             {
                 _DALBASE.ErrorLog("UpdateInhouseProduct", "DLProduct", ex.ToString());
-                _DBReturnData.Message =DBEnums.Status.FAILURE.ToString() + ex.Message.ToString();
+                _DBReturnData.Message = DBEnums.Status.FAILURE.ToString() + ex.Message.ToString();
                 _DBReturnData.Code = DBEnums.Codes.BAD_REQUEST;
 
             }
@@ -1268,7 +1268,7 @@ namespace ECOMAPP.DataLayer
                         }
                         else
                         {
-                            _DBReturnData.Message =DBEnums.Status.FAILURE.ToString();
+                            _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
                             _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
                         }
                     }
@@ -1630,7 +1630,7 @@ namespace ECOMAPP.DataLayer
                     _DBAccess.AddParameters("@ProductId", mLGetCompletProductDescription.ProductId);
 
                     using DataSet _DataSet = _DBAccess.DBExecute();
-                    _DBAccess.Dispose();
+                   _DBAccess.Dispose();
 
                     if (_DataSet == null || _DataSet.Tables.Count == 0)
                     {

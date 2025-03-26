@@ -210,18 +210,20 @@ namespace ECOMAPP.ModelLayer
 
         //------------------------------------------------------------------------------------
 
-        public class VarientList{
+        public class VarientList
+        {
             public string ProductName { get; set; }
             public string Price { get; set; }
             public string? Reviews { get; set; }
             public string[]? Images { get; set; }
+            public string varientName { get; set; }
 
         }
 
 
         public class ProductsList
         {
-            
+
             public string ProductId { get; set; }
             public List<VarientList> VarientList { get; set; }
 

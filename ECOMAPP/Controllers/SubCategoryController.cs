@@ -119,7 +119,15 @@ namespace ECOMAPP.Controllers
             DBReturnData _DBReturnData = new();
             try
             {
-                _DBReturnData = _DLSubcategory.DeleteSubCategory(_MLDeleteSubCateggory);
+                    _DBReturnData = _DLSubcategory.DeleteSubCategory(_MLDeleteSubCateggory);
+                if (_DBReturnData.Message == "SUCCESS")
+               
+                {
+                    _DBReturnData.Code = DBEnums.Codes.SUCCESS;
+                    _DBReturnData.Message = DBEnums.Status.SUCCESS.ToString();
+                    _DBReturnData.Retval = DBEnums.Status.SUCCESS.ToString();
+
+                }
              
             }
             catch (Exception ex)

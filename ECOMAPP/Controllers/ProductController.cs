@@ -228,7 +228,7 @@ namespace ECOMAPP.Controllers
 
         [Route("InsertProduct")]
         [HttpPost]
-        [JwtAuthorization(Roles = [Roles.Admin , Roles.Vendor])]
+        [JwtAuthorization(Roles = [Roles.Admin, Roles.Vendor])]
         public ActionResult<IEnumerable<DBReturnData>> InsertProduct(MlGetProduct _MlGetProduct)
         {
             MLProduct _MLProduct = new();
@@ -414,8 +414,8 @@ namespace ECOMAPP.Controllers
 
         }
 
-     
-  
+
+
 
         [Route("UpdateInhouseProduct")]
         [HttpPut]
@@ -428,7 +428,7 @@ namespace ECOMAPP.Controllers
             try
             {
                 _DBReturnData = _DLProduct.UpdateInhouseProduct(_MLUpdateInhouseProduct);
-           
+
             }
             catch (Exception ex)
             {
@@ -453,15 +453,15 @@ namespace ECOMAPP.Controllers
             DataSet _DataSet = new();
             try
             {
-                 _DBReturnData = _DLProduct.DeleteInhouseProduct(_MLDeleteInhouseProduct);
-                 
+                _DBReturnData = _DLProduct.DeleteInhouseProduct(_MLDeleteInhouseProduct);
+
             }
             catch (Exception ex)
             {
 
                 _DBReturnData.Dataset = null;
                 _DBReturnData.Code = DBEnums.Codes.BAD_REQUEST;
-                _DBReturnData.Message = DBEnums.Status.FAILURE.ToString() +ex.Message.ToString();
+                _DBReturnData.Message = DBEnums.Status.FAILURE.ToString() + ex.Message.ToString();
                 _DBReturnData.Retval = DBEnums.Status.FAILURE.ToString();
 
             }
@@ -604,6 +604,9 @@ namespace ECOMAPP.Controllers
 
 
         #endregion
+
+
+
         [Route("ProductToggleCertificate")]
         [HttpPost]
         [JwtAuthorization(Roles = [Roles.Admin])]

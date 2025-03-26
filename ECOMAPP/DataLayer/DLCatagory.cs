@@ -192,6 +192,7 @@ namespace ECOMAPP.DataLayer
                     dB.AddParameters("@Action", "DELETECATEGORY");
                     dB.AddParameters("@Category_id", data.Category_id);
                     _DataSet = dB.DBExecute();
+                    dB.Dispose();
                 }
 
                 if (_DataSet != null && _DataSet.Tables.Count > 0 && _DataSet.Tables[0].Rows.Count > 0)
