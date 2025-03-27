@@ -83,6 +83,7 @@ namespace ECOMAPP.DataLayer
 
                     var firstOrder = orders.FirstOrDefault();
                     int price = Convert.ToInt32(firstOrder?.CalculatedPrice ?? "0");
+                    //TODO add the Shippment price and return complete price breakdown at end on frontede
 
                     if (firstOrder != null && price > 0)
                     {
