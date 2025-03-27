@@ -33,6 +33,8 @@ namespace ECOMAPP.ModelLayer
             public string? UserId { get; set; } = string.Empty;
             public string? Added_By { get; set; } = string.Empty;
 
+            public string? Varient_ID { get; set; } = string.Empty;
+
             // Pricing
             public int PRICING { get; set; }
             public int MAXIMUM_RETAIL_PRICE { get; set; }

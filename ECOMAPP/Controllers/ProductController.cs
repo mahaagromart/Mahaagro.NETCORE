@@ -266,6 +266,45 @@ namespace ECOMAPP.Controllers
 
         }
 
+        [Route("UpdateProduct")]
+        [HttpPost]
+        [JwtAuthorization(Roles = [Roles.Admin, Roles.Vendor])]
+        public ActionResult<IEnumerable<DBReturnData>> UpdateProduct(MlGetProduct _MlGetProduct)
+        {
+            MLProduct _MLProduct = new();
+            DLProduct _DLProduct = new();
+            DBReturnData _DBReturnData = new();
+
+            DataSet _DataSet = new();
+            try
+            {
+                _DBReturnData = _DLProduct.UpdateProduct(_MlGetProduct);
+
+                if (_DBReturnData.Code == DBEnums.Codes.SUCCESS)
+                {
+                    _DBReturnData.Status = DBEnums.Status.SUCCESS;
+
+                    _DBReturnData.Retval = DBEnums.Status.SUCCESS.ToString();
+                }
+                else
+                {
+                    _DBReturnData.Status = DBEnums.Status.FAILURE;
+                    _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+                    _DBReturnData.Retval = DBEnums.Status.FAILURE.ToString();
+
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                _DBReturnData.Code = DBEnums.Codes.BAD_REQUEST;
+                _DBReturnData.Message = DBEnums.Status.FAILURE.ToString() + ex.Message.ToString();
+                _DBReturnData.Retval = null;
+            }
+            return new[] { _DBReturnData };
+
+        }
 
 
 
