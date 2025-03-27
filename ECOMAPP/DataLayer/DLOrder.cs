@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Razorpay.Api;
 using System.Collections.Generic;
 using Newtonsoft.Json;
+using System.Linq.Expressions;
 
 namespace ECOMAPP.DataLayer
 {
@@ -100,9 +101,30 @@ namespace ECOMAPP.DataLayer
                         var razorpayOrderId = razorOrder["id"].ToString();
                         // Convert to JSON string
                         string razorOrderJson = JsonConvert.SerializeObject(razorOrder.Attributes, Formatting.Indented);
+                        if (razorpayOrderId != null) {
+                 
 
-                        // Deserialize to RazorpayOrder model (optional)
-                        RazorpayOrder orderDetails = JsonConvert.DeserializeObject<RazorpayOrder>(razorOrderJson);
+                                using (DBAccess _DBAccess = new())
+                                {
+                                    _DBAccess.DBProcedureName = "SP_ORDER";
+                                    _DBAccess.AddParameters("@Action", "INSERTORDER");
+                                    _DBAccess.AddParameters("@USER_ID", _MLOrder.CustomerID);
+                                    _DBAccess.AddParameters("@VARIENT_ID", _MLOrder.VarientID);
+                                    _DBAccess.AddParameters("@ORDER_ID", razorpayOrderId);
+                                    _DBAccess.AddParameters("@AMOUNT", price);
+                                    _DBAccess.AddParameters("@CURRENCY", "INR");
+
+                                    _DataSet = _DBAccess.DBExecute();
+                                    _DBAccess.Dispose();
+
+                                }
+                                }
+                           
+
+
+
+                            // Deserialize to RazorpayOrder model (optional)
+                            RazorpayOrder orderDetails = JsonConvert.DeserializeObject<RazorpayOrder>(razorOrderJson);
 
                         // Prepare Success Response
                         _DBReturnData.Dataset = orderDetails;

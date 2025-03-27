@@ -78,17 +78,20 @@ namespace ECOMAPP.Controllers
 
                     _DBReturnData = _dLOrder.VerifyOrder(paymentVerification.razorpay_order_id, paymentVerification.razorpay_payment_id);
 
-                    if(_DBReturnData.Retval == "SUCCESS")
+                    if (_DBReturnData.Retval == "SUCCESS")
                     {
 
                         _DBReturnData.Status = DBEnums.Status.SUCCESS;
                         _DBReturnData.Message = DBEnums.Codes.ORDER_VERIFIED.ToString();
                         _DBReturnData.Retval = DBEnums.Codes.SUCCESS.ToString();
                     }
+                    else
+                    {
 
-                   _DBReturnData.Status = DBEnums.Status.FAILURE;
-                   _DBReturnData.Message = DBEnums.Codes.ORDER_NOT_VERIFIED.ToString();
-                   _DBReturnData.Retval = DBEnums.Codes.ORDER_NOT_VERIFIED.ToString();    
+                        _DBReturnData.Status = DBEnums.Status.FAILURE;
+                        _DBReturnData.Message = DBEnums.Codes.ORDER_NOT_VERIFIED.ToString();
+                        _DBReturnData.Retval = DBEnums.Codes.ORDER_NOT_VERIFIED.ToString();
+                    }
                 }
                 else
                 {
