@@ -924,6 +924,115 @@ namespace ECOMAPP.DataLayer
         }
 
 
+        public DBReturnData UpdateProduct(MlGetProduct data)
+        {
+            MLProduct _MLProduct = new();
+            DALBASE _DALBASE = new();
+            DBReturnData _DBReturnData = new();
+
+            DataSet _DataSet = new();
+            try
+            {
+                using (DBAccess _DBAccess = new())
+                {
+
+
+
+
+
+                    string tagsString = data.TAGS_INPUT != null ? string.Join(",", data.TAGS_INPUT) : "";
+                    _DBAccess.DBProcedureName = "SP_PRODUCT";
+                    _DBAccess.AddParameters("@Action", "UPDATEPRODUCT");
+                    _DBAccess.AddParameters("@Product_Name", data.Product_Name ?? "");
+                    _DBAccess.AddParameters("@Product_Description", data.Product_Description ?? "");
+                    _DBAccess.AddParameters("@SUB_CATEGORY_ID", data.SUB_CATEGORY_ID);
+                    _DBAccess.AddParameters("@CATEGORY_ID", data.CATEGORY_ID);
+                    _DBAccess.AddParameters("@SUB_SUB_CATEGORY_ID", data.SUB_SUB_CATEGORY_ID);
+                    _DBAccess.AddParameters("@Images", data.ThumbnailImage ?? "");
+                    _DBAccess.AddParameters("@BRAND", data.BRAND ?? "");
+                    _DBAccess.AddParameters("@sku", data.sku ?? "");
+                    _DBAccess.AddParameters("@UNIT", data.UNIT ?? "");
+                    _DBAccess.AddParameters("@HSN", data.HSN ?? "");
+                    _DBAccess.AddParameters("@TAGS_INPUT", tagsString);
+                    _DBAccess.AddParameters("@PROD_ID", data.PROD_ID);
+                    _DBAccess.AddParameters("@VID", data.Varient_ID);
+                    _DBAccess.AddParameters("@ADDED_BY", data.Added_By);
+                    _DBAccess.AddParameters("@USER_ID", data.UserId);
+
+                    //pricing
+                    _DBAccess.AddParameters("@PRICING", data.PRICING);
+                    _DBAccess.AddParameters("@MAXIMUM_RETAIL_PRICE", data.MAXIMUM_RETAIL_PRICE);
+                    _DBAccess.AddParameters("@SELLING_PRICE", data.SELLING_PRICE);
+                    _DBAccess.AddParameters("@MINIMUM_ORDER_QUANTITY", data.MINIMUM_ORDER_QUANTITY);
+                    _DBAccess.AddParameters("@CURRENT_STOCK_QUANTITY", data.CURRENT_STOCK_QUANTITY);
+                    _DBAccess.AddParameters("@DISCOUNT_TYPE", data.DISCOUNT_TYPE);
+                    _DBAccess.AddParameters("@DISCOUNT_AMOUNT", data.DISCOUNT_AMOUNT);
+                    _DBAccess.AddParameters("@TAX_AMOUNT", data.TAX_AMOUNT);
+                    _DBAccess.AddParameters("@TAX_CALCULATION", data.TAX_CALCULATION);
+                    _DBAccess.AddParameters("@CALCULATED_PRICE", data.CALCULATED_PRICE);
+                    _DBAccess.AddParameters("@CALCULATED_MINIMUM_ORDER_PRICE", data.CALCULATED_MINIMUM_ORDER_PRICE);
+
+
+                    //logistices starts
+                    _DBAccess.AddParameters("@PACKAGE_WEIGHT", data.PACKAGE_WEIGHT);
+                    _DBAccess.AddParameters("@PACKAGE_SHAPE", data.PACKAGE_SHAPE);
+                    _DBAccess.AddParameters("@PACKAGE_LENGTH", data.PACKAGE_LENGTH);
+                    _DBAccess.AddParameters("@PACKAGE_WIDTH", data.PACKAGE_WIDTH);
+                    _DBAccess.AddParameters("@PACKAGE_HEIGHT", data.PACKAGE_HEIGHT);
+                    _DBAccess.AddParameters("@PACKAGE_DIAMETER", data.PACKAGE_DIAMETER);
+                    _DBAccess.AddParameters("@PACKAGE_TOTAL_VOLUME", data.PACKAGE_TOTAL_VOLUME);
+
+
+                    //VAREITIES
+                    _DBAccess.AddParameters("@VAREINTS_NAME", data.VAREINTS_NAME);
+
+
+
+
+                    _DataSet = _DBAccess.DBExecute();
+                    _DataSet.Dispose();
+
+
+                }
+                if (_DataSet != null && _DataSet.Tables.Count > 0)
+                {
+                    DataTable _DataTable = _DataSet.Tables[0];
+                    if (_DataTable.Rows.Count > 0)
+                    {
+                        string retval = _DataTable.Rows[0]["RETVAL"].ToString();
+                        string prodId = _DataTable.Rows[0]["PROD_ID"].ToString();
+
+                        if (retval == "SUCCESS")
+                        {
+                            _DBReturnData.Message = prodId;
+                            _DBReturnData.Code = DBEnums.Codes.SUCCESS;
+                        }
+                        else
+                        {
+                            _DBReturnData.Message = "Failed to insert product";
+                            _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
+                        }
+                    }
+                }
+                else
+                {
+                    _DBReturnData.Message = "Failed to insert product.";
+                    _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                _DALBASE.ErrorLog("InsertProduct", "DLProduct", ex.ToString());
+                _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+                _DBReturnData.Code = DBEnums.Codes.BAD_REQUEST;
+
+            }
+
+
+            return _DBReturnData;
+        }
 
 
 
