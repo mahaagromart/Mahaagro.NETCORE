@@ -90,23 +90,7 @@ namespace ECOMAPP.Controllers
             try
             {
                 _DBReturnData = _DLCart.InsertCartData(mLInsertCart,UserId);
-                if (_DBReturnData.Code == DBEnums.Codes.SUCCESS)
-                {
-                    _DBReturnData.Retval=DBEnums.Status.SUCCESS.ToString();
-                    _DBReturnData.Message=DBEnums.Status.SUCCESS.ToString();
-                    _DBReturnData.Code = DBEnums.Codes.SUCCESS;
-
-                }
-                else
-                {
-                    _DBReturnData.Retval = DBEnums.Status.FAILURE.ToString();
-                    _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
-                    _DBReturnData.Code = DBEnums.Codes.NOT_FOUND;
-
-                }
-
-
-
+                
             }
             catch (Exception ex) { 
                      _DBReturnData.Retval = DBEnums.Status.FAILURE.ToString();
@@ -123,8 +107,8 @@ namespace ECOMAPP.Controllers
 
 
         [Route("UpdateCartData")]
-        [HttpPut]
-        public ActionResult<IEnumerable<DBReturnData>> UpdateCartData()
+        [HttpPost]
+        public ActionResult<IEnumerable<DBReturnData>> UpdateCartData([FromBody] MLInsertCart mLInsertCart)
         {
             DBReturnData _DBReturnData = new();
             DLCart _DLCart = new();
@@ -139,23 +123,7 @@ namespace ECOMAPP.Controllers
 
             try
             {
-                _DBReturnData = _DLCart.UpdateCartData();
-                if (_DBReturnData.Code == DBEnums.Codes.SUCCESS)
-                {
-                    _DBReturnData.Retval = DBEnums.Status.SUCCESS.ToString();
-                    _DBReturnData.Message = DBEnums.Status.SUCCESS.ToString();
-                    _DBReturnData.Code = DBEnums.Codes.SUCCESS;
-
-                }
-                else
-                {
-                    _DBReturnData.Retval = DBEnums.Status.FAILURE.ToString();
-                    _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
-                    _DBReturnData.Code = DBEnums.Codes.NOT_FOUND;
-
-                }
-
-
+                _DBReturnData = _DLCart.UpdateCartData(mLInsertCart,UserId);
 
             }
             catch (Exception ex)
