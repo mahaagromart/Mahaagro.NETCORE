@@ -40,7 +40,9 @@ namespace ECOMAPP.DataLayer
                                     ProductId = row["PROD_ID"].ToString(),
                                     Quantity = row["Quantity"] != DBNull.Value ? Convert.ToInt32(row["Quantity"]) : (int?)null,
                                     VarientsId = row["VARIENTS_ID"].ToString(),
-                                    ProductImages = row["PRODUCT_IMAGES"] != DBNull.Value? row["PRODUCT_IMAGES"].ToString().Split(',').ToList(): new List<string>(),
+                                    ProductImages = row["PRODUCT_IMAGES"] != DBNull.Value
+                                        ? row["PRODUCT_IMAGES"].ToString().Split(',').ToList()
+                                        : new List<string>(),
                                     PackageDiameter = row["PACKAGE_DIAMETER"].ToString(),
                                     PackageHeight = row["PACKAGE_HEIGHT"].ToString(),
                                     PackageLength = row["PACKAGE_LENGTH"].ToString(),
@@ -104,7 +106,7 @@ namespace ECOMAPP.DataLayer
 
             try
             {
-                using(DBAccess _DBAccess = new())
+                using (DBAccess _DBAccess = new())
                 {
                     _DBAccess.DBProcedureName = "[SP_CART]";
                     _DBAccess.AddParameters("@Action", "INSERTCART");
@@ -120,15 +122,15 @@ namespace ECOMAPP.DataLayer
 
                 if (RetVal == "SUCCESS")
                 {
-                    _DBReturnData.Status=DBEnums.Status.SUCCESS;
-                    _DBReturnData.Message=DBEnums.Status.SUCCESS.ToString();
+                    _DBReturnData.Status = DBEnums.Status.SUCCESS;
+                    _DBReturnData.Message = DBEnums.Status.SUCCESS.ToString();
                     _DBReturnData.Retval = DBEnums.Status.SUCCESS.ToString();
                     _DBReturnData.Code = DBEnums.Codes.SUCCESS;
 
 
 
                 }
-                else if(RetVal == "Alerady In Cart")
+                else if (RetVal == "Alerady In Cart")
                 {
                     _DBReturnData.Status = DBEnums.Status.FAILURE;
                     _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
@@ -143,10 +145,10 @@ namespace ECOMAPP.DataLayer
                     _DBReturnData.Code = DBEnums.Codes.NOT_FOUND;
 
                 }
-                
 
 
-                
+
+
             }
             catch (Exception ex)
             {
@@ -195,7 +197,8 @@ namespace ECOMAPP.DataLayer
 
 
 
-                } else if (RetVal == "Item Not Exists")
+                }
+                else if (RetVal == "Item Not Exists")
                 {
                     _DBReturnData.Status = DBEnums.Status.FAILURE;
                     _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
@@ -287,5 +290,4 @@ namespace ECOMAPP.DataLayer
         }
     }
 
-    }
-
+}
