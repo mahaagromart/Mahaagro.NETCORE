@@ -309,7 +309,7 @@ namespace ECOMAPP.Controllers
 
 
         [Route("DeleteProduct")]
-        [HttpDelete]
+        [HttpPost]
         [JwtAuthorization(Roles = [Roles.Admin])]
         public ActionResult<IEnumerable<DBReturnData>> DeleteProduct(MLDeleteProduct _MLDeleteProduct)
         {
@@ -317,27 +317,34 @@ namespace ECOMAPP.Controllers
             DLProduct _DLProduct = new();
             DBReturnData _DBReturnData = new();
 
-            DataSet _DataSet = new();
             try
             {
-
                 _DBReturnData = _DLProduct.DeleteProduct(_MLDeleteProduct);
 
+                if (_DBReturnData.Code == DBEnums.Codes.SUCCESS)
+                {
+                    _DBReturnData.Status = DBEnums.Status.SUCCESS;
+                    _DBReturnData.Retval = DBEnums.Status.SUCCESS.ToString();
+                    _DBReturnData.Message = "Product deleted successfully"; 
+                }
+                else
+                {
+                    _DBReturnData.Status = DBEnums.Status.FAILURE;
+                    _DBReturnData.Message = _DBReturnData.Message ?? "Product not found"; 
+                    _DBReturnData.Retval = DBEnums.Status.FAILURE.ToString();
+                }
             }
             catch (Exception ex)
             {
-
                 _DBReturnData.Dataset = null;
                 _DBReturnData.Code = DBEnums.Codes.BAD_REQUEST;
-                _DBReturnData.Message = DBEnums.Status.FAILURE.ToString() + ex.Message.ToString();
-                _DBReturnData.Retval = DBEnums.Status.FAILURE.ToString();
+                _DBReturnData.Status = DBEnums.Status.FAILURE;
+                _DBReturnData.Message = $"{DBEnums.Status.FAILURE}: {ex.Message}";
+                _DBReturnData.Retval = null;
             }
 
-
             return new[] { _DBReturnData };
-
         }
-
 
         //[Route("ProductToggleCertified")]
         //[HttpPut]
@@ -346,7 +353,7 @@ namespace ECOMAPP.Controllers
         //{
         //    DLProduct _DLProduct = new();
         //    DBReturnData _DBReturnData = new();
-           
+
         //    try
         //    {
 
@@ -363,7 +370,7 @@ namespace ECOMAPP.Controllers
         //            _DBReturnData.Code = DBEnums.Codes.NOT_FOUND;
         //            _DBReturnData.Retval = DBEnums.Status.FAILURE.ToString();
         //        }
-   
+
 
         //    }
         //    catch (Exception ex)

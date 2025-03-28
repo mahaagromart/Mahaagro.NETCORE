@@ -1049,34 +1049,26 @@ namespace ECOMAPP.DataLayer
                 using (DBAccess _DBAccess = new())
                 {
                     _DBAccess.DBProcedureName = "SP_PRODUCT";
-                    _DBAccess.AddParameters("@Action", "INSERTPRODUCT");
-                    _DBAccess.AddParameters("@Product_Name", data.Product_id ?? "");
+                    _DBAccess.AddParameters("@Action", "DELETEPRODUCT");
+                    _DBAccess.AddParameters("@VID", data.Product_id ?? "");
                     _DataSet = _DBAccess.DBExecute();
                     _DataSet.Dispose();
 
                 }
-                if (_DataSet != null && _DataSet.Tables.Count > 0)
-                {
-                    DataTable _DataTable = new();
-                    foreach (DataRow row in _DataSet.Tables)
-                    {
-                        if (row["RETVAL"]?.ToString() == "SUCCESS")
-                        {
+                string Retval = _DataSet.Tables[0].Rows[0]["RETVAL"]?.ToString();
 
-                            _DBReturnData.Message = DBEnums.Status.SUCCESS.ToString();
-                            _DBReturnData.Code = DBEnums.Codes.SUCCESS;
-                        }
-                        else
-                        {
-                            _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
-                            _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
-                        }
-                    }
+                if (Retval == "SUCCESS")
+                {
+
+                    _DBReturnData.Message = DBEnums.Status.SUCCESS.ToString();
+                    _DBReturnData.Code = DBEnums.Codes.SUCCESS;
                 }
                 else
                 {
-                    _DBReturnData.Message = DBEnums.Status.SUCCESS.ToString();
-                    _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
+
+                    _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+                    _DBReturnData.Code = DBEnums.Codes.NOT_FOUND;
+
                 }
 
             }
