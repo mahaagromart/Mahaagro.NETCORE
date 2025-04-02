@@ -24,14 +24,14 @@ namespace ECOMAPP.Controllers
 
         [HttpPost("CreateOrder")]
         [JwtAuthorization(Roles = [Roles.Admin, Roles.Vendor, Roles.User])]
-        public ActionResult<IEnumerable<DBReturnData>> CreateOrder(MLOrder _MLOrder)
+        public async Task<ActionResult<IEnumerable<DBReturnData>>> CreateOrder(MLOrder _MLOrder)
         {
-            DBReturnData _DBReturnData = new();
-
-
-            return new[] { _DBReturnData = _dLOrder.CreateOrder(_MLOrder) };
-
+            // Create the order and return an array with one item
+            DBReturnData _DBReturnData = await _dLOrder.CreateOrderAsync(_MLOrder);
+            return Ok(new[] { _DBReturnData });
         }
+
+
 
         //[HttpPost("CreateOrder")]
         //[JwtAuthorization(Roles = [Roles.Admin, Roles.Vendor, Roles.User])]

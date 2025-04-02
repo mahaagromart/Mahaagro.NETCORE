@@ -4,12 +4,14 @@
     {
         public int? OrderID { get; set; }
         public string? ProductID { get; set; }
-        public string? VarientID { get; set; }
+        public string?[] VarientID { get; set; }
         public string? CustomerID { get; set; }
         public string? OrderDate { get; set; }
         public int? Quantity { get; set; }
+
+        public string? UserId { get; set; }
         public string? TotalAmount { get; set; }
-        public string? Address {get ; set;}
+        public string? DeliveryAddress { get ; set;}
         public string? pincode { get; set; }
     }
 
@@ -35,4 +37,14 @@
         public string Status { get; set; }
     }
 
+
+    public class Credentials
+    {
+        public string username { get; set; }
+        public string request_type { get; set; }
+        public string request_action { get; set; }
+        public string pickup_address_id { get; set; }
+        public string eeApiToken { get; set; }
+        public string business_type { get; set; }
+    }
 }
