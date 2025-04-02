@@ -233,6 +233,74 @@ namespace ECOMAPP.DataLayer
         }
 
 
+        public DBReturnData UpdateCartDataChangeQuantity(MLInsertCart _MLInsertCart, string? UserID)
+        {
+            DBReturnData _DBReturnData = new();
+            DataSet _DataSet = new();
+            DALBASE _DALBASE = new DALBASE();
+
+
+            try
+            {
+                using (DBAccess _DBAccess = new())
+                {
+                    _DBAccess.DBProcedureName = "[SP_CART]";
+                    _DBAccess.AddParameters("@Action", "UpdateCartDataChangeQuantity");
+                    _DBAccess.AddParameters("@PROD_ID", _MLInsertCart.PROD_ID);
+                    _DBAccess.AddParameters("@VARIENTS_ID", _MLInsertCart.VARIENTS_ID);
+                    _DBAccess.AddParameters("@Quantity", _MLInsertCart.Quantity);
+                    _DBAccess.AddParameters("@USERID", UserID ?? "");
+                    _DataSet = _DBAccess.DBExecute();
+                    _DBAccess.Dispose();
+                }
+                DataTable _DataTable = _DataSet.Tables[0];
+                string RetVal = _DataTable.Rows[0]["RETVAL"]?.ToString();
+
+                if (RetVal == "SUCCESS")
+                {
+                    _DBReturnData.Status = DBEnums.Status.SUCCESS;
+                    _DBReturnData.Message = DBEnums.Status.SUCCESS.ToString();
+                    _DBReturnData.Retval = RetVal;
+                    _DBReturnData.Code = DBEnums.Codes.SUCCESS;
+
+
+
+                }
+                else if (RetVal == "Product not in cart")
+                {
+                    _DBReturnData.Status = DBEnums.Status.FAILURE;
+                    _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+                    _DBReturnData.Retval = RetVal;
+                    _DBReturnData.Code = DBEnums.Codes.CONFLICT;
+
+                }
+                else
+                {
+                    _DBReturnData.Status = DBEnums.Status.FAILURE;
+                    _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+                    _DBReturnData.Retval = RetVal;
+                    _DBReturnData.Code = DBEnums.Codes.NOT_FOUND;
+
+                }
+
+
+
+
+            }
+            catch (Exception ex)
+            {
+                _DALBASE.ErrorLog("UpdateCartData", "DLCart", ex.Message);
+                _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
+                _DBReturnData.Message = DBEnums.Status.FAILURE.ToString() + ex.Message.ToString();
+
+            }
+
+
+
+            return _DBReturnData;
+        }
+
+
 
         public DBReturnData DeleteCartData()
         {

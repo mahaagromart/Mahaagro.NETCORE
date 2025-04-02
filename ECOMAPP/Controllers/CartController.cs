@@ -139,7 +139,37 @@ namespace ECOMAPP.Controllers
 
         }
 
+        [Route("UpdateCartDataChangeQuantity")]
+        [HttpPost]
+        public ActionResult<IEnumerable<DBReturnData>> UpdateCartDataChangeQuantity([FromBody] MLInsertCart mLInsertCart)
+        {
+            DBReturnData _DBReturnData = new();
+            DLCart _DLCart = new();
+            DataSet _DataSet = new();
 
+            string? JwtToken = Request.Headers["Authorization"];
+            JwtToken = JwtToken["Bearer ".Length..].Trim();
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(JwtToken);
+            var tokenS = jsonToken as JwtSecurityToken;
+            var UserId = tokenS?.Claims.First(claim => claim.Type == "UserId").Value;
+
+            try
+            {
+                _DBReturnData = _DLCart.UpdateCartDataChangeQuantity(mLInsertCart, UserId);
+
+            }
+            catch (Exception ex)
+            {
+                _DBReturnData.Retval = DBEnums.Status.FAILURE.ToString();
+                _DBReturnData.Message = DBEnums.Status.FAILURE.ToString() + ex.Message.ToString();
+                _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
+
+
+            }
+            return new[] { _DBReturnData };
+
+        }
 
 
 
