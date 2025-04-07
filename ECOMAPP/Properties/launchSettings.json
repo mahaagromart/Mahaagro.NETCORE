@@ -8,10 +8,8 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "dotnetRunMessages": true,
-
-      "applicationUrl": "http://localhost:5136;http://192.168.64.2:5136",
+      "applicationUrl": "http://localhost:5136",
       "sqlDebugging": false
-
     },
     "https": {
       "commandName": "Project",
