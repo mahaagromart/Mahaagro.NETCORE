@@ -9,6 +9,7 @@ using System.Diagnostics;
 using Azure.Core;
 using static ECOMAPP.MiddleWare.AppEnums;
 using System.IdentityModel.Tokens.Jwt;
+using static ECOMAPP.ModelLayer.MLAuthetication.AuthenticationDTO;
 
 
 namespace ECOMAPP.DataLayer
@@ -632,7 +633,15 @@ namespace ECOMAPP.DataLayer
                                     CurrencyName = Convert.ToString(row["CurrencyName"]),
                                     StateName = Convert.ToString(row["StateName"]),
                                     CityName = Convert.ToString(row["CityName"]),
-                                    PhoneNumber = Convert.ToString(row["PhoneNumber"])
+                                    PhoneNumber = Convert.ToString(row["PhoneNumber"]),
+                                    Address = Convert.ToString(row["Address"]),
+                                    AddressOne = Convert.ToString(row["Address_One"]),
+                                    AddressTwo = Convert.ToString(row["Address_Two"]),
+                                    pincode = Convert.ToString(row["pincode"]),
+                                    pincode1 = Convert.ToString(row["pincode1"]),
+                                    pincode2 = Convert.ToString(row["pincode2"]),
+                                    selectedAddressIndex = Convert.ToInt16(row["SelectedAddressBlock"]),
+                                    
                             });
                         }
                     }
@@ -713,6 +722,124 @@ namespace ECOMAPP.DataLayer
         }
 
         #endregion
+
+
+        public DBReturnData updateaddressindex(UpdateAddressIndex updateAddressIndex, String UserID )
+        {
+            DBReturnData dBReturnData = new();
+            try
+            {
+                DataSet dataSet = new();
+                using (DBAccess dBAccess = new())
+                {
+                    dBAccess.DBProcedureName = "[SP_REGISTRATION]";
+                    dBAccess.AddParameters("@ACTION", "updateaddressindex");
+                    dBAccess.AddParameters("@UserIdAct", UserID);
+                    dBAccess.AddParameters("@SelectedAddressBlock", updateAddressIndex.SelectedIndex ?? 1);
+                    dataSet = dBAccess.DBExecute();
+                    dBAccess.Dispose();
+                };
+
+                if(dataSet.Tables.Count > 0)
+                {
+                    if (dataSet.Tables[0].Rows[0]["RETVAL"].ToString() == "SUCCESS")
+                    {
+                        dBReturnData.Code = DBEnums.Codes.SUCCESS;
+                        dBReturnData.Dataset = null;
+                        dBReturnData.Status = DBEnums.Status.SUCCESS;
+                    }
+                    else
+                    {
+                        dBReturnData.Retval = dataSet.Tables[0].Rows[0]["RETVAL"].ToString() ?? "FAILED";
+                        dBReturnData.Code = DBEnums.Codes.NOT_FOUND;
+                        dBReturnData.Dataset = null;
+                        dBReturnData.Status = DBEnums.Status.FAILURE;
+                    }
+
+                }
+                else
+                {
+                    dBReturnData.Code = DBEnums.Codes.NOT_FOUND;
+                    dBReturnData.Dataset = null;
+                    dBReturnData.Status = DBEnums.Status.FAILURE;
+
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                ErrorLog("update address", "Authentication", ex.ToString());
+                dBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
+                dBReturnData.Dataset = null;
+                dBReturnData.Status = DBEnums.Status.FAILURE;
+                
+            }
+                
+
+            return dBReturnData;
+        }
+
+       
+
+        public DBReturnData EditaddressPincode(EditaddressPincode editaddressPincode, String UserId)
+        {
+            DBReturnData dBReturnData = new();
+            try
+            {
+                DataSet dataSet = new();
+                using (DBAccess dBAccess = new())
+                {
+                    dBAccess.DBProcedureName = "[SP_REGISTRATION]";
+                    dBAccess.AddParameters("@ACTION", "EditaddressPincode");
+                    dBAccess.AddParameters("@UserIdAct", UserId);
+                    dBAccess.AddParameters("@SelectedAddressBlock", editaddressPincode.SelectedIndex ?? 1);
+                    dBAccess.AddParameters("@Address", editaddressPincode.Address);
+                    dBAccess.AddParameters("@pincode", editaddressPincode.Pincode);
+                    dataSet = dBAccess.DBExecute();
+                    dBAccess.Dispose();
+                };
+                
+
+
+                if (dataSet.Tables.Count > 0)
+                {
+                    if (dataSet.Tables[0].Rows[0]["RETVAL"].ToString() == "SUCCESS")
+                    {
+                        dBReturnData.Code = DBEnums.Codes.SUCCESS;
+                        dBReturnData.Dataset = null;
+                        dBReturnData.Status = DBEnums.Status.SUCCESS;
+                    }
+                    else
+                    {
+                        dBReturnData.Retval = dataSet.Tables[0].Rows[0]["RETVAL"].ToString() ?? "FAILED";
+                        dBReturnData.Code = DBEnums.Codes.NOT_FOUND;
+                        dBReturnData.Dataset = null;
+                        dBReturnData.Status = DBEnums.Status.FAILURE;
+                    }
+
+                }
+                else
+                {
+                    dBReturnData.Code = DBEnums.Codes.NOT_FOUND;
+                    dBReturnData.Dataset = null;
+                    dBReturnData.Status = DBEnums.Status.FAILURE;
+
+                }
+            }
+            catch (Exception ex)
+            {
+                ErrorLog("update address", "Authentication", ex.ToString());
+                dBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
+                dBReturnData.Dataset = null;
+                dBReturnData.Status = DBEnums.Status.FAILURE;
+
+            }
+
+
+            return dBReturnData;
+        }
+
 
 
         public string GenerateRandomNumber()

@@ -24,7 +24,7 @@ namespace ECOMAPP.Controllers
 
         [HttpPost("CreateOrder")]
         [JwtAuthorization(Roles = [Roles.Admin, Roles.Vendor, Roles.User])]
-        public async Task<ActionResult<IEnumerable<DBReturnData>>> CreateOrder(MLOrder _MLOrder)
+        public async Task<ActionResult<IEnumerable<DBReturnData>>> CreateOrderAsync(MLOrder _MLOrder)
         {
             // Create the order and return an array with one item
             DBReturnData _DBReturnData = await _dLOrder.CreateOrderAsync(_MLOrder);
@@ -78,17 +78,20 @@ namespace ECOMAPP.Controllers
 
                     _DBReturnData = _dLOrder.VerifyOrder(paymentVerification.razorpay_order_id, paymentVerification.razorpay_payment_id);
 
-                    if(_DBReturnData.Retval == "SUCCESS")
+                    if (_DBReturnData.Retval == "SUCCESS")
                     {
 
                         _DBReturnData.Status = DBEnums.Status.SUCCESS;
                         _DBReturnData.Message = DBEnums.Codes.ORDER_VERIFIED.ToString();
                         _DBReturnData.Retval = DBEnums.Codes.SUCCESS.ToString();
                     }
+                    else
+                    {
 
-                   _DBReturnData.Status = DBEnums.Status.FAILURE;
-                   _DBReturnData.Message = DBEnums.Codes.ORDER_NOT_VERIFIED.ToString();
-                   _DBReturnData.Retval = DBEnums.Codes.ORDER_NOT_VERIFIED.ToString();    
+                        _DBReturnData.Status = DBEnums.Status.FAILURE;
+                        _DBReturnData.Message = DBEnums.Codes.ORDER_NOT_VERIFIED.ToString();
+                        _DBReturnData.Retval = DBEnums.Codes.ORDER_NOT_VERIFIED.ToString();
+                    }
                 }
                 else
                 {

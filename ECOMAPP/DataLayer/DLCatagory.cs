@@ -48,7 +48,8 @@ namespace ECOMAPP.DataLayer
                                 CreationDate = row["CreationDate"]?.ToString() ?? string.Empty,
                                 Image = row["Image"]?.ToString() ?? string.Empty,
                                 Priority = Convert.IsDBNull(row["priority"]) ? 0 : Convert.ToInt32(row["priority"]),
-                                Status = row["Status"].ToString() ?? string.Empty,
+                                Status = row["Status"] != DBNull.Value && (bool)row["Status"] ? "1" : "0",
+
 
                             };
                             objMLCategory.CategoryList.Add(Category);

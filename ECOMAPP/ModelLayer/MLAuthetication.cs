@@ -168,7 +168,42 @@
                 public string? CityName { get; set; } = null;
                 public string? PhoneNumber { get; set; } = null;
 
+                public string? Address { get; set; }
+                public string? AddressOne { get; set; }
+                public string? AddressTwo { get; set; }
+
+                public string? pincode { get; set; }
+                public string? pincode1 { get; set; }
+                public string? pincode2 { get; set; }
+                
+                public int? selectedAddressIndex { get; set; }
+
+
             }
+
+            public class UpdateAddressIndex
+            {
+                public int? SelectedIndex { get; set; }
+
+            }
+
+
+            public class AddNewAddressPincode
+            {
+                public string Address { get; set; } = string.Empty;
+                public string Pincode { get; set; } = string.Empty;
+                public int SelectedAddressBlock { get; set; }
+
+            }
+
+            public class EditaddressPincode
+            {
+                public int? SelectedIndex { get; set; }
+                public string Address { get; set; } = string.Empty;
+                public string Pincode { get; set; } = string.Empty;
+
+            }
+
 
             public List<AuthenticationDTO.UserProfileEntites>? UserProfilesEntity { get; set; }
             public List<AuthenticationDTO.AuthenticationEntites>? AuthenticationsList { get; set; }

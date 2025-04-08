@@ -13,6 +13,7 @@ using Newtonsoft.Json;
 using static ECOMAPP.ModelLayer.MLAuthetication;
 using static ECOMAPP.MiddleWare.AppEnums;
 using Microsoft.AspNetCore.Authorization;
+using static ECOMAPP.ModelLayer.MLAuthetication.AuthenticationDTO;
 
 
 namespace ECOMAPP.Controllers
@@ -358,6 +359,41 @@ namespace ECOMAPP.Controllers
 
         }
         #endregion
+
+
+
+        [Route("updateaddressindex")]
+        [HttpPost]
+        [JwtAuthorization(Roles = [Roles.Admin, Roles.User, Roles.Vendor])]
+        public ActionResult<IEnumerable<DBReturnData>> updateaddressindex([FromBody] UpdateAddressIndex updateAddressIndex)
+        {
+            string JwtToken = Request.Headers["Authorization"];
+            JwtToken = JwtToken!["Bearer ".Length..].Trim();
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(JwtToken);
+            var tokenS = jsonToken as JwtSecurityToken;
+            var UserId = tokenS?.Claims.First(claim => claim.Type == "UserId").Value;
+            DLAuthentication dLAuthentication = new();
+            return new[] { dLAuthentication.updateaddressindex(updateAddressIndex, UserId ?? "") };
+        }
+
+
+        [Route("EditaddressPincode")]
+        [HttpPost]
+        [JwtAuthorization(Roles = [Roles.Admin, Roles.User, Roles.Vendor])]
+        public ActionResult<IEnumerable<DBReturnData>> EditaddressPincode([FromBody] EditaddressPincode editaddressPincode)
+        {
+            string JwtToken = Request.Headers["Authorization"];
+            JwtToken = JwtToken!["Bearer ".Length..].Trim();
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(JwtToken);
+            var tokenS = jsonToken as JwtSecurityToken;
+            var UserId = tokenS?.Claims.First(claim => claim.Type == "UserId").Value;
+            DLAuthentication dLAuthentication = new();
+            return new[] { dLAuthentication.EditaddressPincode(editaddressPincode, UserId ?? "") };
+        }
+
+
 
         #region update user profile
 
