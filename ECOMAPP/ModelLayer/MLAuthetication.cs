@@ -75,6 +75,19 @@
         }
 
 
+        public class User
+        {
+            public string Firstname { get; set; } = string.Empty;
+            public string Lastname { get; set; } = string.Empty;
+            public string Address { get; set; } = string.Empty;
+            public string StateId { get; set; } = string.Empty;
+            public string CityId { get; set; } = string.Empty;
+            public string CountryId { get; set; } = string.Empty;
+
+
+
+        }
+
         public class UpdateUserProfile
         {
             public string ProfilePath { get; set; } = string.Empty;

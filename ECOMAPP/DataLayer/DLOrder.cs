@@ -25,7 +25,7 @@ namespace ECOMAPP.DataLayer
             DBReturnData _DBReturnData = new();
             List<dynamic> orders = new();
             decimal totalDeliveryCharges = 0;
-
+            Dictionary<string, string> sellerByVarientId = new();
             try
             {
     
@@ -41,10 +41,12 @@ namespace ECOMAPP.DataLayer
            
                 foreach (var varientId in _MLOrder.VarientID)
                 {
+
                     using (DBAccess _DBAccess = new())
                     {
                         _DBAccess.DBProcedureName = "SP_PRODUCT";
                         _DBAccess.AddParameters("@Action", "CHECKPRODUCTBYVARIENTID");
+                        #pragma warning disable CS8604 // Possible null reference argument.
                         _DBAccess.AddParameters("@VID", varientId);
                         _DataSet = _DBAccess.DBExecute();
                     }
@@ -61,6 +63,8 @@ namespace ECOMAPP.DataLayer
                     {
                         foreach (DataRow row in _DataTable.Rows)
                         {
+                            var varient = row["VARIENTS_ID"]?.ToString();
+                            var seller = row["UserId"]?.ToString();
                             var currentOrder = new
                             {
                                 ProductName = row["PRODUCT_NAME"]?.ToString(),
@@ -80,11 +84,16 @@ namespace ECOMAPP.DataLayer
                                 Tax_Amount = row["TAX_AMOUNT"] == DBNull.Value ? null : row["TAX_AMOUNT"]?.ToString(),
                                 CalculatedPrice = row["CALCULATED_PRICE"] == DBNull.Value ? null : row["CALCULATED_PRICE"]?.ToString(),
                                 ProdID = row["PROD_ID"]?.ToString(),
-                                VarientID = row["VARIENTS_ID"]?.ToString(),
-                                PickupAddress = row["Address"]?.ToString()
+                                VarientID = varient,
+                                PickupAddress = row["Address"]?.ToString(),
+                                SellerId = seller
                             };
 
                             orders.Add(currentOrder);
+                            if (!string.IsNullOrEmpty(varient) && !string.IsNullOrEmpty(seller))
+                            {
+                                sellerByVarientId[varient] = seller;
+                            }
                         }
                     }
                 }
@@ -143,33 +152,38 @@ namespace ECOMAPP.DataLayer
                             _DBAccess.DBProcedureName = "SP_ORDER";
                             _DBAccess.AddParameters("@Action", "INSERTORDER");
                             _DBAccess.AddParameters("@USER_ID", _MLOrder.UserId);
-                            _DBAccess.AddParameters("@VARIENT_ID", string.Join(",", _MLOrder.VarientID)); // ✅ Pass as comma-separated string
+                             var varientString = string.Join(",", _MLOrder.VarientID);
+                            _DBAccess.AddParameters("@VARIENTS_ID", varientString);
                             _DBAccess.AddParameters("@ORDER_ID", razorpayOrderId);
-                            _DBAccess.AddParameters("@AMOUNT", totalPrice); // ✅ Includes delivery charges
+                            _DBAccess.AddParameters("@AMOUNT", totalPrice); 
                             _DBAccess.AddParameters("@CURRENCY", "INR");
 
                             _DBAccess.DBExecute();
                             _DBAccess.Dispose();
+
                         }
+                            string Retval = _DataSet.Tables[1].Rows[0]["Retval"]?.ToString();
                     }
 
-                    // ✅ Insert delivery charges separately for each VarientID
                     foreach (var varientId in _MLOrder.VarientID)
                     {
-                        if (deliveryChargesByVarient.TryGetValue(varientId, out decimal deliveryCharge))
-                        {
-                            using (DBAccess _DBAccess = new())
-                            {
-                                _DBAccess.DBProcedureName = "SP_ORDER";
-                                _DBAccess.AddParameters("@Action", "INSERTORDERBYDELIVERY");
-                                _DBAccess.AddParameters("@USER_ID", _MLOrder.UserId);
-                                _DBAccess.AddParameters("@VARIENT_ID", varientId); 
-                                _DBAccess.AddParameters("@AMOUNT", deliveryCharge);
-                                _DBAccess.DBExecute();
-                                _DBAccess.Dispose();
-                            }
-                            
+                        if (!deliveryChargesByVarient.ContainsKey(varientId) || !sellerByVarientId.ContainsKey(varientId))
+                            continue;
+
+                        string sellerId = sellerByVarientId[varientId];
+                        decimal deliveryCharge = deliveryChargesByVarient[varientId];
+
+                        using (DBAccess _DBAccess = new()){
+                            _DBAccess.DBProcedureName = "SP_ORDER";
+                            _DBAccess.AddParameters("@ACTION", "INSERTORDERBYDELIVERY");
+                            _DBAccess.AddParameters("@USER_ID", _MLOrder.UserId);
+                            _DBAccess.AddParameters("@VARIENT_ID", varientId);
+                            _DBAccess.AddParameters("@SellerId", sellerId);
+                            _DBAccess.AddParameters("@AMOUNT", deliveryCharge.ToString());
+                            _DBAccess.DBExecute();
+                            _DBAccess.Dispose();
                         }
+          
                     }
 
                     _DBReturnData.Dataset = new
