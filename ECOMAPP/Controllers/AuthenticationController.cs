@@ -360,23 +360,7 @@ namespace ECOMAPP.Controllers
         }
         #endregion
 
-        //READ THIS FOR ADDRESS
-        //THER ARE 3 ADDRESS TOTAL 
-        //STARTING FROM ADDRESS ADDRESSONE ADDRESSTWO
-        //THER ARE 3 PINCODE TOTAL
-        //STARTING FROM PINCODE PINCODE1 PINCODE2
-        //AND A SELECTED INDEX IT WILL ACT AS CURRENT SELECTED ADDRESS FOR THE USER WITH THE PINCODE
-        //LETS ASSUME WE SELECT INDEX 0 FROM INDEXS 0-3 
-        //IF THE SELECTED INDEX IS 0 THEN THE 
-        //ADDRESS WILL BE THE DEFAULT AND PINCODE WILL BE THE DEFAULT
-        //IF THE SELECTED INDEX IS 1 THEN THE
-        //ADDRESSONE WILL BE THE DEFAULT AND PINCODE1 WILL BE THE DEFAULT
 
-        //WE HAVE THIS METHODS TO INTERACT WITH THIS
-        //UPDATEADDRESSINDEX -- change the index of current address
-        //addnewaddress_pincode -- add new address with pincode this will be appended to address if address is filled then addressone will be occupied if ran out of space then no mercy
-        //editaddress_pincode -- provide the updateaddressindex and fill the values to update
-        //
 
         [Route("updateaddressindex")]
         [HttpPost]
@@ -390,7 +374,7 @@ namespace ECOMAPP.Controllers
             var tokenS = jsonToken as JwtSecurityToken;
             var UserId = tokenS?.Claims.First(claim => claim.Type == "UserId").Value;
             DLAuthentication dLAuthentication = new();
-            return new[] { dLAuthentication.updateaddressindex(updateAddressIndex,UserId ?? "")};
+            return new[] { dLAuthentication.updateaddressindex(updateAddressIndex, UserId ?? "") };
         }
 
 
@@ -406,9 +390,8 @@ namespace ECOMAPP.Controllers
             var tokenS = jsonToken as JwtSecurityToken;
             var UserId = tokenS?.Claims.First(claim => claim.Type == "UserId").Value;
             DLAuthentication dLAuthentication = new();
-            return new[] { dLAuthentication.EditaddressPincode(editaddressPincode,UserId ?? "")};
+            return new[] { dLAuthentication.EditaddressPincode(editaddressPincode, UserId ?? "") };
         }
-
 
 
 
@@ -460,7 +443,7 @@ namespace ECOMAPP.Controllers
         }
 
 
-
+        //public JsonResult
 
 
 
