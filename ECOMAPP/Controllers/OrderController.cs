@@ -58,6 +58,7 @@ namespace ECOMAPP.Controllers
 
 
         [HttpPost("VerifyPayment")]
+        [JwtAuthorization(Roles = [Roles.Admin, Roles.Vendor, Roles.User])]
         public ActionResult<IEnumerable<DBReturnData>> VerifyPayment(RazorpayPaymentVerification paymentVerification)
         {
             DBReturnData _DBReturnData = new();
