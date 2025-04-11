@@ -360,7 +360,18 @@ namespace ECOMAPP.Controllers
         }
         #endregion
 
+        #region getalluser
+        [Route("GetAllUser")]
+        [HttpPost]
+        [JwtAuthorization(Roles = [Roles.Admin, Roles.Vendor, Roles.User, Roles.ReprotAnalysis])]
+        public JsonResult GetAllUser()
+        {
+            DBReturnData _DBreturnData = new();
 
+            return Json(_DBreturnData);
+
+        }
+        #endregion
 
         [Route("updateaddressindex")]
         [HttpPost]
@@ -428,7 +439,7 @@ namespace ECOMAPP.Controllers
             }
             try
             {
-                objauthdto = dLAuthentication.UpdateUserProfile(UserId, updateUserProfile.ProfilePath);
+                objauthdto = dLAuthentication.UpdateUserProfile(UserId, updateUserProfile.ProfilePath , updateUserProfile.FirstName,updateUserProfile.LastName);
 
             }
             catch (Exception ex)

@@ -673,7 +673,7 @@ namespace ECOMAPP.DataLayer
         #region Update user profile
 
 
-        public AuthenticationDTO UpdateUserProfile(string UserId, string ProfilePath)
+        public AuthenticationDTO UpdateUserProfile(string UserId, string ProfilePath , string FirstName , string LastName)
         {
             AuthenticationDTO authenticationDTO = new AuthenticationDTO();
             // authenticationDTO.UserProfilesEntity = new List<AuthenticationDTO.UserProfileEntites>();
@@ -690,6 +690,8 @@ namespace ECOMAPP.DataLayer
                     Db.AddParameters("@Action", "UPDATEUSER");
                     Db.AddParameters("@UserIdAct", UserId);
                     Db.AddParameters("@UserProfilePath", ProfilePath);
+                    Db.AddParameters("@Firstname",FirstName);
+                    Db.AddParameters("@Lastname",LastName);
                     spreg = Db.DBExecute();
                     Db.Dispose();
                 }
@@ -841,6 +843,52 @@ namespace ECOMAPP.DataLayer
         }
 
 
+        public DBReturnData GetAllUser(string PageNumber)
+        {
+            DBReturnData _DBReturnData = new();
+            DataSet dataSet = new();
+            List<AuthenticationDTO.UserProfileEntites> userProfileList = new();
+
+            using (DBAccess dBAccess = new())
+            {
+                dBAccess.DBProcedureName = "SP_REGISTRATION";
+                dBAccess.AddParameters("@ACTION", "GetAllUserData");
+                dBAccess.AddParameters("@PageNumber", PageNumber);
+                dataSet = dBAccess.DBExecute();
+            }
+
+            string? Retval = dataSet.Tables[1].Rows[0]["RETVAL"].ToString();
+
+            if (Retval == "SUCCESS")
+            {
+                foreach (DataRow row in dataSet.Tables[0].Rows)
+                {
+                    userProfileList.Add(new AuthenticationDTO.UserProfileEntites
+                    {
+                        ProfileImage = Convert.ToString(row["ProfileImage"]),
+                        EmailId = Convert.ToString(row["EmailId"]),
+                        JoiningDate = Convert.ToString(row["JoiningDate"]),
+                        FirstName = Convert.ToString(row["FirstName"]),
+                        LastName = Convert.ToString(row["LastName"]),
+                        PhoneNumber = Convert.ToString(row["PhoneNumber"]),
+                    });
+                }
+
+                _DBReturnData.Dataset = userProfileList;
+                _DBReturnData.Code = DBEnums.Codes.SUCCESS;
+                _DBReturnData.Status = DBEnums.Status.SUCCESS;
+            }
+            else
+            {
+                _DBReturnData.Dataset = null;
+                _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
+                _DBReturnData.Status = DBEnums.Status.FAILURE;
+                _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
+                
+            }
+
+            return _DBReturnData;
+        }
 
         public string GenerateRandomNumber()
         {

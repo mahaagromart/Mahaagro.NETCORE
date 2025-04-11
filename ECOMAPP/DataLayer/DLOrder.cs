@@ -5,22 +5,39 @@ using Microsoft.Extensions.Configuration;
 using Razorpay.Api;
 using System.Collections.Generic;
 using Newtonsoft.Json;
-using System.Linq.Expressions;
+using Microsoft.IdentityModel.Tokens;
+using static ECOMAPP.ModelLayer.MLVarients;
+using Microsoft.Extensions.Caching.Memory;
+using System.Net.Http.Headers;
+using System.Net.Http;
+using Microsoft.Extensions.Logging;
+using System.Text;
+using System.Transactions;
 
 namespace ECOMAPP.DataLayer
 {
     public class DLOrder
     {
         private readonly IConfiguration _configuration;
+        private readonly TokenService _tokenService;
+        private readonly ILogger<DLOrder> _logger;
+        private static readonly HttpClient _httpClient = new HttpClient();
         private RazorpayClient _razorpayClient;
 
-        public DLOrder(IConfiguration configuration)
+        public DLOrder(IConfiguration configuration, TokenService tokenService, ILogger<DLOrder> logger = null)
         {
-            _configuration = configuration;
+            _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+            _tokenService = tokenService ?? throw new ArgumentNullException(nameof(tokenService));
+            _logger = logger;
+
+            string razorpayKey = _configuration["Razorpay:Key"];
+            string razorpaySecret = _configuration["Razorpay:Secret"];
+            if (!string.IsNullOrEmpty(razorpayKey) && !string.IsNullOrEmpty(razorpaySecret))
+            {
+                _razorpayClient = new RazorpayClient(razorpayKey, razorpaySecret);
+            }
         }
-
-
-        public async Task<DBReturnData> CreateOrderAsync(MLOrder _MLOrder)
+        public DBReturnData CreateOrderAsync(MLOrder _MLOrder)
         {
             DataSet _DataSet = new();
             DBReturnData _DBReturnData = new();
@@ -29,7 +46,7 @@ namespace ECOMAPP.DataLayer
             Dictionary<string, string> sellerByVarientId = new();
             try
             {
-    
+
                 if (_MLOrder.VarientID == null || _MLOrder.VarientID.Length == 0)
                 {
                     _DBReturnData.Status = DBEnums.Status.FAILURE;
@@ -39,7 +56,7 @@ namespace ECOMAPP.DataLayer
                     return _DBReturnData;
                 }
 
-           
+
                 foreach (var varientId in _MLOrder.VarientID)
                 {
 
@@ -109,15 +126,17 @@ namespace ECOMAPP.DataLayer
                     return _DBReturnData;
                 }
 
-                // Calculate total product price
+                // Calculating Price
                 int totalProductPrice = orders.Sum(o => Convert.ToInt32(o.CalculatedPrice ?? "0"));
 
-                // Calculate delivery charges for each variant
+                // For delivery charges
                 Dictionary<string, decimal> deliveryChargesByVarient = new();
+
 
                 foreach (var order in orders)
                 {
-                    decimal deliveryCharges = await GetDeliveryCharges("", order, _MLOrder.DeliveryAddress);
+                    sellerByVarientId.TryGetValue(order.VarientID, out string sellerId);
+                    int deliveryCharges =  GetDeliveryCharges(order);
                     totalDeliveryCharges += deliveryCharges;
                     deliveryChargesByVarient[order.VarientID] = deliveryCharges;
                 }
@@ -140,11 +159,13 @@ namespace ECOMAPP.DataLayer
                 { "payment_capture", "1" }
             };
 
+
                     Order razorOrder = _razorpayClient.Order.Create(options);
                     var razorpayOrderId = razorOrder["id"].ToString();
 
                     string razorOrderJson = JsonConvert.SerializeObject(razorOrder.Attributes, Formatting.Indented);
                     RazorpayOrder orderDetails = JsonConvert.DeserializeObject<RazorpayOrder>(razorOrderJson);
+                    string transactionId = GetTransactionId();
 
                     if (razorpayOrderId != null)
                     {
@@ -153,17 +174,18 @@ namespace ECOMAPP.DataLayer
                             _DBAccess.DBProcedureName = "SP_ORDER";
                             _DBAccess.AddParameters("@Action", "INSERTORDER");
                             _DBAccess.AddParameters("@USER_ID", _MLOrder.UserId);
-                             var varientString = string.Join(",", _MLOrder.VarientID);
+                            var varientString = string.Join(",", _MLOrder.VarientID);
                             _DBAccess.AddParameters("@VARIENTS_ID", varientString);
                             _DBAccess.AddParameters("@ORDER_ID", razorpayOrderId);
-                            _DBAccess.AddParameters("@AMOUNT", totalPrice); 
+                            _DBAccess.AddParameters("@AMOUNT", totalPrice);
                             _DBAccess.AddParameters("@CURRENCY", "INR");
+                            _DBAccess.AddParameters("@TRANSACTIONID",transactionId);
 
                             _DBAccess.DBExecute();
                             _DBAccess.Dispose();
 
                         }
-                            string Retval = _DataSet.Tables[1].Rows[0]["Retval"]?.ToString();
+                        string Retval = _DataSet.Tables[1].Rows[0]["Retval"]?.ToString();
                     }
 
                     foreach (var varientId in _MLOrder.VarientID)
@@ -174,7 +196,8 @@ namespace ECOMAPP.DataLayer
                         string sellerId = sellerByVarientId[varientId];
                         decimal deliveryCharge = deliveryChargesByVarient[varientId];
 
-                        using (DBAccess _DBAccess = new()){
+                        using (DBAccess _DBAccess = new())
+                        {
                             _DBAccess.DBProcedureName = "SP_ORDER";
                             _DBAccess.AddParameters("@ACTION", "INSERTORDERBYDELIVERY");
                             _DBAccess.AddParameters("@USER_ID", _MLOrder.UserId);
@@ -184,7 +207,7 @@ namespace ECOMAPP.DataLayer
                             _DBAccess.DBExecute();
                             _DBAccess.Dispose();
                         }
-          
+
                     }
 
                     _DBReturnData.Dataset = new
@@ -196,7 +219,7 @@ namespace ECOMAPP.DataLayer
                     _DBReturnData.Status = DBEnums.Status.SUCCESS;
                     _DBReturnData.Code = DBEnums.Codes.SUCCESS;
                     _DBReturnData.Message = "Order Created Successfully";
-                    _DBReturnData.OrderId = razorpayOrderId;
+                    _DBReturnData.OrderId = transactionId;
                     _DBReturnData.Retval = "SUCCESS";
                 }
                 else
@@ -223,63 +246,183 @@ namespace ECOMAPP.DataLayer
             return _DBReturnData;
         }
 
-        private async Task<decimal> GetDeliveryCharges(string orderId, dynamic order, string deliveryAddress)
+      
+      public string GetTransactionId()
+      {
+            Random random = new Random();
+            string txnId = "TXN-" + DateTime.Now.ToString("yyyyMMdd") + random.Next(1000, 9999).ToString();
+            return txnId;
+        }
+
+        public AddressInfo GetSellerAndUserAddress(string sellerId, string userId, string deliveryAddress)
+        {
+            AddressInfo result = new();
+
+            using (var dbAccess = new DBAccess())
+            {
+                // Fetch seller data
+                dbAccess.DBProcedureName = "SP_ORDER";
+                dbAccess.AddParameters("@ACTION", "GETSELLERPINCODEANDSELLERPINCODE");
+                dbAccess.AddParameters("@USER_ID", sellerId);
+
+                DataSet sellerDataSet = dbAccess.DBExecute();
+                if (sellerDataSet?.Tables.Count > 0 && sellerDataSet.Tables[0].Rows.Count > 0)
+                {
+                    DataRow row = sellerDataSet.Tables[0].Rows[0]; 
+                    result.SellerPinCode = row["PINCODE"]?.ToString();
+                    result.SellerAddress = row["ADDRESS"]?.ToString();
+                }
+            }
+
+            using (var dbAccess = new DBAccess())
+            {
+                // Fetch user data
+                dbAccess.DBProcedureName = "SP_ORDER";
+                dbAccess.AddParameters("@ACTION", "GETUSERPINCODEANDSELLERPINCODE");
+                dbAccess.AddParameters("@SelectedAddressBlock", deliveryAddress);
+                dbAccess.AddParameters("@USER_ID", userId);
+
+                DataSet userDataSet = dbAccess.DBExecute();
+                if (userDataSet?.Tables.Count > 0 && userDataSet.Tables[0].Rows.Count > 0)
+                {
+                    DataRow row = userDataSet.Tables[0].Rows[0]; 
+                    result.UserPinCode = row["pincode"]?.ToString();
+                    result.UserAddress = row["ADDRESS"]?.ToString();
+                }
+            }
+
+            return result;
+        }
+
+
+        public int GetDeliveryCharges(dynamic order)
         {
             decimal totalDeliveryCharges = 0;
 
-         
-            var credentials = new Credentials
+
+            decimal volWeight = (Convert.ToDecimal(order.PackageLength) * Convert.ToDecimal(order.PackageWidth) * Convert.ToDecimal(order.PackageHeight)) / 5000;
+            decimal weight = Convert.ToDecimal(order.PackageWeight);
+
+
+            decimal finalWeight = Math.Max(volWeight, weight);
+
+            decimal baseCharge = 90;
+
+            if (finalWeight <= 2000)
             {
-                username = "username@test.com",
-                request_type = "QS-LEAP",
-                request_action = "PICKUP",
-                pickup_address_id = "x6vj12er",
-                eeApiToken = "a7b85c1afa18e10656dfda90b121",
-                business_type = "E-commerce"
-            };
-
-            try
+                totalDeliveryCharges = baseCharge;  
+            }
+            else
             {
+             
+                decimal additionalWeight = finalWeight - 2000;
+                int additionalKg = (int)Math.Ceiling(additionalWeight / 1000); 
+                totalDeliveryCharges = baseCharge + (additionalKg * 35);  
+            }
 
-                var deliveryRequest = new
+           
+            decimal gst = totalDeliveryCharges * 18.0m / 100;  
+
+
+            totalDeliveryCharges += gst;
+
+            return (int)Math.Round(totalDeliveryCharges);
+        }
+
+        public class TokenService
+        {
+            private readonly IConfiguration _configuration;
+            private readonly IMemoryCache _cache;
+            private static readonly HttpClient _httpClient = new HttpClient();
+            private const string CacheKey = "EkartAccessToken";
+
+            public TokenService(IConfiguration configuration, IMemoryCache cache)
+            {
+                _configuration = configuration;
+                _cache = cache;
+            }
+
+            public async Task<string> GetAccessTokenAsync()
+            {
+                // Try to get the token from cache
+                if (_cache.TryGetValue(CacheKey, out TokenCacheEntry cachedEntry) &&
+                    cachedEntry != null &&
+                    DateTime.UtcNow < cachedEntry.ExpirationTime)
                 {
-                    OrderId = orderId,
-                    Items = new[] { order },
-                    PickupAddress = order.PickupAddress,
-                    DeliveryAddress = deliveryAddress,
-                    Credentials = credentials  
-                };
+                    return cachedEntry.AccessToken; // Return cached token if not expired
+                }
 
-                using (HttpClient client = new HttpClient())
+                // Fetch new token if not in cache or expired
+                string newToken = await FetchAccessTokenAsync();
+                if (!string.IsNullOrEmpty(newToken))
                 {
-  
-                    var response = await client.PostAsJsonAsync("https://api.quickshift.in/qs_ecom/externalAPI/public/createShipment", deliveryRequest);
-
-                    if (response.IsSuccessStatusCode)
+                    // Cache the token with a 24-hour expiration
+                    var cacheEntry = new TokenCacheEntry
                     {
+                        AccessToken = newToken,
+                        ExpirationTime = DateTime.UtcNow.AddHours(24)
+                    };
+                    _cache.Set(CacheKey, cacheEntry, TimeSpan.FromHours(24));
+                }
 
-                        var deliveryResponse = await response.Content.ReadFromJsonAsync<dynamic>();
+                return newToken;
+            }
 
+            private async Task<string> FetchAccessTokenAsync()
+            {
+                try
+                {
+                    string user = _configuration["Ekart:username"];
+                    string pass = _configuration["Ekart:password"];
 
-                        totalDeliveryCharges = deliveryResponse?.TotalDeliveryCharges ?? 0;
-                    }
-                    else
+                    if (string.IsNullOrEmpty(user) || string.IsNullOrEmpty(pass))
                     {
-                        totalDeliveryCharges = 0;
+                        Console.WriteLine("Username or password missing in configuration");
+                        return string.Empty;
                     }
+
+                    var secretData = new
+                    {
+                        username = user,
+                        password = pass
+                    };
+
+                    HttpResponseMessage response = await _httpClient.PostAsJsonAsync(
+                        "https://app.elite.ekartlogistics.in/integrations/v2/auth/token/EKART_67a1e3aeb43c30b894d7d235",
+                        secretData);
+
+                    response.EnsureSuccessStatusCode();
+                    var jsonResponse = await response.Content.ReadAsStringAsync();
+                    var tokenData = JsonConvert.DeserializeObject<Dictionary<string, string>>(jsonResponse);
+                    return tokenData.TryGetValue("access_token", out var accessToken) ? accessToken : string.Empty;
+                }
+                catch (HttpRequestException ex)
+                {
+                    Console.WriteLine($"HTTP error while fetching token: {ex.Message}");
+                    return string.Empty;
+                }
+                catch (JsonException ex)
+                {
+                    Console.WriteLine($"Error parsing token response: {ex.Message}");
+                    return string.Empty;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Unexpected error: {ex.Message}");
+                    return string.Empty;
                 }
             }
-            catch (Exception ex)
+
+            // Class to store token and expiration in cache
+            private class TokenCacheEntry
             {
-
-                DALBASE _DALBASE = new();
-                _DALBASE.ErrorLog("GetDeliveryCharges", "DeliveryAPI", ex.ToString());
-
-                totalDeliveryCharges = 0;
+                public string AccessToken { get; set; }
+                public DateTime ExpirationTime { get; set; }
             }
-
-            return totalDeliveryCharges;
         }
+
+    
+
 
 
         public DBReturnData VerifyOrder(string OrderId, string PaymnetId)
@@ -334,5 +477,12 @@ namespace ECOMAPP.DataLayer
             return _DBReturnData;
         }
 
+
+
+      
+
     }
+
+
+
 }

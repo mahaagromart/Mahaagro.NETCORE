@@ -1,23 +1,19 @@
 using System.Text.Json.Serialization;
 using ECOMAPP.DataLayer;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using static ECOMAPP.DataLayer.DLOrder;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
-
-
-
+// Add services to the DI container
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
-
     {
         options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
         options.JsonSerializerOptions.MaxDepth = 64;
-
     });
-
-
 
 builder.Services.AddCors(options =>
 {
@@ -27,28 +23,30 @@ builder.Services.AddCors(options =>
     });
 });
 
+// Register dependencies for DLOrder
+builder.Services.AddMemoryCache(); // Required for TokenService caching
+builder.Services.AddSingleton<TokenService>(); // TokenService as singleton
+builder.Services.AddScoped<DLOrder>();
+builder.Services.AddLogging(logging => logging.AddConsole()); 
 
-
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+// Add Swagger/OpenAPI
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddScoped<DLOrder>();
+
 var app = builder.Build();
 
+// Configure the HTTP request pipeline
 app.UseCors("AllowAllOrigins");
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
 app.UseStaticFiles();
-
 app.UseHttpsRedirection();
-
 app.UseAuthorization();
-
 app.MapControllers();
 
 app.Run();
