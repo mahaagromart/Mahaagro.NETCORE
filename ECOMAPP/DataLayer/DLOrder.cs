@@ -37,214 +37,219 @@ namespace ECOMAPP.DataLayer
                 _razorpayClient = new RazorpayClient(razorpayKey, razorpaySecret);
             }
         }
-        public DBReturnData CreateOrderAsync(MLOrder _MLOrder)
-        {
-            DataSet _DataSet = new();
-            DBReturnData _DBReturnData = new();
-            List<dynamic> orders = new();
-            decimal totalDeliveryCharges = 0;
-            Dictionary<string, string> sellerByVarientId = new();
-            try
+            public DBReturnData CreateOrderAsync(MLOrder _MLOrder)
             {
-
-                if (_MLOrder.VarientID == null || _MLOrder.VarientID.Length == 0)
-                {
-                    _DBReturnData.Status = DBEnums.Status.FAILURE;
-                    _DBReturnData.Code = DBEnums.Codes.BAD_REQUEST;
-                    _DBReturnData.Message = "No Variant IDs provided";
-                    _DBReturnData.Retval = "FAILURE";
-                    return _DBReturnData;
-                }
-
-
-                foreach (var varientId in _MLOrder.VarientID)
+                DataSet _DataSet = new();
+                DBReturnData _DBReturnData = new();
+                List<dynamic> orders = new();
+                decimal totalDeliveryCharges = 0;
+                Dictionary<string, string> sellerByVarientId = new();
+                try
                 {
 
-                    using (DBAccess _DBAccess = new())
+                    if (_MLOrder.VarientID == null || _MLOrder.VarientID.Length == 0)
                     {
-                        _DBAccess.DBProcedureName = "SP_PRODUCT";
-                        _DBAccess.AddParameters("@Action", "CHECKPRODUCTBYVARIENTID");
-                        #pragma warning disable CS8604 // Possible null reference argument.
-                        _DBAccess.AddParameters("@VID", varientId);
-                        _DataSet = _DBAccess.DBExecute();
+                        _DBReturnData.Status = DBEnums.Status.FAILURE;
+                        _DBReturnData.Code = DBEnums.Codes.BAD_REQUEST;
+                        _DBReturnData.Message = "No Variant IDs provided";
+                        _DBReturnData.Retval = "FAILURE";
+                        return _DBReturnData;
                     }
 
-                    if (_DataSet.Tables.Count < 2)
-                    {
-                        continue;
-                    }
 
-                    DataTable _DataTable = _DataSet.Tables[0];
-                    string Retval = _DataSet.Tables[1].Rows[0]["Retval"]?.ToString();
-
-                    if (Retval == "SUCCESS" && _DataTable.Rows.Count > 0)
+                    foreach (var varientQtyStr in _MLOrder.VarientID)
                     {
-                        foreach (DataRow row in _DataTable.Rows)
+                        string[] parts = varientQtyStr.Split(',');
+                        string varientId = parts[0];
+                        int quantity = parts.Length > 1 ? Convert.ToInt32(parts[1]) : 1;
+
+                        using (DBAccess _DBAccess = new())
                         {
-                            var varient = row["VARIENTS_ID"]?.ToString();
-                            var seller = row["UserId"]?.ToString();
-                            var currentOrder = new
-                            {
-                                ProductName = row["PRODUCT_NAME"]?.ToString(),
-                                VarientName = row["VAREINTS_NAME"]?.ToString(),
-                                PackageLength = row["PACKAGE_LENGTH"] == DBNull.Value ? null : row["PACKAGE_LENGTH"]?.ToString(),
-                                PackageWidth = row["PACKAGE_WIDTH"] == DBNull.Value ? null : row["PACKAGE_WIDTH"]?.ToString(),
-                                PackageHeight = row["PACKAGE_HEIGHT"] == DBNull.Value ? null : row["PACKAGE_HEIGHT"]?.ToString(),
-                                PackageDiameter = row["PACKAGE_DIAMETER"] == DBNull.Value ? null : row["PACKAGE_DIAMETER"]?.ToString(),
-                                PackageWeight = row["PACKAGE_WEIGHT"] == DBNull.Value ? null : row["PACKAGE_WEIGHT"]?.ToString(),
-                                Pricing = row["PRICING"] == DBNull.Value ? null : row["PRICING"]?.ToString(),
-                                SellingPrice = row["SELLING_PRICE"] == DBNull.Value ? null : row["SELLING_PRICE"]?.ToString(),
-                                CurrentStockQuantity = row["CURRENT_STOCK_QUANTITY"] == DBNull.Value ? null : row["CURRENT_STOCK_QUANTITY"]?.ToString(),
-                                MinimumOrderQty = row["MINIMUM_ORDER_QUANTITY"] == DBNull.Value ? null : row["MINIMUM_ORDER_QUANTITY"]?.ToString(),
-                                DiscountType = row["DISCOUNT_TYPE"]?.ToString(),
-                                DiscountAmount = row["DISCOUNT_AMOUNT"] == DBNull.Value ? null : row["DISCOUNT_AMOUNT"]?.ToString(),
-                                TaxCalculation = row["TAX_CALCULATION"]?.ToString(),
-                                Tax_Amount = row["TAX_AMOUNT"] == DBNull.Value ? null : row["TAX_AMOUNT"]?.ToString(),
-                                CalculatedPrice = row["CALCULATED_PRICE"] == DBNull.Value ? null : row["CALCULATED_PRICE"]?.ToString(),
-                                ProdID = row["PROD_ID"]?.ToString(),
-                                VarientID = varient,
-                                PickupAddress = row["Address"]?.ToString(),
-                                SellerId = seller
-                            };
+                            _DBAccess.DBProcedureName = "SP_PRODUCT";
+                            _DBAccess.AddParameters("@Action", "CHECKPRODUCTBYVARIENTID");
+                            #pragma warning disable CS8604 // Possible null reference argument.
+                            _DBAccess.AddParameters("@VID", varientId);
+                            _DBAccess.AddParameters("@QTY",quantity);
+                            _DataSet = _DBAccess.DBExecute();
+                        }
 
-                            orders.Add(currentOrder);
-                            if (!string.IsNullOrEmpty(varient) && !string.IsNullOrEmpty(seller))
+                        if (_DataSet.Tables.Count < 2)
+                        {
+                            continue;
+                        }
+
+                        DataTable _DataTable = _DataSet.Tables[0];
+                        string Retval = _DataSet.Tables[1].Rows[0]["Retval"]?.ToString();
+
+                        if (Retval == "SUCCESS" && _DataTable.Rows.Count > 0)
+                        {
+                            foreach (DataRow row in _DataTable.Rows)
                             {
-                                sellerByVarientId[varient] = seller;
+                                var varient = row["VARIENTS_ID"]?.ToString();
+                                var seller = row["UserId"]?.ToString();
+                                var currentOrder = new
+                                {
+                                    ProductName = row["PRODUCT_NAME"]?.ToString(),
+                                    VarientName = row["VAREINTS_NAME"]?.ToString(),
+                                    PackageLength = row["PACKAGE_LENGTH"] == DBNull.Value ? null : row["PACKAGE_LENGTH"]?.ToString(),
+                                    PackageWidth = row["PACKAGE_WIDTH"] == DBNull.Value ? null : row["PACKAGE_WIDTH"]?.ToString(),
+                                    PackageHeight = row["PACKAGE_HEIGHT"] == DBNull.Value ? null : row["PACKAGE_HEIGHT"]?.ToString(),
+                                    PackageDiameter = row["PACKAGE_DIAMETER"] == DBNull.Value ? null : row["PACKAGE_DIAMETER"]?.ToString(),
+                                    PackageWeight = row["PACKAGE_WEIGHT"] == DBNull.Value ? null : row["PACKAGE_WEIGHT"]?.ToString(),
+                                    Pricing = row["PRICING"] == DBNull.Value ? null : row["PRICING"]?.ToString(),
+                                    SellingPrice = row["SELLING_PRICE"] == DBNull.Value ? null : row["SELLING_PRICE"]?.ToString(),
+                                    CurrentStockQuantity = row["CURRENT_STOCK_QUANTITY"] == DBNull.Value ? null : row["CURRENT_STOCK_QUANTITY"]?.ToString(),
+                                    MinimumOrderQty = row["MINIMUM_ORDER_QUANTITY"] == DBNull.Value ? null : row["MINIMUM_ORDER_QUANTITY"]?.ToString(),
+                                    DiscountType = row["DISCOUNT_TYPE"]?.ToString(),
+                                    DiscountAmount = row["DISCOUNT_AMOUNT"] == DBNull.Value ? null : row["DISCOUNT_AMOUNT"]?.ToString(),
+                                    TaxCalculation = row["TAX_CALCULATION"]?.ToString(),
+                                    Tax_Amount = row["TAX_AMOUNT"] == DBNull.Value ? null : row["TAX_AMOUNT"]?.ToString(),
+                                    CalculatedPrice = row["CALCULATED_PRICE"] == DBNull.Value ? null : row["CALCULATED_PRICE"]?.ToString(),
+                                    ProdID = row["PROD_ID"]?.ToString(),
+                                    VarientID = varient,
+                                    PickupAddress = row["Address"]?.ToString(),
+                                    SellerId = seller
+                                };
+
+                                orders.Add(currentOrder);
+                                if (!string.IsNullOrEmpty(varient) && !string.IsNullOrEmpty(seller))
+                                {
+                                    sellerByVarientId[varient] = seller;
+                                }
                             }
                         }
                     }
-                }
 
-                if (orders.Count == 0)
+                if (orders.Count != _MLOrder.VarientID.Length)
                 {
                     _DBReturnData.Dataset = null;
                     _DBReturnData.Status = DBEnums.Status.FAILURE;
                     _DBReturnData.Code = DBEnums.Codes.NOT_FOUND;
-                    _DBReturnData.Message = "Order creation failed - No products found";
+                    _DBReturnData.Message = "Some items in your cart did not meet the minimum order quantity or stock requirements. Please clear the cart and try again.";
                     _DBReturnData.Retval = "FAILURE";
                     return _DBReturnData;
                 }
 
-                // Calculating Price
+
+
                 int totalProductPrice = orders.Sum(o => Convert.ToInt32(o.CalculatedPrice ?? "0"));
 
-                // For delivery charges
-                Dictionary<string, decimal> deliveryChargesByVarient = new();
+             
+                    Dictionary<string, decimal> deliveryChargesByVarient = new();
 
 
-                foreach (var order in orders)
-                {
-                    sellerByVarientId.TryGetValue(order.VarientID, out string sellerId);
-                    int deliveryCharges =  GetDeliveryCharges(order);
-                    totalDeliveryCharges += deliveryCharges;
-                    deliveryChargesByVarient[order.VarientID] = deliveryCharges;
-                }
-
-                // ✅ Add delivery charges to total price
-                int totalPrice = totalProductPrice + Convert.ToInt32(totalDeliveryCharges);
-
-                if (totalPrice > 0)
-                {
-                    // Razorpay Payment Integration
-                    var keyId = _configuration["Razorpay:KeyId"];
-                    var keySecret = _configuration["Razorpay:KeySecret"];
-                    _razorpayClient = new RazorpayClient(keyId, keySecret);
-
-                    var options = new Dictionary<string, object>
-            {
-                { "amount", totalPrice * 100 }, // amount in paise
-                { "currency", "INR" },
-                { "receipt", Guid.NewGuid().ToString() },
-                { "payment_capture", "1" }
-            };
-
-
-                    Order razorOrder = _razorpayClient.Order.Create(options);
-                    var razorpayOrderId = razorOrder["id"].ToString();
-
-                    string razorOrderJson = JsonConvert.SerializeObject(razorOrder.Attributes, Formatting.Indented);
-                    RazorpayOrder orderDetails = JsonConvert.DeserializeObject<RazorpayOrder>(razorOrderJson);
-                    string transactionId = GetTransactionId();
-
-                    if (razorpayOrderId != null)
+                    foreach (var order in orders)
                     {
-                        using (DBAccess _DBAccess = new())
-                        {
-                            _DBAccess.DBProcedureName = "SP_ORDER";
-                            _DBAccess.AddParameters("@Action", "INSERTORDER");
-                            _DBAccess.AddParameters("@USER_ID", _MLOrder.UserId);
-                            var varientString = string.Join(",", _MLOrder.VarientID);
-                            _DBAccess.AddParameters("@VARIENTS_ID", varientString);
-                            _DBAccess.AddParameters("@ORDER_ID", razorpayOrderId);
-                            _DBAccess.AddParameters("@AMOUNT", totalPrice);
-                            _DBAccess.AddParameters("@CURRENCY", "INR");
-                            _DBAccess.AddParameters("@TRANSACTIONID",transactionId);
-
-                            _DBAccess.DBExecute();
-                            _DBAccess.Dispose();
-
-                        }
-                        string Retval = _DataSet.Tables[1].Rows[0]["Retval"]?.ToString();
+                        sellerByVarientId.TryGetValue(order.VarientID, out string sellerId);
+                        int deliveryCharges =  GetDeliveryCharges(order);
+                        totalDeliveryCharges += deliveryCharges;
+                        deliveryChargesByVarient[order.VarientID] = deliveryCharges;
                     }
 
-                    foreach (var varientId in _MLOrder.VarientID)
+                    // ✅ Add delivery charges to total price
+                    int totalPrice = totalProductPrice + Convert.ToInt32(totalDeliveryCharges);
+
+                    if (totalPrice > 0)
                     {
-                        if (!deliveryChargesByVarient.ContainsKey(varientId) || !sellerByVarientId.ContainsKey(varientId))
-                            continue;
+                        // Razorpay Payment Integration
+                        var keyId = _configuration["Razorpay:KeyId"];
+                        var keySecret = _configuration["Razorpay:KeySecret"];
+                        _razorpayClient = new RazorpayClient(keyId, keySecret);
 
-                        string sellerId = sellerByVarientId[varientId];
-                        decimal deliveryCharge = deliveryChargesByVarient[varientId];
+                        var options = new Dictionary<string, object>
+                {
+                    { "amount", totalPrice * 100 }, // amount in paise
+                    { "currency", "INR" },
+                    { "receipt", Guid.NewGuid().ToString() },
+                    { "payment_capture", "1" }
+                };
 
-                        using (DBAccess _DBAccess = new())
+
+                        Order razorOrder = _razorpayClient.Order.Create(options);
+                        var razorpayOrderId = razorOrder["id"].ToString();
+
+                        string razorOrderJson = JsonConvert.SerializeObject(razorOrder.Attributes, Formatting.Indented);
+                        RazorpayOrder orderDetails = JsonConvert.DeserializeObject<RazorpayOrder>(razorOrderJson);
+                        string transactionId = GetTransactionId();
+
+                        if (razorpayOrderId != null)
                         {
-                            _DBAccess.DBProcedureName = "SP_ORDER";
-                            _DBAccess.AddParameters("@ACTION", "INSERTORDERBYDELIVERY");
-                            _DBAccess.AddParameters("@USER_ID", _MLOrder.UserId);
-                            _DBAccess.AddParameters("@VARIENT_ID", varientId);
-                            _DBAccess.AddParameters("@SellerId", sellerId);
-                            _DBAccess.AddParameters("@AMOUNT", deliveryCharge.ToString());
-                            _DBAccess.DBExecute();
-                            _DBAccess.Dispose();
+                            using (DBAccess _DBAccess = new())
+                            {
+                                _DBAccess.DBProcedureName = "SP_ORDER";
+                                _DBAccess.AddParameters("@Action", "INSERTORDER");
+                                _DBAccess.AddParameters("@USER_ID", _MLOrder.UserId);
+                                var varientString = string.Join(",", _MLOrder.VarientID);
+                                _DBAccess.AddParameters("@VARIENTS_ID", varientString);
+                                _DBAccess.AddParameters("@ORDER_ID", razorpayOrderId);
+                                _DBAccess.AddParameters("@AMOUNT", totalPrice);
+                                _DBAccess.AddParameters("@CURRENCY", "INR");
+                                _DBAccess.AddParameters("@TRANSACTIONID",transactionId);
+
+                                _DBAccess.DBExecute();
+                                _DBAccess.Dispose();
+
+                            }
+                            string Retval = _DataSet.Tables[1].Rows[0]["Retval"]?.ToString();
                         }
 
-                    }
+                        foreach (var varientId in _MLOrder.VarientID)
+                        {
+                            if (!deliveryChargesByVarient.ContainsKey(varientId) || !sellerByVarientId.ContainsKey(varientId))
+                                continue;
 
-                    _DBReturnData.Dataset = new
+                            string sellerId = sellerByVarientId[varientId];
+                            decimal deliveryCharge = deliveryChargesByVarient[varientId];
+
+                            using (DBAccess _DBAccess = new())
+                            {
+                                _DBAccess.DBProcedureName = "SP_ORDER";
+                                _DBAccess.AddParameters("@ACTION", "INSERTORDERBYDELIVERY");
+                                _DBAccess.AddParameters("@USER_ID", _MLOrder.UserId);
+                                _DBAccess.AddParameters("@VARIENT_ID", varientId);
+                                _DBAccess.AddParameters("@SellerId", sellerId);
+                                _DBAccess.AddParameters("@AMOUNT", deliveryCharge.ToString());
+                                _DBAccess.DBExecute();
+                                _DBAccess.Dispose();
+                            }
+
+                        }
+
+                        _DBReturnData.Dataset = new
+                        {
+                            OrderDetails = orderDetails,
+                            TotalPrice = totalPrice,
+                            TotalDeliveryCharges = totalDeliveryCharges
+                        };
+                        _DBReturnData.Status = DBEnums.Status.SUCCESS;
+                        _DBReturnData.Code = DBEnums.Codes.SUCCESS;
+                        _DBReturnData.Message = "Order Created Successfully";
+                        _DBReturnData.OrderId = transactionId;
+                        _DBReturnData.Retval = "SUCCESS";
+                    }
+                    else
                     {
-                        OrderDetails = orderDetails,
-                        TotalPrice = totalPrice,
-                        TotalDeliveryCharges = totalDeliveryCharges
-                    };
-                    _DBReturnData.Status = DBEnums.Status.SUCCESS;
-                    _DBReturnData.Code = DBEnums.Codes.SUCCESS;
-                    _DBReturnData.Message = "Order Created Successfully";
-                    _DBReturnData.OrderId = transactionId;
-                    _DBReturnData.Retval = "SUCCESS";
+                        _DBReturnData.Dataset = null;
+                        _DBReturnData.Status = DBEnums.Status.FAILURE;
+                        _DBReturnData.Code = DBEnums.Codes.BAD_REQUEST;
+                        _DBReturnData.Message = "Invalid order data or zero price";
+                        _DBReturnData.Retval = "FAILURE";
+                    }
                 }
-                else
+                catch (Exception ex)
                 {
+                    DALBASE _DALBASE = new();
+                    _DALBASE.ErrorLog("CreateOrderController", "DLOrder", ex.ToString());
+
                     _DBReturnData.Dataset = null;
                     _DBReturnData.Status = DBEnums.Status.FAILURE;
-                    _DBReturnData.Code = DBEnums.Codes.BAD_REQUEST;
-                    _DBReturnData.Message = "Invalid order data or zero price";
+                    _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
+                    _DBReturnData.Message = "An internal error occurred";
                     _DBReturnData.Retval = "FAILURE";
                 }
-            }
-            catch (Exception ex)
-            {
-                DALBASE _DALBASE = new();
-                _DALBASE.ErrorLog("CreateOrderController", "DLOrder", ex.ToString());
 
-                _DBReturnData.Dataset = null;
-                _DBReturnData.Status = DBEnums.Status.FAILURE;
-                _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
-                _DBReturnData.Message = "An internal error occurred";
-                _DBReturnData.Retval = "FAILURE";
+                return _DBReturnData;
             }
-
-            return _DBReturnData;
-        }
 
       
       public string GetTransactionId()
