@@ -1,4 +1,5 @@
-﻿using System.Security.Cryptography;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Security.Cryptography;
 using System.Text;
 using ECOMAPP.CommonRepository;
 using ECOMAPP.DataLayer;
@@ -26,8 +27,15 @@ namespace ECOMAPP.Controllers
         [JwtAuthorization(Roles = [Roles.Admin, Roles.Vendor, Roles.User])]
         public DBReturnData CreateOrderAsync(MLOrder _MLOrder)
         {
+            string JwtToken = Request.Headers["Authorization"];
+            JwtToken = JwtToken!["Bearer ".Length..].Trim();
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(JwtToken);
+            var tokenS = jsonToken as JwtSecurityToken;
+            var UserId = tokenS?.Claims.First(claim => claim.Type == "UserId").Value;
+
             // Create the order and return an array with one item
-            DBReturnData _DBReturnData = _dLOrder.CreateOrderAsync(_MLOrder);
+            DBReturnData _DBReturnData = _dLOrder.CreateOrderAsync(_MLOrder, UserId);
             return _DBReturnData;
         }
 
@@ -122,6 +130,8 @@ namespace ECOMAPP.Controllers
                 return BitConverter.ToString(hashMessage).Replace("-", "").ToLower();
             }
         }
+
+
         [HttpGet("GetServiceAvailability")]
         public async Task<ActionResult<DBReturnData>> GetServiceAvailability(string pincode)
         {

@@ -9,7 +9,6 @@
         public string? OrderDate { get; set; }
         public int? Quantity { get; set; }
 
-        public string? UserId { get; set; }
         public string? TotalAmount { get; set; }
         public string? DeliveryAddress { get ; set;}
         public string? pincode { get; set; }

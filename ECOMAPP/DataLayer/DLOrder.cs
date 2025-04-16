@@ -32,7 +32,7 @@ namespace ECOMAPP.DataLayer
             _razorpayClient = razorpayClient ?? throw new ArgumentNullException(nameof(razorpayClient));
         }
 
-        public DBReturnData CreateOrderAsync(MLOrder _MLOrder)
+        public DBReturnData CreateOrderAsync(MLOrder _MLOrder,string UserId)
         {
             DataSet _DataSet = new();
             DBReturnData _DBReturnData = new();
@@ -62,7 +62,7 @@ namespace ECOMAPP.DataLayer
                     {
                         _DBAccess.DBProcedureName = "SP_PRODUCT";
                         _DBAccess.AddParameters("@Action", "CHECKPRODUCTBYVARIENTID");
-#pragma warning disable CS8604 // Possible null reference argument.
+                                    #pragma warning disable CS8604 // Possible null reference argument.
                         _DBAccess.AddParameters("@VID", varientId);
                         _DBAccess.AddParameters("@QTY", quantity);
                         _DataSet = _DBAccess.DBExecute();
@@ -169,7 +169,7 @@ namespace ECOMAPP.DataLayer
                         {
                             _DBAccess.DBProcedureName = "SP_ORDER";
                             _DBAccess.AddParameters("@Action", "INSERTORDER");
-                            _DBAccess.AddParameters("@USER_ID", _MLOrder.UserId);
+                            _DBAccess.AddParameters("@USER_ID", UserId);
                             var varientString = string.Join(",", _MLOrder.VarientID);
                             _DBAccess.AddParameters("@VARIENTS_ID", varientString);
                             _DBAccess.AddParameters("@ORDER_ID", razorpayOrderId);
@@ -196,7 +196,7 @@ namespace ECOMAPP.DataLayer
                         {
                             _DBAccess.DBProcedureName = "SP_ORDER";
                             _DBAccess.AddParameters("@ACTION", "INSERTORDERBYDELIVERY");
-                            _DBAccess.AddParameters("@USER_ID", _MLOrder.UserId);
+                            _DBAccess.AddParameters("@USER_ID", UserId);
                             _DBAccess.AddParameters("@VARIENT_ID", varientId);
                             _DBAccess.AddParameters("@SellerId", sellerId);
                             _DBAccess.AddParameters("@AMOUNT", deliveryCharge.ToString());
