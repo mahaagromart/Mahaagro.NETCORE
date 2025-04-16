@@ -19,7 +19,7 @@ namespace ECOMAPP.Controllers
 
         [Route("GetCartData")]
         [HttpPost]
-        [JwtAuthorization(Roles = [Roles.User, Roles.OrderManager, Roles.ReprotAnalysis, Roles.Admin])]
+        [JwtAuthorization(Roles = [Roles.User, Roles.OrderManager, Roles.ReprotAnalysis, Roles.Admin,Roles.Vendor])]
         public ActionResult<IEnumerable<DBReturnData>> GetCartData()
         {
             DBReturnData _DBReturnData = new();
@@ -72,7 +72,7 @@ namespace ECOMAPP.Controllers
 
         [Route("InsertCartData")]
         [HttpPost]
-        [JwtAuthorization(Roles = [Roles.User, Roles.OrderManager, Roles.ReprotAnalysis, Roles.Admin])]
+        [JwtAuthorization(Roles = [Roles.User, Roles.OrderManager, Roles.ReprotAnalysis, Roles.Admin, Roles.Vendor])]
         public ActionResult<IEnumerable<DBReturnData>> InsertCartData([FromBody] MLInsertCart mLInsertCart)
         {
             DBReturnData _DBReturnData = new();

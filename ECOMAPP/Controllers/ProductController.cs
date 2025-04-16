@@ -99,11 +99,6 @@ namespace ECOMAPP.Controllers
         }
 
 
-
-
-
-
-
         [Route("GetAllNewProdcutRequest")]
         [HttpGet]
         public ActionResult<DBReturnData> GetAllNewProdcutRequest()

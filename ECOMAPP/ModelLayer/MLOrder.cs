@@ -15,6 +15,15 @@
         public string? pincode { get; set; }
     }
 
+
+    public class AddressInfo
+    {
+        public string SellerPinCode { get; set; }
+        public string SellerAddress { get; set; }
+        public string UserPinCode { get; set; }
+        public string UserAddress { get; set; }
+    }
+
     public class RazorpayPaymentVerification
     {
         public string razorpay_payment_id { get; set; }
