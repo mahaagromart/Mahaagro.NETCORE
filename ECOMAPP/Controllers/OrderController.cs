@@ -24,10 +24,10 @@ namespace ECOMAPP.Controllers
 
         [HttpPost("CreateOrder")]
         [JwtAuthorization(Roles = [Roles.Admin, Roles.Vendor, Roles.User])]
-        public  DBReturnData CreateOrderAsync(MLOrder _MLOrder)
+        public DBReturnData CreateOrderAsync(MLOrder _MLOrder)
         {
             // Create the order and return an array with one item
-            DBReturnData _DBReturnData =  _dLOrder.CreateOrderAsync(_MLOrder);
+            DBReturnData _DBReturnData = _dLOrder.CreateOrderAsync(_MLOrder);
             return _DBReturnData;
         }
 
@@ -66,13 +66,13 @@ namespace ECOMAPP.Controllers
             {
                 var keySecret = _configuration["Razorpay:KeySecret"];
 
-         
+
                 string payload = $"{paymentVerification.razorpay_order_id}|{paymentVerification.razorpay_payment_id}";
                 string generatedSignature = CreateHMACSHA256Signature(payload, keySecret);
 
-                
 
-                    
+
+
 
                 if (generatedSignature == paymentVerification.razorpay_signature)
                 {
@@ -108,7 +108,7 @@ namespace ECOMAPP.Controllers
                 _DBReturnData.Message = DBEnums.Status.FAILURE.ToString();
                 _DBReturnData.Retval = DBEnums.Status.FAILURE.ToString() + "due to" + ex.ToString();
             }
-            return new []{ _DBReturnData};
+            return new[] { _DBReturnData };
         }
 
         private string CreateHMACSHA256Signature(string payload, string key)
@@ -122,7 +122,29 @@ namespace ECOMAPP.Controllers
                 return BitConverter.ToString(hashMessage).Replace("-", "").ToLower();
             }
         }
+        [HttpGet("GetServiceAvailability")]
+        public async Task<ActionResult<DBReturnData>> GetServiceAvailability(string pincode)
+        {
+            DBReturnData _DBReturnData = new DBReturnData();
+
+            try
+            {
+                // Call DLOrder and receive the whole DBReturnData
+                var result = await _dLOrder.GetServiceAvailability(pincode);
+
+                // Just return what DLOrder already structured
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                _DBReturnData.Status = DBEnums.Status.FAILURE;
+                _DBReturnData.Code = DBEnums.Codes.INTERNAL_SERVER_ERROR;
+                _DBReturnData.Message = "Internal server error occurred.";
+                _DBReturnData.Retval = "FAILURE due to: " + ex.Message;
+                return StatusCode(500, _DBReturnData);
+            }
+        }
+
     }
 
-   
 }

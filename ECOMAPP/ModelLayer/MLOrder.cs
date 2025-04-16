@@ -56,4 +56,57 @@
         public string eeApiToken { get; set; }
         public string business_type { get; set; }
     }
+
+
+
+    public class EkartServiceResponse
+    {
+        public bool status { get; set; }
+        public int pincode { get; set; }
+        public string remark { get; set; }
+        public EkartDetails details { get; set; }
+    }
+
+    public class EkartDetails
+    {
+        public bool cod { get; set; }
+        public int max_cod_amount { get; set; }
+        public bool forward_pickup { get; set; }
+        public bool forward_drop { get; set; }
+        public bool reverse_pickup { get; set; }
+        public bool reverse_drop { get; set; }
+        public string city { get; set; }
+        public string state { get; set; }
+    }
+    public class EkartTokenResponse
+    {
+        public string access_token { get; set; }
+        public int expires_in { get; set; }
+        public string token_type { get; set; }
+    }
+    public class TokenCacheEntry
+    {
+        public string AccessToken { get; set; }
+        public DateTime ExpirationTime { get; set; }
+    }
+    public class ServiceabilityDetails
+    {
+        public bool cod { get; set; }
+        public int max_cod_amount { get; set; }
+        public bool forward_pickup { get; set; }
+        public bool forward_drop { get; set; }
+        public bool reverse_pickup { get; set; }
+        public bool reverse_drop { get; set; }
+        public string city { get; set; }
+        public string state { get; set; }
+    }
+
+    public class ServiceabilityResponse
+    {
+        public bool status { get; set; }
+        public int pincode { get; set; }
+        public string remark { get; set; }
+        public ServiceabilityDetails details { get; set; }
+    }
+
 }
