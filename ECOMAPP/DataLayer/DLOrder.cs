@@ -62,10 +62,10 @@ namespace ECOMAPP.DataLayer
                     {
                         _DBAccess.DBProcedureName = "SP_PRODUCT";
                         _DBAccess.AddParameters("@Action", "CHECKPRODUCTBYVARIENTID");
-                                    #pragma warning disable CS8604 // Possible null reference argument.
                         _DBAccess.AddParameters("@VID", varientId);
                         _DBAccess.AddParameters("@QTY", quantity);
                         _DataSet = _DBAccess.DBExecute();
+                        _DBAccess.Dispose();
                     }
 
                     if (_DataSet.Tables.Count < 2)
